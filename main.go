@@ -10,7 +10,7 @@ func main() {
 	cmd := exec.Command("ls", "-la")
 	stdout, err := cmd.Output()
 	if err != nil {
-		log.Fatalf("failed")
+		log.Fatalf("error: %v", err.Error())
 	}
 	fmt.Println(string(stdout))
 }
