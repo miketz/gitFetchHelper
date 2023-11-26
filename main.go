@@ -7,7 +7,8 @@ import (
 )
 
 func main() {
-	cmd := exec.Command("git", "branch")
+	cmd := exec.Command("git", "remote", "-v")
+	// cmd.Dir = ""
 	stdout, err := cmd.Output()
 	if err != nil {
 		log.Fatalf("error: %v", err.Error())
