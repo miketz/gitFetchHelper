@@ -78,15 +78,14 @@ func expandPath(path string) string {
 	if err != nil {
 		log.Fatalf("failed to get user info for translating ~. error: %v", err.Error())
 	}
-	dir := usr.HomeDir
 
 	if path == "~" {
 		// In case of "~", which won't be caught by the "else if"
-		path = dir
+		path = usr.HomeDir
 	} else if strings.HasPrefix(path, "~/") {
 		// Use strings.HasPrefix so we don't match paths like
 		// "/something/~/something/"
-		path = filepath.Join(dir, path[2:])
+		path = filepath.Join(usr.HomeDir, path[2:])
 	}
 	return path
 }
