@@ -45,7 +45,10 @@ func main() {
 	// get all the submodules
 	// git config --file .gitmodules --get-regexp path | awk '{ print $2 }'
 	//cmd := exec.Command("git", "config", "--file", ".gitmodules", "--get-regexp", "path", "|", "awk", "'{ print $2 }'")
+	fetchUpstreamRemotes()
+}
 
+func fetchUpstreamRemotes() {
 	fmt.Printf("len: %d\n", len(DB))
 	var wg sync.WaitGroup
 	for i := 0; i < len(DB); i++ {
