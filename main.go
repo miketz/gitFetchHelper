@@ -7,6 +7,7 @@ import (
 	"os/user"
 	"path/filepath"
 	"strings"
+	"sync"
 )
 
 type SubModule struct {
@@ -45,12 +46,17 @@ func main() {
 	// git config --file .gitmodules --get-regexp path | awk '{ print $2 }'
 	//cmd := exec.Command("git", "config", "--file", ".gitmodules", "--get-regexp", "path", "|", "awk", "'{ print $2 }'")
 
+	fmt.Printf("len: %d\n", len(DB))
+	var wg sync.WaitGroup
 	for i := 0; i < len(DB); i++ {
-		fetch(i)
+		wg.Add(1)
+		go fetch(i, &wg)
 	}
+	wg.Wait()
+	fmt.Printf("Done\n")
 }
 
-func fetch(i int) {
+func fetch(i int, wg *sync.WaitGroup) {
 	subMod := DB[i]
 	cmd := exec.Command("git", "fetch", subMod.UpstreamAlias)
 	cmd.Dir = expandPath(subMod.Folder)
@@ -61,9 +67,11 @@ func fetch(i int) {
 	}
 	if len(stdout) == 0 {
 		fmt.Printf("%d: no output for %v\n", i, subMod.Folder)
-		return
+		goto CLEAN_UP
 	}
 	fmt.Printf("%d: %s\n", i, string(stdout))
+CLEAN_UP:
+	wg.Done()
 }
 
 func expandPath(path string) string {
