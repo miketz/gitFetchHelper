@@ -39,6 +39,7 @@ var DB = []SubModule{
 	{Folder: "~/.emacs.d/notElpa/ido-grid.el", Url: "https://github.com/larkery/ido-grid.el", UpstreamAlias: "upstream"},
 	{Folder: "~/.emacs.d/notElpa/ov", Url: "https://github.com/emacsorphanage/ov", UpstreamAlias: "upstream"},
 	{Folder: "~/.emacs.d/notElpa/emacs-deferred", Url: "https://github.com/kiwanami/emacs-deferred", UpstreamAlias: "upstream"},
+	{Folder: "~/.emacs.d/notElpa/helm", Url: "https://github.com/emacs-helm/helm", UpstreamAlias: "upstream"},
 }
 
 func main() {
