@@ -57,6 +57,7 @@ func main() {
 }
 
 func fetch(i int, wg *sync.WaitGroup) {
+	defer wg.Done()
 	subMod := DB[i]
 	cmd := exec.Command("git", "fetch", subMod.UpstreamAlias)
 	cmd.Dir = expandPath(subMod.Folder)
@@ -67,11 +68,9 @@ func fetch(i int, wg *sync.WaitGroup) {
 	}
 	if len(stdout) == 0 {
 		fmt.Printf("%d: no output for %v\n", i, subMod.Folder)
-		goto CLEAN_UP
+		return
 	}
 	fmt.Printf("%d: %s\n", i, string(stdout))
-CLEAN_UP:
-	wg.Done()
 }
 
 func expandPath(path string) string {
