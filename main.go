@@ -156,16 +156,17 @@ func fetch(i int, wg *sync.WaitGroup) {
 	cmd := exec.Command("git", "fetch", subMod.UpstreamAlias)
 	cmd.Dir = expandPath(subMod.Folder)
 
-	fmt.Printf("dir: %s, cmd: %v\n", cmd.Dir, cmd.Args)
-	stdout, err := cmd.Output() // run
+	stdout, err := cmd.Output() // Run git fetch!
 	if err != nil {
 		log.Fatalf("error: %v", err.Error())
 	}
+	var msg string
 	if len(stdout) == 0 {
-		fmt.Printf("%d: no output for %v\n", i, subMod.Folder)
-		return
+		msg = "no output"
+	} else {
+		msg = string(stdout)
 	}
-	fmt.Printf("%d: %s\n", i, string(stdout))
+	fmt.Printf("%d: %s %v %s\n", i, subMod.Folder, cmd.Args, msg)
 }
 
 func expandPath(path string) string {
