@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"strings"
 	"sync"
+	"time"
 )
 
 type SubModule struct {
@@ -136,14 +137,17 @@ func main() {
 }
 
 func fetchUpstreamRemotes() {
-	fmt.Printf("len: %d\n", len(DB))
+	start := time.Now() // stop watch start
+
 	var wg sync.WaitGroup
 	for i := 0; i < len(DB); i++ {
 		wg.Add(1)
 		go fetch(i, &wg)
 	}
 	wg.Wait()
-	fmt.Printf("Done\n")
+
+	duration := time.Since(start) // stop watch end
+	fmt.Printf("\nFetched %d remotes. time elapsed: %v\n", len(DB), duration)
 }
 
 func fetch(i int, wg *sync.WaitGroup) {
@@ -152,7 +156,8 @@ func fetch(i int, wg *sync.WaitGroup) {
 	cmd := exec.Command("git", "fetch", subMod.UpstreamAlias)
 	cmd.Dir = expandPath(subMod.Folder)
 
-	stdout, err := cmd.Output()
+	fmt.Printf("dir: %s, cmd: %v\n", cmd.Dir, cmd.Args)
+	stdout, err := cmd.Output() // run
 	if err != nil {
 		log.Fatalf("error: %v", err.Error())
 	}
