@@ -140,7 +140,7 @@ func fetchUpstreamRemotes() {
 	start := time.Now() // stop watch start
 
 	var wg sync.WaitGroup
-	for i := 0; i < len(DB); i++ {
+	for i := 0; i < len(DB); i++ { // fetch upstream for each remote.
 		wg.Add(1)
 		go fetch(i, &wg)
 	}
