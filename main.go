@@ -129,10 +129,11 @@ var DB = []SubModule{
 	{Folder: "~/.emacs.d/notElpa/sunrise-commander", UpstreamAlias: "upstream"},
 }
 
+// get all the submodules
+// git config --file .gitmodules --get-regexp path | awk '{ print $2 }'
+// cmd := exec.Command("git", "config", "--file", ".gitmodules", "--get-regexp", "path", "|", "awk", "'{ print $2 }'")
+
 func main() {
-	// get all the submodules
-	// git config --file .gitmodules --get-regexp path | awk '{ print $2 }'
-	//cmd := exec.Command("git", "config", "--file", ".gitmodules", "--get-regexp", "path", "|", "awk", "'{ print $2 }'")
 	fetchUpstreamRemotes()
 }
 
