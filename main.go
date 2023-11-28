@@ -154,7 +154,7 @@ func fetchUpstreamRemotes() {
 func fetch(i int, wg *sync.WaitGroup) {
 	defer wg.Done()
 	subMod := DB[i]
-	cmd := exec.Command("git", "fetch", subMod.UpstreamAlias)
+	cmd := exec.Command("git", "fetch", subMod.UpstreamAlias) // #nosec G204
 	cmd.Dir = expandPath(subMod.Folder)
 
 	stdout, err := cmd.Output() // Run git fetch!
