@@ -169,11 +169,7 @@ func fetch(i int, wg *sync.WaitGroup) {
 		msg = err.Error()
 		goto PRINT
 	}
-	if len(stdout) == 0 {
-		msg = "no output"
-	} else {
-		msg = string(stdout)
-	}
+	msg = string(stdout)
 PRINT:
 	fmt.Printf("%d: %s %v %s\n", i, subMod.Folder, cmd.Args, msg)
 	wg.Done()
