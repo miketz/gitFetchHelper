@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"os/exec"
 	"os/user"
 	"path/filepath"
@@ -152,27 +151,39 @@ func fetchUpstreamRemotes() {
 }
 
 func fetch(i int, wg *sync.WaitGroup) {
-	defer wg.Done()
 	subMod := DB[i]
-	cmd := exec.Command("git", "fetch", subMod.UpstreamAlias) // #nosec G204
-	cmd.Dir = expandPath(subMod.Folder)
-
 	var msg string
-	stdout, err := cmd.Output() // Run git fetch!
+	var stdout []byte
+
+	// prepare fetch command
+	cmd := exec.Command("git", "fetch", subMod.UpstreamAlias) // #nosec G204
+	var err error
+	cmd.Dir, err = expandPath(subMod.Folder)
 	if err != nil {
 		msg = err.Error()
-	} else if len(stdout) == 0 {
+		goto PRINT
+	}
+	// Run git fetch!
+	stdout, err = cmd.Output()
+	if err != nil {
+		msg = err.Error()
+		goto PRINT
+	}
+	if len(stdout) == 0 {
 		msg = "no output"
 	} else {
 		msg = string(stdout)
 	}
+PRINT:
 	fmt.Printf("%d: %s %v %s\n", i, subMod.Folder, cmd.Args, msg)
+	wg.Done()
 }
 
-func expandPath(path string) string {
+func expandPath(path string) (string, error) {
 	usr, err := user.Current()
 	if err != nil {
-		log.Fatalf("failed to get user info for translating ~. error: %v", err.Error())
+		return "", err
+		// log.Fatalf("failed to get user info for translating ~. error: %v", err.Error())
 	}
 
 	if path == "~" {
@@ -183,5 +194,5 @@ func expandPath(path string) string {
 		// "/something/~/something/"
 		path = filepath.Join(usr.HomeDir, path[2:])
 	}
-	return path
+	return path, nil
 }
