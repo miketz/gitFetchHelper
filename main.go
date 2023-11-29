@@ -157,12 +157,11 @@ func fetch(i int, wg *sync.WaitGroup) {
 	cmd := exec.Command("git", "fetch", subMod.UpstreamAlias) // #nosec G204
 	cmd.Dir = expandPath(subMod.Folder)
 
+	var msg string
 	stdout, err := cmd.Output() // Run git fetch!
 	if err != nil {
-		log.Fatalf("error: %v", err.Error())
-	}
-	var msg string
-	if len(stdout) == 0 {
+		msg = err.Error()
+	} else if len(stdout) == 0 {
 		msg = "no output"
 	} else {
 		msg = string(stdout)
