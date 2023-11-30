@@ -139,39 +139,60 @@ func main() {
 func fetchUpstreamRemotes() {
 	start := time.Now() // stop watch start
 
-	var wg sync.WaitGroup
+	reportPass := make([]string, 0, len(DB)) // allocate for 100% fetch success
+	reportFail := make([]string, 0, 8)       // allocate for low failure rate
+
+	wg := sync.WaitGroup{}
+	mut := sync.Mutex{}
 	for i := 0; i < len(DB); i++ { // fetch upstream for each remote.
 		wg.Add(1)
-		go fetch(i, &wg)
+		go fetch(i, reportPass, reportFail, &wg, &mut)
 	}
 	wg.Wait()
 
 	duration := time.Since(start) // stop watch end
 	fmt.Printf("\nFetched %d remotes. time elapsed: %v\n", len(DB), duration)
+
+	// succes report
+	if len(reportPass) > 0 {
+		fmt.Printf("SUCEEDED:\n")
+		for i := 0; i < len(reportPass); i++ {
+			fmt.Print(reportPass[i])
+		}
+	}
+	// failure report
+	if len(reportFail) > 0 {
+		fmt.Printf("FAILURES:\n")
+		for i := 0; i < len(reportFail); i++ {
+			fmt.Print(reportFail[i])
+		}
+	}
 }
 
-func fetch(i int, wg *sync.WaitGroup) {
+func fetch(i int, reportPass []string, reportFail []string, wg *sync.WaitGroup, mut *sync.Mutex) {
 	subMod := DB[i]
-	var msg string
-	var stdout []byte
 
 	// prepare fetch command
 	cmd := exec.Command("git", "fetch", subMod.UpstreamAlias) // #nosec G204
 	var err error
 	cmd.Dir, err = expandPath(subMod.Folder)
-	if err != nil {
-		msg = err.Error()
-		goto PRINT
+	if err != nil { // issue with folder
+		mut.Lock()
+		reportFail = append(reportFail, fmt.Sprintf("%d: %s %v %s\n", i, subMod.Folder, cmd.Args, err.Error()))
+		mut.Unlock()
+		return
 	}
 	// Run git fetch!
-	stdout, err = cmd.Output()
+	stdout, err := cmd.Output()
 	if err != nil {
-		msg = err.Error()
-		goto PRINT
+		mut.Lock()
+		reportFail = append(reportFail, fmt.Sprintf("%d: %s %v %s\n", i, subMod.Folder, cmd.Args, err.Error()))
+		mut.Unlock()
+		return
 	}
-	msg = string(stdout)
-PRINT:
-	fmt.Printf("%d: %s %v %s\n", i, subMod.Folder, cmd.Args, msg)
+	mut.Lock()
+	reportPass = append(reportPass, fmt.Sprintf("%d: %s %v %s\n", i, subMod.Folder, cmd.Args, string(stdout)))
+	mut.Unlock()
 	wg.Done()
 }
 
