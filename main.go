@@ -146,7 +146,7 @@ func fetchUpstreamRemotes() {
 	mut := sync.Mutex{}
 	for i := 0; i < len(DB); i++ { // fetch upstream for each remote.
 		wg.Add(1)
-		go fetch(i, reportPass, reportFail, &wg, &mut)
+		go fetch(i, &reportPass, &reportFail, &wg, &mut)
 	}
 	wg.Wait()
 
@@ -154,23 +154,24 @@ func fetchUpstreamRemotes() {
 	fmt.Printf("\nFetched %d remotes. time elapsed: %v\n", len(DB), duration)
 
 	// succes report
+	fmt.Printf("\nSUCEEDED: %d\n", len(reportPass))
 	if len(reportPass) > 0 {
-		fmt.Printf("SUCEEDED:\n")
 		for i := 0; i < len(reportPass); i++ {
 			fmt.Print(reportPass[i])
 		}
 	}
 	// failure report
+	fmt.Printf("\nFAILURES: %d\n", len(reportFail))
 	if len(reportFail) > 0 {
-		fmt.Printf("FAILURES:\n")
 		for i := 0; i < len(reportFail); i++ {
 			fmt.Print(reportFail[i])
 		}
 	}
 }
 
-func fetch(i int, reportPass []string, reportFail []string, wg *sync.WaitGroup, mut *sync.Mutex) {
+func fetch(i int, reportPass *[]string, reportFail *[]string, wg *sync.WaitGroup, mut *sync.Mutex) {
 	subMod := DB[i]
+	var stdout []byte
 
 	// prepare fetch command
 	cmd := exec.Command("git", "fetch", subMod.UpstreamAlias) // #nosec G204
@@ -178,21 +179,25 @@ func fetch(i int, reportPass []string, reportFail []string, wg *sync.WaitGroup, 
 	cmd.Dir, err = expandPath(subMod.Folder)
 	if err != nil { // issue with folder
 		mut.Lock()
-		reportFail = append(reportFail, fmt.Sprintf("%d: %s %v %s\n", i, subMod.Folder, cmd.Args, err.Error()))
+		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %v %s\n", i, subMod.Folder, cmd.Args, err.Error()))
 		mut.Unlock()
-		return
+		goto DONE
 	}
 	// Run git fetch!
-	stdout, err := cmd.Output()
+	stdout, err = cmd.Output()
 	if err != nil {
 		mut.Lock()
-		reportFail = append(reportFail, fmt.Sprintf("%d: %s %v %s\n", i, subMod.Folder, cmd.Args, err.Error()))
+		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %v %s\n", i, subMod.Folder, cmd.Args, err.Error()))
 		mut.Unlock()
-		return
+		goto DONE
 	}
 	mut.Lock()
-	reportPass = append(reportPass, fmt.Sprintf("%d: %s %v %s\n", i, subMod.Folder, cmd.Args, string(stdout)))
+	// NOTE: stdout is len=0 even when it fetches new content!
+	// TODO: find way to determine if there was new content fetched.
+	*reportPass = append(*reportPass, fmt.Sprintf("%d: %s %v %s len: %d\n",
+		i, subMod.Folder, cmd.Args, string(stdout), len(stdout)))
 	mut.Unlock()
+DONE:
 	wg.Done()
 }
 
