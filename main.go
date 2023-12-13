@@ -170,8 +170,9 @@ func fetchUpstreamRemotes() {
 }
 
 func fetch(i int, reportPass *[]string, reportFail *[]string, wg *sync.WaitGroup, mut *sync.Mutex) {
+	defer wg.Done()
+
 	subMod := DB[i]
-	var stdout []byte
 
 	// prepare fetch command
 	cmd := exec.Command("git", "fetch", subMod.UpstreamAlias) // #nosec G204
@@ -181,15 +182,15 @@ func fetch(i int, reportPass *[]string, reportFail *[]string, wg *sync.WaitGroup
 		mut.Lock()
 		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %v %s\n", i, subMod.Folder, cmd.Args, err.Error()))
 		mut.Unlock()
-		goto DONE
+		return
 	}
 	// Run git fetch!
-	stdout, err = cmd.Output()
+	stdout, err := cmd.Output()
 	if err != nil {
 		mut.Lock()
 		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %v %s\n", i, subMod.Folder, cmd.Args, err.Error()))
 		mut.Unlock()
-		goto DONE
+		return
 	}
 	mut.Lock()
 	// NOTE: stdout is len=0 even when it fetches new content!
@@ -197,8 +198,6 @@ func fetch(i int, reportPass *[]string, reportFail *[]string, wg *sync.WaitGroup
 	*reportPass = append(*reportPass, fmt.Sprintf("%d: %s %v %s len: %d\n",
 		i, subMod.Folder, cmd.Args, string(stdout), len(stdout)))
 	mut.Unlock()
-DONE:
-	wg.Done()
 }
 
 func expandPath(path string) (string, error) {
