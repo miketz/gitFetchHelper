@@ -15,6 +15,11 @@ type SubModule struct {
 	UpstreamAlias string
 }
 
+// DUMMY repo project for testing.
+// var DB = []SubModule{
+// 	{Folder: "~/proj/dummyProj2", UpstreamAlias: "origin"},
+// }
+
 var DB = []SubModule{
 	{Folder: "~/.emacs.d/notElpa/paredit", UpstreamAlias: "upstream"},
 	{Folder: "~/.emacs.d/notElpa/combobulate", UpstreamAlias: "upstream"},
