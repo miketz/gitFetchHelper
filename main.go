@@ -16,7 +16,7 @@ type GitRepo struct {
 }
 
 // DUMMY repo project for testing fetch of new commits. https://github.com/miketz/dummyProj
-// var DB = []SubModule{
+// var DB = []GitRepo{
 // 	{Folder: "~/proj/dummyProj2", UpstreamAlias: "origin"},
 // }
 
