@@ -156,7 +156,8 @@ func fetchUpstreamRemotes() {
 	wg.Wait()
 
 	duration := time.Since(start) // stop watch end
-	fmt.Printf("\nFetched %d remotes. time elapsed: %v\n", len(DB), duration)
+	fmt.Printf("\nFetched %d of %d remotes. time elapsed: %v\n",
+		len(DB)-len(reportFail), len(DB), duration)
 
 	// succes report. only includes repos that had new data to fetch.
 	fmt.Printf("\nNEW repo data fetched: %d\n", len(reportFetched))
