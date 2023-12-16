@@ -144,24 +144,24 @@ func main() {
 func fetchUpstreamRemotes() {
 	start := time.Now() // stop watch start
 
-	reportPass := make([]string, 0, len(DB)) // allocate for 100% fetch success
-	reportFail := make([]string, 0, 8)       // allocate for low failure rate
+	reportFetched := make([]string, 0, len(DB)) // allocate for 100% fetch success
+	reportFail := make([]string, 0, 4)          // allocate for low failure rate
 
 	wg := sync.WaitGroup{}
 	mut := sync.Mutex{}
 	for i := 0; i < len(DB); i++ { // fetch upstream for each remote.
 		wg.Add(1)
-		go fetch(i, &reportPass, &reportFail, &wg, &mut)
+		go fetch(i, &reportFetched, &reportFail, &wg, &mut)
 	}
 	wg.Wait()
 
 	duration := time.Since(start) // stop watch end
 	fmt.Printf("\nFetched %d remotes. time elapsed: %v\n", len(DB), duration)
 
-	// succes report
-	fmt.Printf("\nSUCEEDED: %d\n", len(reportPass))
-	for i := 0; i < len(reportPass); i++ {
-		fmt.Print(reportPass[i])
+	// succes report. only includes repos that had new data to fetch.
+	fmt.Printf("\nNEW repo data fetched: %d\n", len(reportFetched))
+	for i := 0; i < len(reportFetched); i++ {
+		fmt.Print(reportFetched[i])
 	}
 	// failure report
 	fmt.Printf("\nFAILURES: %d\n", len(reportFail))
@@ -170,7 +170,7 @@ func fetchUpstreamRemotes() {
 	}
 }
 
-func fetch(i int, reportPass *[]string, reportFail *[]string, wg *sync.WaitGroup, mut *sync.Mutex) {
+func fetch(i int, reportFetched *[]string, reportFail *[]string, wg *sync.WaitGroup, mut *sync.Mutex) {
 	defer wg.Done()
 
 	subMod := DB[i]
@@ -193,12 +193,13 @@ func fetch(i int, reportPass *[]string, reportFail *[]string, wg *sync.WaitGroup
 		mut.Unlock()
 		return
 	}
-	mut.Lock()
-	// NOTE: stdout is len=0 even when it fetches new content!
-	// TODO: find way to determine if there was new content fetched.
-	*reportPass = append(*reportPass, fmt.Sprintf("%d: %s %v %s len: %d\n",
-		i, subMod.Folder, cmd.Args, string(stdout), len(stdout)))
-	mut.Unlock()
+	newDataFetched := len(stdout) > 0
+	if newDataFetched {
+		mut.Lock()
+		*reportFetched = append(*reportFetched, fmt.Sprintf("%d: %s %v %s\n",
+			i, subMod.Folder, cmd.Args, string(stdout)))
+		mut.Unlock()
+	}
 }
 
 func expandPath(path string) (string, error) {
