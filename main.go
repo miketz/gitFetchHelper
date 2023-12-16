@@ -15,7 +15,7 @@ type GitRepo struct {
 	UpstreamAlias string
 }
 
-// DUMMY repo project for testing. https://github.com/miketz/dummyProj
+// DUMMY repo project for testing fetch of new commits. https://github.com/miketz/dummyProj
 // var DB = []SubModule{
 // 	{Folder: "~/proj/dummyProj2", UpstreamAlias: "origin"},
 // }
