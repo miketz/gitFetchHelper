@@ -1,3 +1,3 @@
-module gitHelper
+module gitFetchHelper
 
 go 1.21.4
