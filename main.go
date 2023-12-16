@@ -15,6 +15,11 @@ type SubModule struct {
 	UpstreamAlias string
 }
 
+// DUMMY repo project for testing.
+// var DB = []SubModule{
+// 	{Folder: "~/proj/dummyProj2", UpstreamAlias: "origin"},
+// }
+
 var DB = []SubModule{
 	{Folder: "~/.emacs.d/notElpa/paredit", UpstreamAlias: "upstream"},
 	{Folder: "~/.emacs.d/notElpa/combobulate", UpstreamAlias: "upstream"},
@@ -139,40 +144,63 @@ func main() {
 func fetchUpstreamRemotes() {
 	start := time.Now() // stop watch start
 
-	var wg sync.WaitGroup
+	reportFetched := make([]string, 0, len(DB)) // allocate for 100% fetch success
+	reportFail := make([]string, 0, 4)          // allocate for low failure rate
+
+	wg := sync.WaitGroup{}
+	mut := sync.Mutex{}
 	for i := 0; i < len(DB); i++ { // fetch upstream for each remote.
 		wg.Add(1)
-		go fetch(i, &wg)
+		go fetch(i, &reportFetched, &reportFail, &wg, &mut)
 	}
 	wg.Wait()
 
 	duration := time.Since(start) // stop watch end
-	fmt.Printf("\nFetched %d remotes. time elapsed: %v\n", len(DB), duration)
+	fmt.Printf("\nFetched %d of %d remotes. time elapsed: %v\n",
+		len(DB)-len(reportFail), len(DB), duration)
+
+	// succes report. only includes repos that had new data to fetch.
+	fmt.Printf("\nNEW repo data fetched: %d\n", len(reportFetched))
+	for i := 0; i < len(reportFetched); i++ {
+		fmt.Print(reportFetched[i])
+	}
+	// failure report
+	fmt.Printf("\nFAILURES: %d\n", len(reportFail))
+	for i := 0; i < len(reportFail); i++ {
+		fmt.Print(reportFail[i])
+	}
 }
 
-func fetch(i int, wg *sync.WaitGroup) {
+func fetch(i int, reportFetched *[]string, reportFail *[]string, wg *sync.WaitGroup, mut *sync.Mutex) {
+	defer wg.Done()
+
 	subMod := DB[i]
-	var msg string
-	var stdout []byte
 
 	// prepare fetch command
 	cmd := exec.Command("git", "fetch", subMod.UpstreamAlias) // #nosec G204
 	var err error
 	cmd.Dir, err = expandPath(subMod.Folder)
-	if err != nil {
-		msg = err.Error()
-		goto PRINT
+	if err != nil { // issue with folder
+		mut.Lock()
+		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %v %s\n", i, subMod.Folder, cmd.Args, err.Error()))
+		mut.Unlock()
+		return
 	}
-	// Run git fetch!
-	stdout, err = cmd.Output()
+	// Run git fetch! NOTE: cmd.Output() doesn't include the normal txt output when git fetch actually pulls new data.
+	stdout, err := cmd.CombinedOutput() //cmd.Output()
 	if err != nil {
-		msg = err.Error()
-		goto PRINT
+		mut.Lock()
+		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %v %s\n", i, subMod.Folder, cmd.Args, err.Error()))
+		mut.Unlock()
+		return
 	}
-	msg = string(stdout)
-PRINT:
-	fmt.Printf("%d: %s %v %s\n", i, subMod.Folder, cmd.Args, msg)
-	wg.Done()
+	newDataFetched := len(stdout) > 0
+	if newDataFetched {
+		mut.Lock()
+		*reportFetched = append(*reportFetched, fmt.Sprintf("%d: %s %v %s\n",
+			i, subMod.Folder, cmd.Args, string(stdout)))
+		mut.Unlock()
+	}
 }
 
 func expandPath(path string) (string, error) {
