@@ -187,7 +187,7 @@ func fetch(i int, reportFetched *[]string, reportFail *[]string, wg *sync.WaitGr
 		return
 	}
 	// Run git fetch! NOTE: cmd.Output() doesn't include the normal txt output when git fetch actually pulls new data.
-	stdout, err := cmd.CombinedOutput() //cmd.Output()
+	stdout, err := cmd.CombinedOutput() // cmd.Output()
 	if err != nil {
 		mut.Lock()
 		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %v %s\n", i, repo.Folder, cmd.Args, err.Error()))
