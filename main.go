@@ -155,17 +155,13 @@ func fetchUpstreamRemotes() {
 
 	// succes report
 	fmt.Printf("\nSUCEEDED: %d\n", len(reportPass))
-	if len(reportPass) > 0 {
-		for i := 0; i < len(reportPass); i++ {
-			fmt.Print(reportPass[i])
-		}
+	for i := 0; i < len(reportPass); i++ {
+		fmt.Print(reportPass[i])
 	}
 	// failure report
 	fmt.Printf("\nFAILURES: %d\n", len(reportFail))
-	if len(reportFail) > 0 {
-		for i := 0; i < len(reportFail); i++ {
-			fmt.Print(reportFail[i])
-		}
+	for i := 0; i < len(reportFail); i++ {
+		fmt.Print(reportFail[i])
 	}
 }
 
