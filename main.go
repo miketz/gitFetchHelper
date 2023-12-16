@@ -38,7 +38,7 @@ var DB = []GitRepo{
 	{Folder: "~/.emacs.d/notElpa/magit", UpstreamAlias: "upstream"},
 	{Folder: "~/.emacs.d/notElpa/libegit2", UpstreamAlias: "upstream"},
 	{Folder: "~/.emacs.d/notElpa/csharp-mode", UpstreamAlias: "upstream"},
-	// {Folder: "~/.emacs.d/notElpa/ctrlf", UpstreamAlias: "origin"},
+	{Folder: "~/.emacs.d/notElpa/ctrlf", UpstreamAlias: "origin"},
 	{Folder: "~/.emacs.d/notElpa/spinner.el", UpstreamAlias: "upstream"},
 	{Folder: "~/.emacs.d/notElpa/ggtags", UpstreamAlias: "upstream"},
 	{Folder: "~/.emacs.d/notElpa/goto-chg", UpstreamAlias: "upstream"},
