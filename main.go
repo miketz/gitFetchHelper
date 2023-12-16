@@ -15,7 +15,7 @@ type SubModule struct {
 	UpstreamAlias string
 }
 
-// DUMMY repo project for testing.
+// DUMMY repo project for testing. https://github.com/miketz/dummyProj
 // var DB = []SubModule{
 // 	{Folder: "~/proj/dummyProj2", UpstreamAlias: "origin"},
 // }
