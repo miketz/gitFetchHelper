@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-type SubModule struct {
+type GitRepo struct {
 	Folder        string
 	UpstreamAlias string
 }
@@ -20,7 +20,7 @@ type SubModule struct {
 // 	{Folder: "~/proj/dummyProj2", UpstreamAlias: "origin"},
 // }
 
-var DB = []SubModule{
+var DB = []GitRepo{
 	{Folder: "~/.emacs.d/notElpa/paredit", UpstreamAlias: "upstream"},
 	{Folder: "~/.emacs.d/notElpa/combobulate", UpstreamAlias: "upstream"},
 	{Folder: "~/.emacs.d/notElpa/emacs-buttercup", UpstreamAlias: "upstream"},
@@ -174,15 +174,15 @@ func fetchUpstreamRemotes() {
 func fetch(i int, reportFetched *[]string, reportFail *[]string, wg *sync.WaitGroup, mut *sync.Mutex) {
 	defer wg.Done()
 
-	subMod := DB[i]
+	repo := DB[i]
 
 	// prepare fetch command
-	cmd := exec.Command("git", "fetch", subMod.UpstreamAlias) // #nosec G204
+	cmd := exec.Command("git", "fetch", repo.UpstreamAlias) // #nosec G204
 	var err error
-	cmd.Dir, err = expandPath(subMod.Folder)
+	cmd.Dir, err = expandPath(repo.Folder)
 	if err != nil { // issue with folder
 		mut.Lock()
-		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %v %s\n", i, subMod.Folder, cmd.Args, err.Error()))
+		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %v %s\n", i, repo.Folder, cmd.Args, err.Error()))
 		mut.Unlock()
 		return
 	}
@@ -190,7 +190,7 @@ func fetch(i int, reportFetched *[]string, reportFail *[]string, wg *sync.WaitGr
 	stdout, err := cmd.CombinedOutput() //cmd.Output()
 	if err != nil {
 		mut.Lock()
-		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %v %s\n", i, subMod.Folder, cmd.Args, err.Error()))
+		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %v %s\n", i, repo.Folder, cmd.Args, err.Error()))
 		mut.Unlock()
 		return
 	}
@@ -198,7 +198,7 @@ func fetch(i int, reportFetched *[]string, reportFail *[]string, wg *sync.WaitGr
 	if newDataFetched {
 		mut.Lock()
 		*reportFetched = append(*reportFetched, fmt.Sprintf("%d: %s %v %s\n",
-			i, subMod.Folder, cmd.Args, string(stdout)))
+			i, repo.Folder, cmd.Args, string(stdout)))
 		mut.Unlock()
 	}
 }
