@@ -206,8 +206,7 @@ func fetch(i int, reportFetched *[]string, reportFail *[]string, wg *sync.WaitGr
 func expandPath(path string) (string, error) {
 	usr, err := user.Current()
 	if err != nil {
-		return "", err
-		// log.Fatalf("failed to get user info for translating ~. error: %v", err.Error())
+		return "", err // TODO: wrap error with some more info?
 	}
 
 	if path == "~" {
