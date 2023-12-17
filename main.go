@@ -144,7 +144,7 @@ func main() {
 func fetchUpstreamRemotes() {
 	start := time.Now() // stop watch start
 
-	reportFetched := make([]string, 0, len(DB)) // allocate for 100% fetch success
+	reportFetched := make([]string, 0, len(DB)) // allocate 100%. no realloc on happy path.
 	reportFail := make([]string, 0, 4)          // allocate for low failure rate
 
 	wg := sync.WaitGroup{}
@@ -159,7 +159,7 @@ func fetchUpstreamRemotes() {
 	fmt.Printf("\nFetched %d of %d remotes. time elapsed: %v\n",
 		len(DB)-len(reportFail), len(DB), duration)
 
-	// succes report. only includes repos that had new data to fetch.
+	// fetch report. only includes repos that had new data to fetch.
 	fmt.Printf("\nNEW repo data fetched: %d\n", len(reportFetched))
 	for i := 0; i < len(reportFetched); i++ {
 		fmt.Print(reportFetched[i])
