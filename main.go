@@ -144,8 +144,8 @@ func main() {
 func fetchUpstreamRemotes() {
 	start := time.Now() // stop watch start
 
-	reportFetched := make([]string, 0, len(DB)) // allocate 100%. no realloc on happy path.
-	reportFail := make([]string, 0, 4)          // allocate for low failure rate
+	reportFetched := make([]string, 0, len(DB)) // alloc 100%. no realloc on happy path.
+	reportFail := make([]string, 0, 4)          // alloc for low failure rate
 
 	wg := sync.WaitGroup{}
 	mut := sync.Mutex{}
