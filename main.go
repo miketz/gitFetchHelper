@@ -176,7 +176,7 @@ func fetch(i int, reportFetched *[]string, reportFail *[]string, wg *sync.WaitGr
 
 	repo := DB[i]
 
-	// prepare fetch command
+	// prepare fetch command. example: git fetch upstream
 	cmd := exec.Command("git", "fetch", repo.UpstreamAlias) // #nosec G204
 	var err error
 	cmd.Dir, err = expandPath(repo.Folder)
