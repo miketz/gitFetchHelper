@@ -203,6 +203,7 @@ func fetch(i int, reportFetched *[]string, reportFail *[]string, wg *sync.WaitGr
 	}
 }
 
+// expand "~" in path to user's home dir.
 func expandPath(path string) (string, error) {
 	usr, err := user.Current()
 	if err != nil {
