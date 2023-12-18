@@ -2,3 +2,5 @@ gitHelper
 gitFetchHelper
 a.out
 *.exe
+tags
+TAGS
