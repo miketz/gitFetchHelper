@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os/exec"
 	"os/user"
-	"path/filepath"
 	"strings"
 	"sync"
 	"time"
@@ -206,18 +205,15 @@ func fetch(i int, reportFetched *[]string, reportFail *[]string, wg *sync.WaitGr
 
 // expand "~" in path to user's home dir.
 func expandPath(path string) (string, error) {
+	if !strings.HasPrefix(path, "~") {
+		return path, nil
+	}
+
 	usr, err := user.Current()
 	if err != nil {
 		return "", err // TODO: wrap error with more info?
 	}
-
-	if path == "~" {
-		// In case of "~", which won't be caught by the "else if"
-		path = usr.HomeDir
-	} else if strings.HasPrefix(path, "~/") {
-		// Use strings.HasPrefix so we don't match paths like
-		// "/something/~/something/"
-		path = filepath.Join(usr.HomeDir, path[2:])
-	}
+	// replace 1st instance of ~ only.
+	path = strings.Replace(path, "~", usr.HomeDir, 1)
 	return path, nil
 }
