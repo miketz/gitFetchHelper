@@ -133,39 +133,14 @@ var DB = []GitRepo{
 	{Folder: "~/.emacs.d/notElpa/sunrise-commander", UpstreamAlias: "upstream"},
 }
 
-var isMsWindows bool
-var specialWindowsHomeDir string
+var isMsWindows bool = strings.HasPrefix(runtime.GOOS, "windows")
 
 // get all the submodules
 // git config --file .gitmodules --get-regexp path | awk '{ print $2 }'
 // cmd := exec.Command("git", "config", "--file", ".gitmodules", "--get-regexp", "path", "|", "awk", "'{ print $2 }'")
 
 func main() {
-	err := setGlobalVars()
-	if err != nil {
-		fmt.Printf("error: %v\n", err)
-		return
-	}
 	fetchUpstreamRemotes()
-}
-
-func setGlobalVars() error {
-	isMsWindows = strings.HasPrefix(runtime.GOOS, "windows")
-	if isMsWindows {
-		usr, err := user.Current()
-		if err != nil {
-			return err
-		}
-		parts := strings.SplitN(usr.Username, "\\", 2)
-		var userName string
-		if len(parts) == 0 {
-			userName = parts[0]
-		} else {
-			userName = parts[1]
-		}
-		specialWindowsHomeDir = "c:/Users/" + userName + "/AppData/Local"
-	}
-	return nil
 }
 
 func fetchUpstreamRemotes() {
@@ -238,18 +213,17 @@ func expandPath(path string) (string, error) {
 		return path, nil
 	}
 
-	if isMsWindows {
-		// do not exapnd ~ to users HomeDir on windows.
-		// ~ is actually in a special location c:\Users\USERNAME\AppData\Local
-		path = strings.Replace(path, "~", specialWindowsHomeDir, 1)
-		return path, nil
-	}
-
 	usr, err := user.Current()
 	if err != nil {
 		return "", err // TODO: wrap error with more info?
 	}
+	var homeDir string
+	if isMsWindows {
+		homeDir = usr.HomeDir + "/AppData/Local"
+	} else {
+		homeDir = usr.HomeDir
+	}
 	// replace 1st instance of ~ only.
-	path = strings.Replace(path, "~", usr.HomeDir, 1)
+	path = strings.Replace(path, "~", homeDir, 1)
 	return path, nil
 }
