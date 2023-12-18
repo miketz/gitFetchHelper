@@ -154,6 +154,7 @@ func fetchUpstreamRemotes() {
 	}
 	wg.Wait()
 
+	// summary report. print # of remotes fetched, duration
 	duration := time.Since(start) // stop watch end
 	fmt.Printf("\nFetched %d of %d remotes. time elapsed: %v\n",
 		len(DB)-len(reportFail), len(DB), duration)
