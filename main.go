@@ -150,10 +150,11 @@ func fetchUpstreamRemotes() {
 	reportFail := make([]string, 0, 4)          // alloc for low failure rate
 
 	wg := sync.WaitGroup{}
-	mut := sync.Mutex{}
+	mutFetched := sync.Mutex{}
+	mutFail := sync.Mutex{}
 	for i := 0; i < len(DB); i++ { // fetch upstream for each remote.
 		wg.Add(1)
-		go fetch(i, &reportFetched, &reportFail, &wg, &mut)
+		go fetch(i, &reportFetched, &reportFail, &wg, &mutFetched, &mutFail)
 	}
 	wg.Wait()
 
@@ -175,7 +176,7 @@ func fetchUpstreamRemotes() {
 }
 
 // Fetch upstream remote for repo. Repo is identified by index i in DB.
-func fetch(i int, reportFetched *[]string, reportFail *[]string, wg *sync.WaitGroup, mut *sync.Mutex) {
+func fetch(i int, reportFetched *[]string, reportFail *[]string, wg *sync.WaitGroup, mutFetched *sync.Mutex, mutFail *sync.Mutex) {
 	defer wg.Done()
 
 	repo := DB[i]
@@ -185,25 +186,25 @@ func fetch(i int, reportFetched *[]string, reportFail *[]string, wg *sync.WaitGr
 	var err error
 	cmd.Dir, err = expandPath(repo.Folder)
 	if err != nil { // issue with folder
-		mut.Lock()
+		mutFail.Lock()
 		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %v %s\n", i, repo.Folder, cmd.Args, err.Error()))
-		mut.Unlock()
+		mutFail.Unlock()
 		return
 	}
 	// Run git fetch! NOTE: cmd.Output() doesn't include the normal txt output when git fetch actually pulls new data.
 	stdout, err := cmd.CombinedOutput() // cmd.Output()
 	if err != nil {
-		mut.Lock()
+		mutFail.Lock()
 		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %v %s\n", i, repo.Folder, cmd.Args, err.Error()))
-		mut.Unlock()
+		mutFail.Unlock()
 		return
 	}
 	newDataFetched := len(stdout) > 0
 	if newDataFetched {
-		mut.Lock()
+		mutFetched.Lock()
 		*reportFetched = append(*reportFetched, fmt.Sprintf("%d: %s %v %s\n",
 			i, repo.Folder, cmd.Args, string(stdout)))
-		mut.Unlock()
+		mutFetched.Unlock()
 	}
 }
 
