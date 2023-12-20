@@ -194,7 +194,8 @@ func fetchUpstreamRemotes() {
 }
 
 // Fetch upstream remote for repo. Repo is identified by index i in DB.
-func fetch(i int, reportFetched *[]string, reportFail *[]string, wg *sync.WaitGroup, mutFetched *sync.Mutex, mutFail *sync.Mutex) {
+func fetch(i int, reportFetched *[]string, reportFail *[]string,
+	wg *sync.WaitGroup, mutFetched *sync.Mutex, mutFail *sync.Mutex) {
 	defer wg.Done()
 
 	repo := DB[i]
