@@ -133,7 +133,7 @@ var DB = []GitRepo{
 	{Folder: "~/.emacs.d/notElpa/sunrise-commander", UpstreamAlias: "upstream"},
 }
 
-var isMsWindows bool = strings.HasPrefix(runtime.GOOS, "windows")
+var isMsWindows = strings.HasPrefix(runtime.GOOS, "windows")
 var homeDir string
 
 func initGlobals() error {
