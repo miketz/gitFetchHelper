@@ -134,12 +134,30 @@ var DB = []GitRepo{
 }
 
 var isMsWindows bool = strings.HasPrefix(runtime.GOOS, "windows")
+var homeDir string
+
+func initGlobals() error {
+	usr, err := user.Current()
+	if err != nil {
+		return err
+	}
+	homeDir = usr.HomeDir
+	if isMsWindows {
+		homeDir += "/AppData/Local"
+	}
+	return nil
+}
 
 // get all the submodules
 // git config --file .gitmodules --get-regexp path | awk '{ print $2 }'
 // cmd := exec.Command("git", "config", "--file", ".gitmodules", "--get-regexp", "path", "|", "awk", "'{ print $2 }'")
 
 func main() {
+	err := initGlobals()
+	if err != nil {
+		fmt.Printf("error: %s\n", err.Error())
+		return
+	}
 	fetchUpstreamRemotes()
 }
 
@@ -212,17 +230,6 @@ func fetch(i int, reportFetched *[]string, reportFail *[]string, wg *sync.WaitGr
 func expandPath(path string) (string, error) {
 	if !strings.HasPrefix(path, "~") {
 		return path, nil
-	}
-
-	usr, err := user.Current()
-	if err != nil {
-		return "", err // TODO: wrap error with more info?
-	}
-	var homeDir string
-	if isMsWindows {
-		homeDir = usr.HomeDir + "/AppData/Local"
-	} else {
-		homeDir = usr.HomeDir
 	}
 	// replace 1st instance of ~ only.
 	path = strings.Replace(path, "~", homeDir, 1)
