@@ -202,14 +202,7 @@ func fetch(i int, reportFetched *[]string, reportFail *[]string,
 
 	// prepare fetch command. example: git fetch upstream
 	cmd := exec.Command("git", "fetch", repo.UpstreamAlias) // #nosec G204
-	var err error
-	cmd.Dir, err = expandPath(repo.Folder)
-	if err != nil { // issue with folder
-		mutFail.Lock()
-		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %v %s\n", i, repo.Folder, cmd.Args, err.Error()))
-		mutFail.Unlock()
-		return
-	}
+	cmd.Dir = expandPath(repo.Folder)
 	// Run git fetch! NOTE: cmd.Output() doesn't include the normal txt output when git fetch actually pulls new data.
 	stdout, err := cmd.CombinedOutput() // cmd.Output()
 	if err != nil {
@@ -228,11 +221,11 @@ func fetch(i int, reportFetched *[]string, reportFail *[]string,
 }
 
 // expand "~" in path to user's home dir.
-func expandPath(path string) (string, error) {
+func expandPath(path string) string {
 	if !strings.HasPrefix(path, "~") {
-		return path, nil
+		return path
 	}
 	// replace 1st instance of ~ only.
 	path = strings.Replace(path, "~", homeDir, 1)
-	return path, nil
+	return path
 }
