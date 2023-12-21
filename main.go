@@ -214,12 +214,13 @@ func fetch(i int, reportFetched *[]string, reportFail *[]string,
 		return
 	}
 	newDataFetched := len(stdout) > 0
-	if newDataFetched {
-		mutFetched.Lock()
-		*reportFetched = append(*reportFetched, fmt.Sprintf("%d: %s %v %s\n",
-			i, repo.Folder, cmd.Args, string(stdout)))
-		mutFetched.Unlock()
+	if !newDataFetched {
+		return
 	}
+	mutFetched.Lock()
+	*reportFetched = append(*reportFetched, fmt.Sprintf("%d: %s %v %s\n",
+		i, repo.Folder, cmd.Args, string(stdout)))
+	mutFetched.Unlock()
 }
 
 // expand "~" in path to user's home dir.
