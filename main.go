@@ -161,6 +161,7 @@ func main() {
 	fetchUpstreamRemotes()
 }
 
+// Fetch upstream repos, measure time, print reports. The main flow.
 func fetchUpstreamRemotes() {
 	start := time.Now() // stop watch start
 
