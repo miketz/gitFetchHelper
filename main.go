@@ -133,15 +133,16 @@ var DB = []GitRepo{
 	{Folder: "~/.emacs.d/notElpa/sunrise-commander", UpstreamAlias: "upstream"},
 }
 
-var isMsWindows = strings.HasPrefix(runtime.GOOS, "windows")
 var homeDir string
 
+// initialize global variables. At the moment only homeDir.
 func initGlobals() error {
 	usr, err := user.Current()
 	if err != nil {
 		return err
 	}
 	homeDir = usr.HomeDir
+	var isMsWindows = strings.HasPrefix(runtime.GOOS, "windows")
 	if isMsWindows {
 		homeDir += "/AppData/Local"
 	}
