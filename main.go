@@ -170,12 +170,12 @@ func main() {
 		printCommands()
 		return
 	}
-	command := os.Args[1]
-	if command == "fetch" {
+	switch command := os.Args[1]; command {
+	case "fetch":
 		fetchUpstreamRemotes()
-	} else if command == "diff" {
+	case "diff":
 		listReposWithUpstreamCodeToMerge()
-	} else {
+	default:
 		printCommands()
 	}
 }
