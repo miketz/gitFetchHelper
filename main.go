@@ -54,6 +54,17 @@ type RepoTable struct {
 	DependBundled [][]Dependency
 }
 
+// From the configured remotes, find the "upstream", return it's alias.
+func (t *RepoTable) UpstreamAlias(i int) (string, error) {
+	for _, rem := range t.Remotes[i] {
+		if rem.Sym == upstream {
+			return rem.Alias, nil
+		}
+	}
+	return "", fmt.Errorf("Upstream not configured for %s", t.Name[i])
+}
+
+// Number of repos configured.
 func (t *RepoTable) Count() int {
 	return len(t.Name)
 }
@@ -63,19 +74,19 @@ func (t *RepoTable) Count() int {
 // 	{Folder: "~/proj/dummyProj2", UpstreamAlias: "origin"},
 // }
 
-var likelyMaxRepo int = 150
+var numRepos int = 1
 var DB = RepoTable{
-	Name:          make([]string, 0, likelyMaxRepo),
-	Comment:       make([]string, 0, likelyMaxRepo),
-	Folder:        make([]string, 0, likelyMaxRepo),
-	Remotes:       make([][]Remote, 0, likelyMaxRepo),
-	RemoteDefault: make([]RemoteSym, 0, likelyMaxRepo),
-	MainBranch:    make([]string, 0, likelyMaxRepo),
-	UseBranch:     make([]string, 0, likelyMaxRepo),
-	UseCommit:     make([]string, 0, likelyMaxRepo),
-	DependHard:    make([][]Dependency, 0, likelyMaxRepo),
-	DependSoft:    make([][]Dependency, 0, likelyMaxRepo),
-	DependBundled: make([][]Dependency, 0, likelyMaxRepo),
+	Name:          make([]string, numRepos, numRepos),
+	Comment:       make([]string, numRepos, numRepos),
+	Folder:        make([]string, numRepos, numRepos),
+	Remotes:       make([][]Remote, numRepos, numRepos),
+	RemoteDefault: make([]RemoteSym, numRepos, numRepos),
+	MainBranch:    make([]string, numRepos, numRepos),
+	UseBranch:     make([]string, numRepos, numRepos),
+	UseCommit:     make([]string, numRepos, numRepos),
+	DependHard:    make([][]Dependency, numRepos, numRepos),
+	DependSoft:    make([][]Dependency, numRepos, numRepos),
+	DependBundled: make([][]Dependency, numRepos, numRepos),
 }
 
 // {Folder: "~/.emacs.d/notElpa/paredit", UpstreamAlias: "upstream"},
@@ -213,9 +224,9 @@ func initGlobals() error {
 	DB.RemoteDefault[0] = mine
 	DB.MainBranch[0] = "master"
 	DB.UseBranch[0] = "master"
-	DB.DependHard = nil
-	DB.DependSoft = nil
-	DB.DependBundled = nil
+	DB.DependHard[0] = nil
+	DB.DependSoft[0] = nil
+	DB.DependBundled[0] = nil
 	return nil
 }
 
@@ -236,13 +247,13 @@ func main() {
 func fetchUpstreamRemotes() {
 	start := time.Now() // stop watch start
 
-	reportFetched := make([]string, 0, len(DB)) // alloc 100%. no realloc on happy path.
-	reportFail := make([]string, 0, 4)          // alloc for low failure rate
+	reportFetched := make([]string, 0, DB.Count()) // alloc 100%. no realloc on happy path.
+	reportFail := make([]string, 0, 4)             // alloc for low failure rate
 
 	wg := sync.WaitGroup{}
 	mutFetched := sync.Mutex{}
 	mutFail := sync.Mutex{}
-	for i := 0; i < len(DB); i++ { // fetch upstream for each remote.
+	for i := 0; i < DB.Count(); i++ { // fetch upstream for each remote.
 		wg.Add(1)
 		go fetch(i, &reportFetched, &reportFail, &wg, &mutFetched, &mutFail)
 	}
@@ -251,7 +262,7 @@ func fetchUpstreamRemotes() {
 	// summary report. print # of remotes fetched, duration
 	duration := time.Since(start) // stop watch end
 	fmt.Printf("\nFetched %d of %d remotes. time elapsed: %v\n",
-		len(DB)-len(reportFail), len(DB), duration)
+		DB.Count()-len(reportFail), DB.Count(), duration)
 
 	// fetch report. only includes repos that had new data to fetch.
 	fmt.Printf("\nNEW repo data fetched: %d\n", len(reportFetched))
@@ -270,16 +281,21 @@ func fetch(i int, reportFetched *[]string, reportFail *[]string,
 	wg *sync.WaitGroup, mutFetched *sync.Mutex, mutFail *sync.Mutex) {
 	defer wg.Done()
 
-	repo := DB[i]
-
 	// prepare fetch command. example: git fetch upstream
-	cmd := exec.Command("git", "fetch", repo.UpstreamAlias) // #nosec G204
-	cmd.Dir = expandPath(repo.Folder)
+	upstreamAlias, err := DB.UpstreamAlias(i)
+	if err != nil {
+		mutFail.Lock()
+		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %s\n", i, DB.Folder[i], err.Error()))
+		mutFail.Unlock()
+		return
+	}
+	cmd := exec.Command("git", "fetch", upstreamAlias) // #nosec G204
+	cmd.Dir = expandPath(DB.Folder[i])
 	// Run git fetch! NOTE: cmd.Output() doesn't include the output when git fetch pulls new data.
 	stdout, err := cmd.CombinedOutput()
 	if err != nil {
 		mutFail.Lock()
-		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %v %s\n", i, repo.Folder, cmd.Args, err.Error()))
+		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %v %s\n", i, DB.Folder[i], cmd.Args, err.Error()))
 		mutFail.Unlock()
 		return
 	}
@@ -289,7 +305,7 @@ func fetch(i int, reportFetched *[]string, reportFail *[]string,
 	}
 	mutFetched.Lock()
 	*reportFetched = append(*reportFetched, fmt.Sprintf("%d: %s %v %s\n",
-		i, repo.Folder, cmd.Args, string(stdout)))
+		i, DB.Folder[i], cmd.Args, string(stdout)))
 	mutFetched.Unlock()
 }
 
