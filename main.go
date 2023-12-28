@@ -172,42 +172,53 @@ func main() {
 	}
 	switch command := os.Args[1]; command {
 	case "fetch":
-		fetchUpstreamRemotes()
+		runAndReport(fetch,
+			"\nFetched %d of %d remotes. time elapsed: %v\n",
+			"\nNEW repo data fetched: %d\n",
+			"\nFAILURES: %d\n")
 	case "diff":
-		listReposWithUpstreamCodeToMerge()
+		runAndReport(diff,
+			"\nDiffed %d of %d remotes. time elapsed: %v\n",
+			"\nNEW upstream code: %d\n",
+			"\nFAILURES: %d\n")
 	default:
 		printCommands()
 	}
 }
 
-// Fetch upstream repos, measure time, print reports. The main flow.
-func fetchUpstreamRemotes() {
+func runAndReport(
+	fn func(i int, reportSuccess *[]string, reportFail *[]string, wg *sync.WaitGroup,
+		mutDiff *sync.Mutex, mutFail *sync.Mutex),
+	summaryHeader string,
+	successHeader string,
+	failHeader string,
+) {
 	start := time.Now() // stop watch start
 
-	reportFetched := make([]string, 0, len(DB)) // alloc 100%. no realloc on happy path.
+	reportSuccess := make([]string, 0, len(DB)) // alloc 100%. no realloc on happy path.
 	reportFail := make([]string, 0, 4)          // alloc for low failure rate
 
 	wg := sync.WaitGroup{}
-	mutFetched := sync.Mutex{}
+	mutDiff := sync.Mutex{}
 	mutFail := sync.Mutex{}
-	for i := 0; i < len(DB); i++ { // fetch upstream for each remote.
+	for i := 0; i < len(DB); i++ { // check each repo for new upstream code
 		wg.Add(1)
-		go fetch(i, &reportFetched, &reportFail, &wg, &mutFetched, &mutFail)
+		go fn(i, &reportSuccess, &reportFail, &wg, &mutDiff, &mutFail)
 	}
 	wg.Wait()
 
 	// summary report. print # of remotes fetched, duration
 	duration := time.Since(start) // stop watch end
-	fmt.Printf("\nFetched %d of %d remotes. time elapsed: %v\n",
+	fmt.Printf(summaryHeader,
 		len(DB)-len(reportFail), len(DB), duration)
 
-	// fetch report. only includes repos that had new data to fetch.
-	fmt.Printf("\nNEW repo data fetched: %d\n", len(reportFetched))
-	for i := 0; i < len(reportFetched); i++ {
-		fmt.Print(reportFetched[i])
+	// diff report. only includes repos that have new data in upstream
+	fmt.Printf(successHeader, len(reportSuccess))
+	for i := 0; i < len(reportSuccess); i++ {
+		fmt.Print(reportSuccess[i])
 	}
 	// failure report
-	fmt.Printf("\nFAILURES: %d\n", len(reportFail))
+	fmt.Printf(failHeader, len(reportFail))
 	for i := 0; i < len(reportFail); i++ {
 		fmt.Print(reportFail[i])
 	}
@@ -239,38 +250,6 @@ func fetch(i int, reportFetched *[]string, reportFail *[]string,
 	*reportFetched = append(*reportFetched, fmt.Sprintf("%d: %s %v %s\n",
 		i, repo.Folder, cmd.Args, string(stdout)))
 	mutFetched.Unlock()
-}
-
-func listReposWithUpstreamCodeToMerge() {
-	start := time.Now() // stop watch start
-
-	reportDiff := make([]string, 0, len(DB)) // alloc 100%. no realloc on happy path.
-	reportFail := make([]string, 0, 4)       // alloc for low failure rate
-
-	wg := sync.WaitGroup{}
-	mutDiff := sync.Mutex{}
-	mutFail := sync.Mutex{}
-	for i := 0; i < len(DB); i++ { // check each repo for new upstream code
-		wg.Add(1)
-		go diff(i, &reportDiff, &reportFail, &wg, &mutDiff, &mutFail)
-	}
-	wg.Wait()
-
-	// summary report. print # of remotes fetched, duration
-	duration := time.Since(start) // stop watch end
-	fmt.Printf("\nDiffed %d of %d remotes. time elapsed: %v\n",
-		len(DB)-len(reportFail), len(DB), duration)
-
-	// diff report. only includes repos that have new data in upstream
-	fmt.Printf("\nNEW upstream code: %d\n", len(reportDiff))
-	for i := 0; i < len(reportDiff); i++ {
-		fmt.Print(reportDiff[i])
-	}
-	// failure report
-	fmt.Printf("\nFAILURES: %d\n", len(reportFail))
-	for i := 0; i < len(reportFail); i++ {
-		fmt.Print(reportFail[i])
-	}
 }
 
 func diff(i int, reportDiff *[]string, reportFail *[]string,
