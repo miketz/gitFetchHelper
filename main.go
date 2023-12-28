@@ -58,7 +58,11 @@ type RepoTable struct {
 func (t *RepoTable) UpstreamAlias(i int) (string, error) {
 	for _, rem := range t.Remotes[i] {
 		if rem.Sym == upstream {
-			return rem.Alias, nil
+			alias := strings.TrimSpace(rem.Alias)
+			if len(alias) == 0 {
+				return "", fmt.Errorf("Upstream alias not configured for %s", t.Name[i])
+			}
+			return alias, nil
 		}
 	}
 	return "", fmt.Errorf("Upstream not configured for %s", t.Name[i])
