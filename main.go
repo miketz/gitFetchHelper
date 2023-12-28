@@ -78,20 +78,7 @@ func (t *RepoTable) Count() int {
 // 	{Folder: "~/proj/dummyProj2", UpstreamAlias: "origin"},
 // }
 
-var numRepos int = 1
-var DB = RepoTable{
-	Name:          make([]string, numRepos, numRepos),
-	Comment:       make([]string, numRepos, numRepos),
-	Folder:        make([]string, numRepos, numRepos),
-	Remotes:       make([][]Remote, numRepos, numRepos),
-	RemoteDefault: make([]RemoteSym, numRepos, numRepos),
-	MainBranch:    make([]string, numRepos, numRepos),
-	UseBranch:     make([]string, numRepos, numRepos),
-	UseCommit:     make([]string, numRepos, numRepos),
-	DependHard:    make([][]Dependency, numRepos, numRepos),
-	DependSoft:    make([][]Dependency, numRepos, numRepos),
-	DependBundled: make([][]Dependency, numRepos, numRepos),
-}
+var DB = RepoTable{}
 
 // {Folder: "~/.emacs.d/notElpa/paredit", UpstreamAlias: "upstream"},
 // {Folder: "~/.emacs.d/notElpa/combobulate", UpstreamAlias: "upstream"},
@@ -218,20 +205,54 @@ func initGlobals() error {
 	if isMsWindows {
 		homeDir += "/AppData/Local"
 	}
-
-	// DB
-	DB.Name[0] = "paredit"
-	DB.Comment[0] = ""
-	DB.Folder[0] = "~/.emacs.d/notElpa/paredit"
-	DB.Remotes[0] = append(DB.Remotes[0], Remote{Sym: mine, Alias: "origin", URL: "https://github.com/miketz/paredit"})
-	DB.Remotes[0] = append(DB.Remotes[0], Remote{Sym: upstream, Alias: "upstream", URL: "https://mumble.net/~campbell/git/paredit.git"})
-	DB.RemoteDefault[0] = mine
-	DB.MainBranch[0] = "master"
-	DB.UseBranch[0] = "master"
-	DB.DependHard[0] = nil
-	DB.DependSoft[0] = nil
-	DB.DependBundled[0] = nil
+	initDB(&DB)
 	return nil
+}
+func initDB(db *RepoTable) {
+	var likelyMaxRepo int = 150
+	*db = RepoTable{
+		Name:          make([]string, 0, likelyMaxRepo),
+		Comment:       make([]string, 0, likelyMaxRepo),
+		Folder:        make([]string, 0, likelyMaxRepo),
+		Remotes:       make([][]Remote, 0, likelyMaxRepo),
+		RemoteDefault: make([]RemoteSym, 0, likelyMaxRepo),
+		MainBranch:    make([]string, 0, likelyMaxRepo),
+		UseBranch:     make([]string, 0, likelyMaxRepo),
+		UseCommit:     make([]string, 0, likelyMaxRepo),
+		DependHard:    make([][]Dependency, 0, likelyMaxRepo),
+		DependSoft:    make([][]Dependency, 0, likelyMaxRepo),
+		DependBundled: make([][]Dependency, 0, likelyMaxRepo),
+	}
+
+	// paredit
+	DB.Name = append(DB.Name, "paredit")
+	DB.Comment = append(DB.Comment, "")
+	DB.Folder = append(DB.Folder, "~/.emacs.d/notElpa/paredit")
+	DB.Remotes = append(DB.Remotes, []Remote{
+		{Sym: mine, Alias: "origin", URL: "https://github.com/miketz/paredit"},
+		{Sym: upstream, Alias: "upstream", URL: "https://mumble.net/~campbell/git/paredit.git"},
+	})
+	DB.RemoteDefault = append(DB.RemoteDefault, mine)
+	DB.MainBranch = append(DB.MainBranch, "master")
+	DB.UseBranch = append(DB.UseBranch, "master")
+	DB.DependHard = append(DB.DependHard, nil)
+	DB.DependSoft = append(DB.DependSoft, nil)
+	DB.DependBundled = append(DB.DependBundled, nil)
+
+	// combobulate
+	DB.Name = append(DB.Name, "combobulate")
+	DB.Comment = append(DB.Comment, "")
+	DB.Folder = append(DB.Folder, "~/.emacs.d/notElpa/combobulate")
+	DB.Remotes = append(DB.Remotes, []Remote{
+		{Sym: mine, Alias: "origin", URL: "https://github.com/miketz/combobulate"},
+		{Sym: upstream, Alias: "upstream", URL: "https://github.com/mickeynp/combobulate"},
+	})
+	DB.RemoteDefault = append(DB.RemoteDefault, mine)
+	DB.MainBranch = append(DB.MainBranch, "master")
+	DB.UseBranch = append(DB.UseBranch, "master")
+	DB.DependHard = append(DB.DependHard, nil)
+	DB.DependSoft = append(DB.DependSoft, nil)
+	DB.DependBundled = append(DB.DependBundled, nil)
 }
 
 // get all the submodules
