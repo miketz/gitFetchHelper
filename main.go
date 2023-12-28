@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"os/exec"
 	"os/user"
 	"runtime"
@@ -154,13 +155,29 @@ func initGlobals() error {
 // git config --file .gitmodules --get-regexp path | awk '{ print $2 }'
 // cmd := exec.Command("git", "config", "--file", ".gitmodules", "--get-regexp", "path", "|", "awk", "'{ print $2 }'")
 
+func printCommands() {
+	fmt.Printf("Enter a command: [fetch, diff]\n")
+}
+
 func main() {
 	err := initGlobals()
 	if err != nil {
 		fmt.Printf("error: %s\n", err.Error())
 		return
 	}
-	fetchUpstreamRemotes()
+
+	if len(os.Args) < 2 {
+		printCommands()
+		return
+	}
+	command := os.Args[1]
+	if command == "fetch" {
+		fetchUpstreamRemotes()
+	} else if command == "diff" {
+		listReposWithUpstreamCodeToMerge()
+	} else {
+		printCommands()
+	}
 }
 
 // Fetch upstream repos, measure time, print reports. The main flow.
@@ -222,6 +239,67 @@ func fetch(i int, reportFetched *[]string, reportFail *[]string,
 	*reportFetched = append(*reportFetched, fmt.Sprintf("%d: %s %v %s\n",
 		i, repo.Folder, cmd.Args, string(stdout)))
 	mutFetched.Unlock()
+}
+
+func listReposWithUpstreamCodeToMerge() {
+	start := time.Now() // stop watch start
+
+	reportDiff := make([]string, 0, len(DB)) // alloc 100%. no realloc on happy path.
+	reportFail := make([]string, 0, 4)       // alloc for low failure rate
+
+	wg := sync.WaitGroup{}
+	mutDiff := sync.Mutex{}
+	mutFail := sync.Mutex{}
+	for i := 0; i < len(DB); i++ { // check each repo for new upstream code
+		wg.Add(1)
+		go diff(i, &reportDiff, &reportFail, &wg, &mutDiff, &mutFail)
+	}
+	wg.Wait()
+
+	// summary report. print # of remotes fetched, duration
+	duration := time.Since(start) // stop watch end
+	fmt.Printf("\nDiffed %d of %d remotes. time elapsed: %v\n",
+		len(DB)-len(reportFail), len(DB), duration)
+
+	// diff report. only includes repos that have new data in upstream
+	fmt.Printf("\nNEW upstream code: %d\n", len(reportDiff))
+	for i := 0; i < len(reportDiff); i++ {
+		fmt.Print(reportDiff[i])
+	}
+	// failure report
+	fmt.Printf("\nFAILURES: %d\n", len(reportFail))
+	for i := 0; i < len(reportFail); i++ {
+		fmt.Print(reportFail[i])
+	}
+}
+
+func diff(i int, reportDiff *[]string, reportFail *[]string,
+	wg *sync.WaitGroup, mutDiff *sync.Mutex, mutFail *sync.Mutex,
+) {
+	defer wg.Done()
+
+	repo := DB[i]
+
+	// prepare diff command. example: git diff upstream/master master
+	cmd := exec.Command("git", "diff", repo.UpstreamAlias+"/"+repo.MainBranch, repo.MainBranch) // #nosec G204
+	cmd.Dir = expandPath(repo.Folder)
+	// Run git diff!
+	stdout, err := cmd.CombinedOutput()
+	if err != nil {
+		mutFail.Lock()
+		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %v %s\n", i, repo.Folder, cmd.Args, err.Error()))
+		mutFail.Unlock()
+		return
+	}
+	hasDifference := len(stdout) > 0
+	if !hasDifference {
+		return
+	}
+	mutDiff.Lock()
+	// don't incldue the diff output in stdout as it's too verbose to display
+	*reportDiff = append(*reportDiff, fmt.Sprintf("%d: %s %v\n",
+		i, repo.Folder, cmd.Args))
+	mutDiff.Unlock()
 }
 
 // expand "~" in path to user's home dir.
