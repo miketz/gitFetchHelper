@@ -282,7 +282,8 @@ func fetchUpstreamRemotes() {
 
 // Fetch upstream remote for repo. Repo is identified by index i in DB.
 func fetch(i int, reportFetched *[]string, reportFail *[]string,
-	wg *sync.WaitGroup, mutFetched *sync.Mutex, mutFail *sync.Mutex) {
+	wg *sync.WaitGroup, mutFetched *sync.Mutex, mutFail *sync.Mutex,
+) {
 	defer wg.Done()
 
 	// prepare fetch command. example: git fetch upstream
