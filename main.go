@@ -280,8 +280,8 @@ func diff(i int, reportDiff *[]string, reportFail *[]string,
 
 	repo := DB[i]
 
-	// prepare diff command. example: git diff upstream/master master
-	cmd := exec.Command("git", "diff", repo.UpstreamAlias+"/"+repo.MainBranch, repo.MainBranch) // #nosec G204
+	// prepare diff command. example: git diff master upstream/master
+	cmd := exec.Command("git", "diff", repo.MainBranch, repo.UpstreamAlias+"/"+repo.MainBranch) // #nosec G204
 	cmd.Dir = expandPath(repo.Folder)
 	// Run git diff!
 	stdout, err := cmd.CombinedOutput()
