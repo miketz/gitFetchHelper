@@ -11,6 +11,7 @@ import (
 	"time"
 )
 
+// GitRepo holds info about a git repo.
 type GitRepo struct {
 	Folder        string
 	UpstreamAlias string
@@ -22,6 +23,7 @@ type GitRepo struct {
 // 	{Folder: "~/proj/dummyProj2", UpstreamAlias: "origin"},
 // }
 
+// DB is a database (as a slice) of relevant GitRepos. In this case my .emacs.d/ submodules.
 var DB = []GitRepo{
 	{Folder: "~/.emacs.d/notElpa/paredit", UpstreamAlias: "upstream", MainBranch: "master"},
 	{Folder: "~/.emacs.d/notElpa/combobulate", UpstreamAlias: "upstream", MainBranch: "master"},
