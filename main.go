@@ -137,6 +137,7 @@ var DB = []GitRepo{
 	{Folder: "~/.emacs.d/notElpa/sunrise-commander", UpstreamAlias: "upstream", MainBranch: "master"},
 	{Folder: "~/.emacs.d/notElpa/visual-fill-column", UpstreamAlias: "upstream", MainBranch: "main"},
 	{Folder: "~/.emacs.d/notElpa/Emacs-Klondike", UpstreamAlias: "upstream", MainBranch: "primary"},
+	{Folder: "~/.emacs.d/notElpa/stem-reading-mode.el", UpstreamAlias: "upstream", MainBranch: "master"},
 }
 
 var homeDir string
