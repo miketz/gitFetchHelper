@@ -139,6 +139,7 @@ var DB = []GitRepo{
 	{Folder: "~/.emacs.d/notElpa/Emacs-Klondike", UpstreamAlias: "upstream", MainBranch: "primary"},
 	{Folder: "~/.emacs.d/notElpa/stem-reading-mode.el", UpstreamAlias: "upstream", MainBranch: "master"},
 	{Folder: "~/.emacs.d/notElpa/clojure-mode", UpstreamAlias: "upstream", MainBranch: "master"},
+	{Folder: "~/.emacs.d/notElpa/mine/rapid-serial-visual-presentation", UpstreamAlias: "origin", MainBranch: "master"},
 }
 
 var homeDir string
