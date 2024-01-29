@@ -46,7 +46,7 @@ var DB = []GitRepo{
 	{Folder: "~/.emacs.d/notElpa/spinner.el", UpstreamAlias: "upstream", MainBranch: "master"},
 	{Folder: "~/.emacs.d/notElpa/ggtags", UpstreamAlias: "upstream", MainBranch: "master"},
 	{Folder: "~/.emacs.d/notElpa/goto-chg", UpstreamAlias: "upstream", MainBranch: "master"},
-	// {Folder: "~/.emacs.d/notElpa/mine/mor", UpstreamAlias: "nil", MainBranch: "master"},
+	{Folder: "~/.emacs.d/notElpa/mine/mor", UpstreamAlias: "origin", MainBranch: "master"},
 	{Folder: "~/.emacs.d/notElpa/ido-grid.el", UpstreamAlias: "upstream", MainBranch: "master"},
 	{Folder: "~/.emacs.d/notElpa/ov", UpstreamAlias: "upstream", MainBranch: "master"},
 	{Folder: "~/.emacs.d/notElpa/emacs-deferred", UpstreamAlias: "upstream", MainBranch: "master"},
