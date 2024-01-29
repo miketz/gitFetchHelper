@@ -249,6 +249,79 @@ func fetch(i int, reportFetched *[]string, reportFail *[]string,
 	mutFetched.Unlock()
 }
 
+func setUpstreamRemotesIfMissing() {
+	start := time.Now() // stop watch start
+
+	reportRemoteCreated := make([]string, 0, len(DB)) // alloc 100%. no realloc on happy path.
+	reportFail := make([]string, 0, 4)                // alloc for low failure rate
+
+	wg := sync.WaitGroup{}
+	mutRemoteCreated := sync.Mutex{}
+	mutFail := sync.Mutex{}
+	for i := 0; i < len(DB); i++ { // check each repo for upstream remote, create if missing
+		wg.Add(1)
+		go setUpstreamRemote(i, &reportRemoteCreated, &reportFail, &wg, &mutRemoteCreated, &mutFail)
+	}
+	wg.Wait()
+
+	// summary report. print # of remotes checked, duration
+	duration := time.Since(start) // stop watch end
+	fmt.Printf("\nChecked for upstream remote on %d of %d repos. time elapsed: %v\n",
+		len(DB)-len(reportFail), len(DB), duration)
+
+	// remote created report. only includes repos that had a missing upstream remote set.
+	fmt.Printf("\nNEW upstream remote set: %d\n", len(reportRemoteCreated))
+	for i := 0; i < len(reportRemoteCreated); i++ {
+		fmt.Print(reportRemoteCreated[i])
+	}
+	// failure report
+	fmt.Printf("\nFAILURES: %d\n", len(reportFail))
+	for i := 0; i < len(reportFail); i++ {
+		fmt.Print(reportFail[i])
+	}
+}
+
+func setUpstreamRemote(i int, reportRemoteCreated *[]string, reportFail *[]string,
+	wg *sync.WaitGroup, mutRemoteCreated *sync.Mutex, mutFail *sync.Mutex,
+) {
+	defer wg.Done()
+
+	repo := DB[i]
+	fmt.Printf("repo: %v\n", repo.Folder)
+	/*
+		"For MOD, create the configured REMOTE-SYM as a remote on the git side."
+		  ;; GUARD: mod must be provided
+		  (when (null mod)
+		    (cl-return-from my-git-remote-create nil))
+
+		  (let* ((remote (my-get-remote mod remote-sym)))
+		    ;; GUARD: remote-sym must be configured in `my-modules'
+		    (when (null remote)
+		      (cl-return-from my-git-remote-create 'remote-not-configured-in-my-modules))
+
+		    ;; GUARD: don't create the remote if it's already setup
+		    (when (my-git-remote-setup-p mod remote-sym)
+		      (cl-return-from my-git-remote-create 'already-created))
+
+		    ;; OK, now it's safe to create the remote.
+		    (let* ((default-directory (module-folder mod))
+		           (remote (my-get-remote mod remote-sym))
+		           ;; creating the remote here
+		           (shell-output (shell-command-to-string (concat "git remote add "
+		                                                          (cl-getf remote :alias) " "
+		                                                          (cl-getf remote :url)))))
+		      ;; TODO: find a better way of detecting error. They could change the error message to
+		      ;; not start with "error" and that would break this code.
+		      (if (s-starts-with-p "error" shell-output)
+		          ;; just return the error msg itself. This string is inconsistent with
+		          ;; the symbol return types, but it should be OK as it's just a report
+		          ;; of what happened. No real processing on it.
+		          (s-trim shell-output)
+		          ;; else SUCCESS
+		          'remote-created)))
+	*/
+}
+
 func listReposWithUpstreamCodeToMerge() {
 	start := time.Now() // stop watch start
 
