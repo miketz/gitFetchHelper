@@ -163,7 +163,7 @@ func initGlobals() error {
 // cmd := exec.Command("git", "config", "--file", ".gitmodules", "--get-regexp", "path", "|", "awk", "'{ print $2 }'")
 
 func printCommands() {
-	fmt.Printf("Enter a command: [fetch, diff]\n")
+	fmt.Printf("Enter a command: [fetch, diff, init]\n")
 }
 
 func main() {
@@ -182,6 +182,8 @@ func main() {
 		fetchUpstreamRemotes()
 	case "diff":
 		listReposWithUpstreamCodeToMerge()
+	case "init":
+		setUpstreamRemotesIfMissing()
 	default:
 		printCommands()
 	}
@@ -249,6 +251,9 @@ func fetch(i int, reportFetched *[]string, reportFail *[]string,
 	mutFetched.Unlock()
 }
 
+// Set up upstream remotes.
+// Useful after a fresh emacs config clone to a new computer. Or after getting latest
+// when a new package has been added.
 func setUpstreamRemotesIfMissing() {
 	start := time.Now() // stop watch start
 
