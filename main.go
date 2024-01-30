@@ -295,6 +295,7 @@ func setUpstreamRemote(i int, reportRemoteCreated *[]string, reportFail *[]strin
 	defer wg.Done()
 
 	repo := DB[i]
+	var aliases []string
 
 	// run git command: git remote
 	// collect output string. might be something like:
@@ -306,9 +307,8 @@ func setUpstreamRemote(i int, reportRemoteCreated *[]string, reportFail *[]strin
 		goto CREATE
 	}
 	// split the raw shell output to a list of alias strings
-	aliases := strings.Split(output, "\n")
-	hasUpstreamAlias := slices.Contains(aliases, repo.UpstreamAlias)
-	if hasUpstreamAlias {
+	aliases = strings.Split(output, "\n")
+	if slices.Contains(aliases, repo.UpstreamAlias) {
 		// check if url matches url in DB
 		// run git command: git remote get-url upstream     (actually repo.UpstreamAlias)
 		var upstreamUrl = ""
@@ -316,7 +316,7 @@ func setUpstreamRemote(i int, reportRemoteCreated *[]string, reportFail *[]strin
 		if mismatch {
 			// include mismatch in Failure report!
 		}
-		// return realy
+		// return, no special reporting needed for "normal" case when url matches.
 	}
 CREATE:
 	// run git command: git remote add {alias} {url}
