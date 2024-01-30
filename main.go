@@ -320,7 +320,7 @@ func setUpstreamRemote(i int, reportRemoteCreated *[]string, reportFail *[]strin
 		// check if url matches url in DB. git command: git remote get-url {upstream}
 		cmd = exec.Command("git", "remote", "get-url", repo.UpstreamAlias) // #nosec G204
 		cmd.Dir = expandPath(repo.Folder)
-		urlOutput, err := cmd.CombinedOutput()
+		urlOutput, err := cmd.CombinedOutput() //nolint:govet
 		if err != nil {
 			mutFail.Lock()
 			*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %v %s\n", i, repo.Folder, cmd.Args, err.Error()))
