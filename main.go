@@ -9,6 +9,8 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"golang.org/x/exp/slices"
 )
 
 // GitRepo holds info about a git repo.
@@ -293,39 +295,42 @@ func setUpstreamRemote(i int, reportRemoteCreated *[]string, reportFail *[]strin
 	defer wg.Done()
 
 	repo := DB[i]
-	fmt.Printf("repo: %v\n", repo.Folder)
-	/*
-		"For MOD, create the configured REMOTE-SYM as a remote on the git side."
-		  ;; GUARD: mod must be provided
-		  (when (null mod)
-		    (cl-return-from my-git-remote-create nil))
 
-		  (let* ((remote (my-get-remote mod remote-sym)))
-		    ;; GUARD: remote-sym must be configured in `my-modules'
-		    (when (null remote)
-		      (cl-return-from my-git-remote-create 'remote-not-configured-in-my-modules))
-
-		    ;; GUARD: don't create the remote if it's already setup
-		    (when (my-git-remote-setup-p mod remote-sym)
-		      (cl-return-from my-git-remote-create 'already-created))
-
-		    ;; OK, now it's safe to create the remote.
-		    (let* ((default-directory (module-folder mod))
-		           (remote (my-get-remote mod remote-sym))
-		           ;; creating the remote here
-		           (shell-output (shell-command-to-string (concat "git remote add "
-		                                                          (cl-getf remote :alias) " "
-		                                                          (cl-getf remote :url)))))
-		      ;; TODO: find a better way of detecting error. They could change the error message to
-		      ;; not start with "error" and that would break this code.
-		      (if (s-starts-with-p "error" shell-output)
-		          ;; just return the error msg itself. This string is inconsistent with
-		          ;; the symbol return types, but it should be OK as it's just a report
-		          ;; of what happened. No real processing on it.
-		          (s-trim shell-output)
-		          ;; else SUCCESS
-		          'remote-created)))
-	*/
+	// run git command: git remote
+	// collect output string. might be something like:
+	//     origin
+	//     upstream
+	var output string = ""
+	// GUARD: if output null or len 0, then no remotes created yet.
+	if len(output) == 0 {
+		goto CREATE
+	}
+	// split the raw shell output to a list of alias strings
+	aliases := strings.Split(output, "\n")
+	hasUpstreamAlias := slices.Contains(aliases, repo.UpstreamAlias)
+	if hasUpstreamAlias {
+		// check if url matches url in DB
+		// run git command: git remote get-url upstream     (actually repo.UpstreamAlias)
+		var upstreamUrl = ""
+		mismatch := upstreamUrl != repo.UpstreamURL
+		if mismatch {
+			// include mismatch in Failure report!
+		}
+		// return realy
+	}
+CREATE:
+	// run git command: git remote add {alias} {url}
+	// collect shellOutput string
+	var shellOutput = ""
+	// TODO: find a better way of detecting error. They could change the error message to
+	// not start with "error" and that would break this code.
+	if strings.HasPrefix(shellOutput, "error") {
+		// add shellOutput string to failure report
+		// early return
+	}
+	// SUCCESS, remote created
+	// add to success report
+	return
 }
 
 func listReposWithUpstreamCodeToMerge() {
