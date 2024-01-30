@@ -146,6 +146,7 @@ var DB = []GitRepo{
 }
 
 var homeDir string
+var isMsWindows = strings.HasPrefix(runtime.GOOS, "windows")
 
 // initialize global variables. At the moment only homeDir.
 func initGlobals() error {
@@ -154,7 +155,6 @@ func initGlobals() error {
 		return err
 	}
 	homeDir = usr.HomeDir
-	var isMsWindows = strings.HasPrefix(runtime.GOOS, "windows")
 	if isMsWindows {
 		homeDir += "/AppData/Local"
 	}
@@ -328,10 +328,16 @@ func setUpstreamRemote(i int, reportRemoteCreated *[]string, reportFail *[]strin
 			return
 		}
 		upstreamUrl := string(urlOutput)
+		newLine := "\n"
+		if isMsWindows {
+			newLine = "\r\n"
+		}
+		upstreamUrl = strings.Trim(upstreamUrl, newLine)
 		mismatch := upstreamUrl != repo.UpstreamURL
 		if mismatch {
 			mutFail.Lock()
-			*reportFail = append(*reportFail, fmt.Sprintf("%d: %s mismatched upstream URL.\nconfigured: %s\nactual: %s\n",
+			// note: in msg below config: and actual: are same len for visual alignment of url strings.
+			*reportFail = append(*reportFail, fmt.Sprintf("%d: %s mismatched upstream URL.\nconfig: %s\nactual: %s\n\n",
 				i, repo.Folder, repo.UpstreamURL, upstreamUrl))
 			mutFail.Unlock()
 			return
