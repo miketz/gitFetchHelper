@@ -274,8 +274,8 @@ func setUpstreamRemotesIfMissing() {
 
 	// summary report. print # of remotes checked, duration
 	duration := time.Since(start) // stop watch end
-	fmt.Printf("\nChecked for upstream remote on %d of %d repos. time elapsed: %v\n",
-		len(DB)-len(reportFail), len(DB), duration)
+	fmt.Printf("\nChecked for upstream remote on %d repos. time elapsed: %v\n",
+		len(DB), duration)
 
 	// remote created report. only includes repos that had a missing upstream remote set.
 	fmt.Printf("\nNEW upstream remote set: %d\n", len(reportRemoteCreated))
@@ -297,40 +297,72 @@ func setUpstreamRemote(i int, reportRemoteCreated *[]string, reportFail *[]strin
 	repo := DB[i]
 	var aliases []string
 
-	// run git command: git remote
-	// collect output string. might be something like:
+	// prepare command to get remote aliases. example: git remote
+	cmd := exec.Command("git", "remote") // #nosec G204
+	cmd.Dir = expandPath(repo.Folder)
+	remoteOutput, err := cmd.CombinedOutput()
+	if err != nil {
+		mutFail.Lock()
+		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %v %s\n", i, repo.Folder, cmd.Args, err.Error()))
+		mutFail.Unlock()
+		return
+	}
+	hasRemotes := len(remoteOutput) > 0
+	if !hasRemotes {
+		goto CREATE_UPSTREAM
+	}
+	// stdout might be something like:
 	//     origin
 	//     upstream
-	var output string = ""
-	// GUARD: if output null or len 0, then no remotes created yet.
-	if len(output) == 0 {
-		goto CREATE
-	}
 	// split the raw shell output to a list of alias strings
-	aliases = strings.Split(output, "\n")
+	aliases = strings.Split(string(remoteOutput), "\n")
 	if slices.Contains(aliases, repo.UpstreamAlias) {
-		// check if url matches url in DB
-		// run git command: git remote get-url upstream     (actually repo.UpstreamAlias)
-		var upstreamUrl = ""
+		// check if url matches url in DB. git command: git remote get-url {upstream}
+		cmd = exec.Command("git", "remote", "get-url", repo.UpstreamAlias) // #nosec G204
+		cmd.Dir = expandPath(repo.Folder)
+		urlOutput, err := cmd.CombinedOutput()
+		if err != nil {
+			mutFail.Lock()
+			*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %v %s\n", i, repo.Folder, cmd.Args, err.Error()))
+			mutFail.Unlock()
+			return
+		}
+		upstreamUrl := string(urlOutput)
 		mismatch := upstreamUrl != repo.UpstreamURL
 		if mismatch {
-			// include mismatch in Failure report!
+			mutFail.Lock()
+			*reportFail = append(*reportFail, fmt.Sprintf("%d: %s mismatched upstream URL.\nconfigured: %s\nactual: %s\n",
+				i, repo.Folder, repo.UpstreamURL, upstreamUrl))
+			mutFail.Unlock()
+			return
 		}
-		// return, no special reporting needed for "normal" case when url matches.
+		return // no reporting needed for "normal" case when url matches.
 	}
-CREATE:
+CREATE_UPSTREAM:
 	// run git command: git remote add {alias} {url}
-	// collect shellOutput string
-	var shellOutput = ""
+	cmd = exec.Command("git", "remote", "add", repo.UpstreamAlias, repo.UpstreamURL) // #nosec G204
+	cmd.Dir = expandPath(repo.Folder)
+	createOutput, err := cmd.CombinedOutput()
+	if err != nil {
+		mutFail.Lock()
+		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %v %s\n", i, repo.Folder, cmd.Args, err.Error()))
+		mutFail.Unlock()
+		return
+	}
+	var createStr = string(createOutput)
 	// TODO: find a better way of detecting error. They could change the error message to
 	// not start with "error" and that would break this code.
-	if strings.HasPrefix(shellOutput, "error") {
-		// add shellOutput string to failure report
-		// early return
+	if strings.HasPrefix(createStr, "error") {
+		mutFail.Lock()
+		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %s\n", i, repo.Folder, createStr))
+		mutFail.Unlock()
+		return
 	}
 	// SUCCESS, remote created
-	// add to success report
-	return
+	mutRemoteCreated.Lock()
+	*reportRemoteCreated = append(*reportRemoteCreated, fmt.Sprintf("%d: %s %v\n",
+		i, repo.Folder, cmd.Args))
+	mutRemoteCreated.Unlock()
 }
 
 func listReposWithUpstreamCodeToMerge() {
