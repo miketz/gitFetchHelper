@@ -130,7 +130,7 @@ var DB = []GitRepo{
 	{Folder: "~/.emacs.d/notElpa/fennel-mode", UpstreamAlias: "upstream", UpstreamURL: "https://git.sr.ht/~technomancy/fennel-mode", MainBranch: "main"},
 	{Folder: "~/.emacs.d/notElpa/vertico", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/minad/vertico", MainBranch: "main"},
 	{Folder: "~/.emacs.d/notElpa/consult", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/minad/consult", MainBranch: "main"},
-	{Folder: "~/.emacs.d/notElpa/elisp-bug-hunter", UpstreamAlias: "upstream", UpstreamURL: "github.com/Malabarba/elisp-bug-hunter", MainBranch: "master"},
+	{Folder: "~/.emacs.d/notElpa/elisp-bug-hunter", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/Malabarba/elisp-bug-hunter", MainBranch: "master"},
 	{Folder: "~/.emacs.d/notElpa/typescript.el", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/emacs-typescript/typescript.el", MainBranch: "master"},
 	{Folder: "~/.emacs.d/notElpa/tide", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/ananthakumaran/tide", MainBranch: "master"},
 	{Folder: "~/.emacs.d/notElpa/compat.el", UpstreamAlias: "mirror", UpstreamURL: "https://github.com/phikal/compat.el", MainBranch: "main"},
