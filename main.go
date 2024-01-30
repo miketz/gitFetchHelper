@@ -327,18 +327,18 @@ func setUpstreamRemote(i int, reportRemoteCreated *[]string, reportFail *[]strin
 			mutFail.Unlock()
 			return
 		}
-		upstreamUrl := string(urlOutput)
+		upstreamURL := string(urlOutput)
 		newLine := "\n"
 		if isMsWindows {
 			newLine = "\r\n"
 		}
-		upstreamUrl = strings.Trim(upstreamUrl, newLine)
-		mismatch := upstreamUrl != repo.UpstreamURL
+		upstreamURL = strings.Trim(upstreamURL, newLine)
+		mismatch := upstreamURL != repo.UpstreamURL
 		if mismatch {
 			mutFail.Lock()
 			// note: in msg below config: and actual: are same len for visual alignment of url strings.
 			*reportFail = append(*reportFail, fmt.Sprintf("%d: %s mismatched upstream URL.\nconfig: %s\nactual: %s\n\n",
-				i, repo.Folder, repo.UpstreamURL, upstreamUrl))
+				i, repo.Folder, repo.UpstreamURL, upstreamURL))
 			mutFail.Unlock()
 			return
 		}
