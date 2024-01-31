@@ -145,11 +145,22 @@ var DB = []GitRepo{
 	{Folder: "~/.emacs.d/notElpa/mine/rapid-serial-visual-presentation", UpstreamAlias: "origin", UpstreamURL: "https://github.com/miketz/rapid-serial-visual-presentation", MainBranch: "master"},
 }
 
+// my home directory. where .emacs.d/ is stored.
 var homeDir string
-var isMsWindows = strings.HasPrefix(runtime.GOOS, "windows")
 
-// initialize global variables. At the moment only homeDir.
+// new line character. different on windows.
+var newLine string
+
+// initialize global variables.
 func initGlobals() error {
+	isMsWindows := strings.HasPrefix(runtime.GOOS, "windows")
+
+	if isMsWindows {
+		newLine = "\r\n"
+	} else {
+		newLine = "\n"
+	}
+
 	usr, err := user.Current()
 	if err != nil {
 		return err
@@ -327,12 +338,7 @@ func setUpstreamRemote(i int, reportRemoteCreated *[]string, reportFail *[]strin
 			mutFail.Unlock()
 			return
 		}
-		upstreamURL := string(urlOutput)
-		newLine := "\n"
-		if isMsWindows {
-			newLine = "\r\n"
-		}
-		upstreamURL = strings.Trim(upstreamURL, newLine)
+		upstreamURL := strings.Trim(string(urlOutput), newLine)
 		mismatch := upstreamURL != repo.UpstreamURL
 		if mismatch {
 			mutFail.Lock()
