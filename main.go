@@ -193,7 +193,7 @@ func main() {
 }
 
 // Fetch upstream repos, measure time, print reports. The main flow.
-func fetchUpstreamRemotes() {
+func fetchUpstreamRemotes() { //nolint:dupl
 	start := time.Now() // stop watch start
 
 	reportFetched := make([]string, 0, len(DB)) // alloc 100%. no realloc on happy path.
@@ -371,7 +371,7 @@ CREATE_UPSTREAM:
 	mutRemoteCreated.Unlock()
 }
 
-func listReposWithUpstreamCodeToMerge() {
+func listReposWithUpstreamCodeToMerge() { //nolint:dupl
 	start := time.Now() // stop watch start
 
 	reportDiff := make([]string, 0, len(DB)) // alloc 100%. no realloc on happy path.
