@@ -322,7 +322,7 @@ func setUpstreamRemote(i int, reportRemoteCreated *[]string, reportFail *[]strin
 	if !hasRemotes {
 		goto CREATE_UPSTREAM
 	}
-	// stdout might be something like:
+	// remoteOutput might be something like:
 	//     origin
 	//     upstream
 	// split the raw shell output to a list of alias strings
