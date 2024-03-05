@@ -135,7 +135,7 @@ var DB = []GitRepo{
 	{Folder: "~/.emacs.d/notElpa/tide", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/ananthakumaran/tide", MainBranch: "master"},
 	{Folder: "~/.emacs.d/notElpa/compat.el", UpstreamAlias: "mirror", UpstreamURL: "https://github.com/phikal/compat.el", MainBranch: "main"},
 	{Folder: "~/.emacs.d/notElpa/slime-volleyball", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/fitzsim/slime-volleyball", MainBranch: "master"},
-	{Folder: "~/.emacs.d/notElpa/macrostep", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/joddie/macrostep", MainBranch: "master"},
+	{Folder: "~/.emacs.d/notElpa/macrostep", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/emacsorphanage/macrostep", MainBranch: "master"},
 	{Folder: "~/.emacs.d/notElpa/sx.el", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/vermiculus/sx.el", MainBranch: "master"},
 	{Folder: "~/.emacs.d/notElpa/sunrise-commander", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/sunrise-commander/sunrise-commander", MainBranch: "master"},
 	{Folder: "~/.emacs.d/notElpa/visual-fill-column", UpstreamAlias: "upstream", UpstreamURL: "https://codeberg.org/joostkremers/visual-fill-column", MainBranch: "main"},
