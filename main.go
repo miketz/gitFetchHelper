@@ -417,10 +417,33 @@ func diff(i int, reportDiff *[]string, reportFail *[]string,
 
 	repo := DB[i]
 
+	// get current checked out branch name.
+	// It may be the configured repo.MainBranch, or custom "mine", or empty "" (detatched head)
+	cmdBranch := exec.Command("git", "branch", "--show-current")
+	cmdBranch.Dir = expandPath(repo.Folder)
+	branchOut, err := cmdBranch.CombinedOutput()
+	if err != nil {
+		mutFail.Lock()
+		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %v %s\n", i, repo.Folder, cmdBranch.Args, "problem getting current brnach name: "+err.Error()))
+		mutFail.Unlock()
+		return
+	}
+	branchName := strings.Trim(string(branchOut), newLine)
+
+	// when comparing our current to upstream, we don't care about any custom changes in "mine" as those are expected difference from upstream.
+	// instead compare repo.Mainbranch if possible
+	// or use HEAD if we are in a detached head state.
+	if branchName == "" {
+		// detached head.
+		branchName = "HEAD"
+	} else if branchName != repo.MainBranch {
+		// on my custom branch. Dont' compare that.
+		branchName = repo.MainBranch
+	}
+
 	// prepare diff command. example: git diff master upstream/master
 	cmd := exec.Command("git", "diff",
-		// use HEAD not repo.MainBranch. Because after a clone the submodules won't have a branch checked out.
-		"HEAD",
+		branchName,
 		repo.UpstreamAlias+"/"+repo.MainBranch) // #nosec G204
 	cmd.Dir = expandPath(repo.Folder)
 	// Run git diff!
