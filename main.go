@@ -179,7 +179,7 @@ func initGlobals() error {
 // cmd := exec.Command("git", "config", "--file", ".gitmodules", "--get-regexp", "path", "|", "awk", "'{ print $2 }'")
 
 func printCommands() {
-	fmt.Printf("Enter a command: [fetch, diff, init]\n")
+	fmt.Printf("Enter a command: [fetch, diff, init, init2]\n")
 }
 
 func main() {
@@ -200,6 +200,8 @@ func main() {
 		listReposWithUpstreamCodeToMerge()
 	case "init":
 		setUpstreamRemotesIfMissing()
+	case "init2":
+		checkoutUseBranches()
 	default:
 		printCommands()
 	}
@@ -420,16 +422,13 @@ func diff(i int, reportDiff *[]string, reportFail *[]string,
 
 	// get current checked out branch name.
 	// It may be the configured repo.MainBranch, or custom "mine", or empty "" (detatched head)
-	cmdBranch := exec.Command("git", "branch", "--show-current")
-	cmdBranch.Dir = expandPath(repo.Folder)
-	branchOut, err := cmdBranch.CombinedOutput()
+	branchName, err := getCurrBranch(&repo)
 	if err != nil {
 		mutFail.Lock()
-		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %v %s\n", i, repo.Folder, cmdBranch.Args, "problem getting current brnach name: "+err.Error()))
+		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %s\n", i, repo.Folder, "problem getting current brnach name: "+err.Error()))
 		mutFail.Unlock()
 		return
 	}
-	branchName := strings.Trim(string(branchOut), newLine)
 
 	// when comparing our current to upstream, we don't care about any custom changes in "mine" as those are expected difference from upstream.
 	// instead compare repo.Mainbranch if possible
@@ -464,6 +463,92 @@ func diff(i int, reportDiff *[]string, reportFail *[]string,
 	*reportDiff = append(*reportDiff, fmt.Sprintf("%d: %s %v\n",
 		i, repo.Folder, cmd.Args))
 	mutDiff.Unlock()
+}
+
+// Checkout the "UseBranch" for each git submodule
+// Useful after a fresh emacs config clone to a new computer to avoid detached head state.
+func checkoutUseBranches() {
+	start := time.Now() // stop watch start
+
+	reportBranchChange := make([]string, 0, len(DB)) // alloc 100%. no realloc on happy path.
+	reportFail := make([]string, 0, 4)               // alloc for low failure rate
+
+	wg := sync.WaitGroup{}
+	mutBranchChange := sync.Mutex{}
+	mutFail := sync.Mutex{}
+	for i := 0; i < len(DB); i++ { // check each repo for upstream remote, create if missing
+		wg.Add(1)
+		go checkoutUseBranch(i, &reportBranchChange, &reportFail, &wg, &mutBranchChange, &mutFail)
+	}
+	wg.Wait()
+
+	// summary report. print # of branches checked out, duration
+	duration := time.Since(start) // stop watch end
+	fmt.Printf("\nChecked for UseBranch on %d repos. time elapsed: %v\n",
+		len(DB), duration)
+
+	// branch change report. only includes repos that needed a switch to UseBranch.
+	fmt.Printf("\nCHECKED OUT UseBranches: %d\n", len(reportBranchChange))
+	for i := 0; i < len(reportBranchChange); i++ {
+		fmt.Print(reportBranchChange[i])
+	}
+	// failure report
+	fmt.Printf("\nFAILURES: %d\n", len(reportFail))
+	for i := 0; i < len(reportFail); i++ {
+		fmt.Print(reportFail[i])
+	}
+}
+
+func checkoutUseBranch(i int, reportBranchChange *[]string, reportFail *[]string,
+	wg *sync.WaitGroup, mutBranchChange *sync.Mutex, mutFail *sync.Mutex,
+) {
+	defer wg.Done()
+
+	repo := DB[i]
+
+	// get current checked out branch name.
+	// It may be the configured repo.MainBranch, or custom "mine", or empty "" (detatched head)
+	branchName, err := getCurrBranch(&repo)
+	if err != nil {
+		mutFail.Lock()
+		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %s\n", i, repo.Folder, "problem getting current brnach name: "+err.Error()))
+		mutFail.Unlock()
+		return
+	}
+	if branchName == repo.UseBranch {
+		return // already using the desired branch. return early.
+	}
+
+	// prepare branch switch command. example: git checkout master
+	cmd := exec.Command("git", "checkout", repo.UseBranch) // #nosec G204
+	cmd.Dir = expandPath(repo.Folder)
+	// Run branch switch!
+	_, err = cmd.CombinedOutput()
+	if err != nil {
+		mutFail.Lock()
+		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %v %s\n", i, repo.Folder, cmd.Args, err.Error()))
+		mutFail.Unlock()
+		return
+	}
+
+	mutBranchChange.Lock()
+	*reportBranchChange = append(*reportBranchChange, fmt.Sprintf("%d: %s %v\n",
+		i, repo.Folder, cmd.Args))
+	mutBranchChange.Unlock()
+}
+
+// get current checked out branch name for a GitRepo.
+func getCurrBranch(repo *GitRepo) (string, error) {
+	// get current checked out branch name.
+	// It may be the configured repo.MainBranch, or custom "mine", or empty "" (detatched head)
+	cmdBranch := exec.Command("git", "branch", "--show-current")
+	cmdBranch.Dir = expandPath(repo.Folder)
+	branchOut, err := cmdBranch.CombinedOutput()
+	if err != nil {
+		return "", err
+	}
+	branchName := strings.Trim(string(branchOut), newLine)
+	return branchName, nil
 }
 
 // expand "~" in path to user's home dir.
