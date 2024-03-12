@@ -156,7 +156,8 @@ func initGlobals() error {
 	isMsWindows := strings.HasPrefix(runtime.GOOS, "windows")
 
 	if isMsWindows {
-		newLine = "\r\n"
+		// looks like git output uses "\n" for new lines in windows too.
+		newLine = "\n" // newLine = "\r\n"
 	} else {
 		newLine = "\n"
 	}
