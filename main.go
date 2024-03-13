@@ -149,19 +149,12 @@ var DB = []GitRepo{
 // my home directory. where .emacs.d/ is stored.
 var homeDir string
 
-// new line character. different on windows.
-var newLine string
+// new line character.
+var newLine = "\n"
 
 // initialize global variables.
 func initGlobals() error {
 	isMsWindows := strings.HasPrefix(runtime.GOOS, "windows")
-
-	if isMsWindows {
-		// looks like git output uses "\n" for new lines in windows too.
-		newLine = "\n" // newLine = "\r\n"
-	} else {
-		newLine = "\n"
-	}
 
 	usr, err := user.Current()
 	if err != nil {
@@ -272,7 +265,7 @@ func fetch(i int, reportFetched *[]string, reportFail *[]string,
 // Set up upstream remotes.
 // Useful after a fresh emacs config clone to a new computer. Or after getting latest
 // when a new package has been added.
-func setUpstreamRemotesIfMissing() {
+func setUpstreamRemotesIfMissing() { //nolint:dupl
 	start := time.Now() // stop watch start
 
 	reportRemoteCreated := make([]string, 0, len(DB)) // alloc 100%. no realloc on happy path.
@@ -467,7 +460,7 @@ func diff(i int, reportDiff *[]string, reportFail *[]string,
 
 // Checkout the "UseBranch" for each git submodule.
 // Useful after a fresh emacs config clone to a new computer to avoid detached head state.
-func checkoutUseBranches() {
+func checkoutUseBranches() { //nolint:dupl
 	start := time.Now() // stop watch start
 
 	reportBranchChange := make([]string, 0, len(DB)) // alloc 100%. no realloc on happy path.
