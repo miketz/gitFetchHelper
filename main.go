@@ -194,7 +194,7 @@ func main() {
 	case "init":
 		setUpstreamRemotesIfMissing()
 	case "init2":
-		checkoutUseBranches()
+		switchToBranches()
 	default:
 		printCommands()
 	}
@@ -460,7 +460,7 @@ func diff(i int, reportDiff *[]string, reportFail *[]string,
 
 // Checkout the "UseBranch" for each git submodule.
 // Useful after a fresh emacs config clone to a new computer to avoid detached head state.
-func checkoutUseBranches() { //nolint:dupl
+func switchToBranches() { //nolint:dupl
 	start := time.Now() // stop watch start
 
 	reportBranchChange := make([]string, 0, len(DB)) // alloc 100%. no realloc on happy path.
@@ -471,7 +471,7 @@ func checkoutUseBranches() { //nolint:dupl
 	mutFail := sync.Mutex{}
 	for i := 0; i < len(DB); i++ { // check each repo for upstream remote, create if missing
 		wg.Add(1)
-		go checkoutUseBranch(i, &reportBranchChange, &reportFail, &wg, &mutBranchChange, &mutFail)
+		go switchToBranch(i, &reportBranchChange, &reportFail, &wg, &mutBranchChange, &mutFail)
 	}
 	wg.Wait()
 
@@ -492,7 +492,8 @@ func checkoutUseBranches() { //nolint:dupl
 	}
 }
 
-func checkoutUseBranch(i int, reportBranchChange *[]string, reportFail *[]string,
+// Checkout the "UseBranch" for a git repo. Git repo identified by index i from DB.
+func switchToBranch(i int, reportBranchChange *[]string, reportFail *[]string,
 	wg *sync.WaitGroup, mutBranchChange *sync.Mutex, mutFail *sync.Mutex,
 ) {
 	defer wg.Done()
