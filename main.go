@@ -465,7 +465,7 @@ func diff(i int, reportDiff *[]string, reportFail *[]string,
 	mutDiff.Unlock()
 }
 
-// Checkout the "UseBranch" for each git submodule
+// Checkout the "UseBranch" for each git submodule.
 // Useful after a fresh emacs config clone to a new computer to avoid detached head state.
 func checkoutUseBranches() {
 	start := time.Now() // stop watch start
