@@ -32,23 +32,23 @@ type GitRepo struct {
 }
 
 // get the "upstream" remote for the git repo
-func (r *GitRepo) RemoteUpstream() Remote {
+func (r *GitRepo) RemoteUpstream() (Remote, error) {
 	for _, rem := range r.Remotes {
 		if rem.Sym == "upstream" {
-			return rem
+			return rem, nil
 		}
 	}
-	return nil // no upstream remote configured.
+	return Remote{}, fmt.Errorf("no upstream remote configured")
 }
 
 // get the "mine" remote for the git repo. This is usually my fork or my own project.
-func (r *GitRepo) RemoteMine() Remote {
+func (r *GitRepo) RemoteMine() (Remote, error) {
 	for _, rem := range r.Remotes {
 		if rem.Sym == "mine" {
-			return rem
+			return rem, nil
 		}
 	}
-	return nil // no mine remote configured.
+	return Remote{}, fmt.Errorf("no mine remote configured")
 }
 
 // DB is a database (as a slice) of relevant GitRepos. In this case my .emacs.d/ submodules.
