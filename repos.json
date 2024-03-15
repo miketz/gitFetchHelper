@@ -45,5 +45,17 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "master"
+ },
+ {"name": "ivy-explorer",
+  "folder": "~/.emacs.d/notElpa/ivy-explorer",
+  "remotes": [{"sym": "mine",
+               "url": "https://github.com/miketz/ivy-explorer",
+               "alias": "origin"},
+              {"sym": "upstream",
+               "url": "https://github.com/clemera/ivy-explorer",
+               "alias": "upstream"}],
+  "remoteDefault": "mine",
+  "branchMain": "master",
+  "branchUse": "master"
  }
 ]
