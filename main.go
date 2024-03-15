@@ -173,8 +173,16 @@ func fetch(i int, reportFetched *[]string, reportFail *[]string,
 
 	repo := DB[i]
 
+	// get upstream remotet info
+	upstream, err := repo.RemoteUpstream()
+	if err != nil {
+		mutFail.Lock()
+		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %s\n", i, repo.Folder, err.Error()))
+		mutFail.Unlock()
+		return
+	}
 	// prepare fetch command. example: git fetch upstream
-	cmd := exec.Command("git", "fetch", repo.UpstreamAlias) // #nosec G204
+	cmd := exec.Command("git", "fetch", upstream.Alias) // #nosec G204
 	cmd.Dir = expandPath(repo.Folder)
 	// Run git fetch! NOTE: cmd.Output() doesn't include the output when git fetch pulls new data.
 	stdout, err := cmd.CombinedOutput()
@@ -237,6 +245,15 @@ func setUpstreamRemote(i int, reportRemoteCreated *[]string, reportFail *[]strin
 	repo := DB[i]
 	var aliases []string
 
+	// get configured upstream remote info
+	upstream, err := repo.RemoteUpstream()
+	if err != nil {
+		mutFail.Lock()
+		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %s\n", i, repo.Folder, err.Error()))
+		mutFail.Unlock()
+		return
+	}
+
 	// prepare command to get remote aliases. example: git remote
 	cmd := exec.Command("git", "remote") // #nosec G204
 	cmd.Dir = expandPath(repo.Folder)
@@ -254,11 +271,11 @@ func setUpstreamRemote(i int, reportRemoteCreated *[]string, reportFail *[]strin
 	// remoteOutput might be something like:
 	//     origin
 	//     upstream
-	// split the raw shell output to a list of alias strings
-	aliases = strings.Split(string(remoteOutput), newLine)
-	if slices.Contains(aliases, repo.UpstreamAlias) {
+	// split the raw shell output to a list of alias strings aliases = strings.Split(string(remoteOutput), newLine)
+
+	if slices.Contains(aliases, upstream.Alias) {
 		// check if url matches url in DB. git command: git remote get-url {upstream}
-		cmd = exec.Command("git", "remote", "get-url", repo.UpstreamAlias) // #nosec G204
+		cmd = exec.Command("git", "remote", "get-url", upstream.Alias) // #nosec G204
 		cmd.Dir = expandPath(repo.Folder)
 		urlOutput, err := cmd.CombinedOutput() //nolint:govet
 		if err != nil {
@@ -268,12 +285,12 @@ func setUpstreamRemote(i int, reportRemoteCreated *[]string, reportFail *[]strin
 			return
 		}
 		upstreamURL := strings.Trim(string(urlOutput), newLine)
-		mismatch := upstreamURL != repo.UpstreamURL
+		mismatch := upstreamURL != upstream.Url
 		if mismatch {
 			mutFail.Lock()
 			// note: in msg below config: and actual: are same len for visual alignment of url strings.
 			*reportFail = append(*reportFail, fmt.Sprintf("%d: %s mismatched upstream URL.\nconfig: %s\nactual: %s\n\n",
-				i, repo.Folder, repo.UpstreamURL, upstreamURL))
+				i, repo.Folder, upstream.Url, upstreamURL))
 			mutFail.Unlock()
 			return
 		}
@@ -281,7 +298,7 @@ func setUpstreamRemote(i int, reportRemoteCreated *[]string, reportFail *[]strin
 	}
 CREATE_UPSTREAM:
 	// run git command: git remote add {alias} {url}
-	cmd = exec.Command("git", "remote", "add", repo.UpstreamAlias, repo.UpstreamURL) // #nosec G204
+	cmd = exec.Command("git", "remote", "add", upstream.Alias, upstream.Url) // #nosec G204
 	cmd.Dir = expandPath(repo.Folder)
 	createOutput, err := cmd.CombinedOutput()
 	if err != nil {
@@ -361,15 +378,24 @@ func diff(i int, reportDiff *[]string, reportFail *[]string,
 	if branchName == "" {
 		// detached head.
 		branchName = "HEAD"
-	} else if branchName != repo.MainBranch {
+	} else if branchName != repo.BranchMain {
 		// on my custom branch. Dont' compare that.
-		branchName = repo.MainBranch
+		branchName = repo.BranchMain
+	}
+
+	// get configured upstream remote info
+	upstream, err := repo.RemoteUpstream()
+	if err != nil {
+		mutFail.Lock()
+		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %s\n", i, repo.Folder, err.Error()))
+		mutFail.Unlock()
+		return
 	}
 
 	// prepare diff command. example: git diff master upstream/master
 	cmd := exec.Command("git", "diff",
 		branchName,
-		repo.UpstreamAlias+"/"+repo.MainBranch) // #nosec G204
+		upstream.Alias+"/"+repo.BranchMain) // #nosec G204
 	cmd.Dir = expandPath(repo.Folder)
 	// Run git diff!
 	stdout, err := cmd.CombinedOutput()
@@ -441,12 +467,12 @@ func switchToBranch(i int, reportBranchChange *[]string, reportFail *[]string,
 		mutFail.Unlock()
 		return
 	}
-	if branchName == repo.UseBranch {
+	if branchName == repo.BranchUse {
 		return // already using the desired branch. return early.
 	}
 
 	// prepare branch switch command. example: git checkout master
-	cmd := exec.Command("git", "checkout", repo.UseBranch) // #nosec G204
+	cmd := exec.Command("git", "checkout", repo.BranchUse) // #nosec G204
 	cmd.Dir = expandPath(repo.Folder)
 	// Run branch switch!
 	_, err = cmd.CombinedOutput()
