@@ -57,5 +57,17 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "master"
+ },
+ {"name": "visual-fill-column",
+  "folder": "~/.emacs.d/notElpa/visual-fill-column",
+  "remotes": [{"sym": "mine",
+               "url": "https://github.com/miketz/visual-fill-column",
+               "alias": "origin"},
+              {"sym": "upstream",
+               "url": "https://codeberg.org/joostkremers/visual-fill-column",
+               "alias": "upstream"}],
+  "remoteDefault": "mine",
+  "branchMain": "main",
+  "branchUse": "main"
  }
 ]
