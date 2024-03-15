@@ -11,7 +11,7 @@
   "branchUse": "master"
  },
  {"name": "combobulate",
-   "folder": "~/.emacs.d/notElpa/combobulate",
+  "folder": "~/.emacs.d/notElpa/combobulate",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/combobulate",
                "alias": "origin"},
