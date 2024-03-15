@@ -23,6 +23,7 @@ type Remote struct {
 
 // GitRepo holds info about a git repo. In this case my .emacs.d/notElpa submodules.
 type GitRepo struct {
+	Name          string   `json:"name"`
 	Folder        string   `json:"folder"`
 	Remotes       []Remote `json:"remotes"`
 	RemoteDefault string   `json:"remoteDefault"`
