@@ -16,19 +16,38 @@ import (
 
 // Info about the server side remote
 type Remote struct {
-	Sym   string `json:"sym"`
-	Url   string `json:"url"`
+	// A special tag to identify the meaning of the Remote.
+	// "upstream" represents the orignal or canonical repo of the project.
+	// "mine" is my fork.
+	Sym string `json:"sym"`
+	// Git remote URL
+	Url string `json:"url"`
+	// The alias used by git to referece the remote. May match the Sym value
+	// but not always. For example my fork will usually have an alias of "origin" with a
+	// Sym of "mine"
 	Alias string `json:"alias"`
 }
 
 // GitRepo holds info about a git repo. In this case my .emacs.d/notElpa submodules.
 type GitRepo struct {
-	Name          string   `json:"name"`
-	Folder        string   `json:"folder"`
-	Remotes       []Remote `json:"remotes"`
-	RemoteDefault string   `json:"remoteDefault"`
-	BranchMain    string   `json:"branchMain"`
-	BranchUse     string   `json:"branchUse"`
+	// Simple short name of the project. In the case of Emacs packages make this
+	// the feature symbol used by (require 'feature).
+	Name string `json:"name"`
+	// Top level root folder of the project.
+	Folder string `json:"folder"`
+	// List of remotes. Usually will be 2 remotes. It's expected that most repos will have
+	// a remote of Sym "mine" and "upstream", however there can be unlimited remotes. The
+	// Sym field is used to identify the special remotes in the slice.
+	Remotes []Remote `json:"remotes"`
+	// The remote we are tracking aginst. In my case this will be my fork.
+	RemoteDefault string `json:"remoteDefault"`
+	// The branch we are intersted in following for this Emacs package.
+	// It may be a "develop" branch if we are interested in the bleeding edge.
+	BranchMain string `json:"branchMain"`
+	// The branch we will use. Usually the same as BranchMain. But sometimes I
+	// will use a custom branch derived from BranchMain for small modifications,
+	// even if it's a minor change like adding to .gitignore.
+	BranchUse string `json:"branchUse"`
 }
 
 // get the "upstream" remote for the git repo
