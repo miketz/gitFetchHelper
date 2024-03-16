@@ -69,5 +69,17 @@
   "remoteDefault": "mine",
   "branchMain": "main",
   "branchUse": "main"
+ },
+ {"name": "klondike",
+  "folder": "~/.emacs.d/notElpa/Emacs-Klondike",
+  "remotes": [{"sym": "mine",
+               "url": "https://github.com/miketz/Emacs-Klondike",
+               "alias": "origin"},
+              {"sym": "upstream",
+               "url": "https://codeberg.org/WammKD/Emacs-Klondike",
+               "alias": "upstream"}],
+  "remoteDefault": "mine",
+  "branchMain": "primary",
+  "branchUse": "primary"
  }
 ]
