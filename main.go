@@ -290,8 +290,8 @@ func setUpstreamRemote(i int, reportRemoteCreated *[]string, reportFail *[]strin
 	// remoteOutput might be something like:
 	//     origin
 	//     upstream
-	// split the raw shell output to a list of alias strings aliases = strings.Split(string(remoteOutput), newLine)
-
+	// split the raw shell output to a list of alias strings
+	aliases = strings.Split(string(remoteOutput), newLine)
 	if slices.Contains(aliases, upstream.Alias) {
 		// check if url matches url in DB. git command: git remote get-url {upstream}
 		cmd = exec.Command("git", "remote", "get-url", upstream.Alias) // #nosec G204
