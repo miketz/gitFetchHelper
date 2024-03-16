@@ -14,14 +14,14 @@ import (
 	"golang.org/x/exp/slices"
 )
 
-// Info about the server side remote
+// Info about the server side remote.
 type Remote struct {
 	// A special tag to identify the meaning of the Remote.
 	// "upstream" represents the orignal or canonical repo of the project.
 	// "mine" is my fork.
 	Sym string `json:"sym"`
 	// Git remote URL
-	Url string `json:"url"`
+	URL string `json:"url"`
 	// The alias used by git to referece the remote. May match the Sym value
 	// but not always. For example my fork will usually have an alias of "origin" with a
 	// Sym of "mine"
@@ -50,7 +50,7 @@ type GitRepo struct {
 	BranchUse string `json:"branchUse"`
 }
 
-// get the "upstream" remote for the git repo
+// get the "upstream" remote for the git repo.
 func (r *GitRepo) RemoteUpstream() (Remote, error) {
 	for _, rem := range r.Remotes {
 		if rem.Sym == "upstream" {
@@ -304,12 +304,12 @@ func setUpstreamRemote(i int, reportRemoteCreated *[]string, reportFail *[]strin
 			return
 		}
 		upstreamURL := strings.Trim(string(urlOutput), newLine)
-		mismatch := upstreamURL != upstream.Url
+		mismatch := upstreamURL != upstream.URL
 		if mismatch {
 			mutFail.Lock()
 			// note: in msg below config: and actual: are same len for visual alignment of url strings.
 			*reportFail = append(*reportFail, fmt.Sprintf("%d: %s mismatched upstream URL.\nconfig: %s\nactual: %s\n\n",
-				i, repo.Folder, upstream.Url, upstreamURL))
+				i, repo.Folder, upstream.URL, upstreamURL))
 			mutFail.Unlock()
 			return
 		}
@@ -317,7 +317,7 @@ func setUpstreamRemote(i int, reportRemoteCreated *[]string, reportFail *[]strin
 	}
 CREATE_UPSTREAM:
 	// run git command: git remote add {alias} {url}
-	cmd = exec.Command("git", "remote", "add", upstream.Alias, upstream.Url) // #nosec G204
+	cmd = exec.Command("git", "remote", "add", upstream.Alias, upstream.URL) // #nosec G204
 	cmd.Dir = expandPath(repo.Folder)
 	createOutput, err := cmd.CombinedOutput()
 	if err != nil {
