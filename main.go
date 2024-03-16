@@ -57,7 +57,7 @@ func (r *GitRepo) RemoteUpstream() (Remote, error) {
 			return rem, nil
 		}
 	}
-	return Remote{}, fmt.Errorf("no upstream remote configured")
+	return Remote{}, fmt.Errorf("no upstream remote configured for " + r.Name + "in repos.json")
 }
 
 // get the "mine" remote for the git repo. This is usually my fork or my own project.
@@ -67,7 +67,7 @@ func (r *GitRepo) RemoteMine() (Remote, error) {
 			return rem, nil
 		}
 	}
-	return Remote{}, fmt.Errorf("no mine remote configured")
+	return Remote{}, fmt.Errorf("no mine remote configured for " + r.Name + "in repos.json")
 }
 
 // DB is a database (as a slice) of relevant GitRepos. In this case my .emacs.d/ submodules.
