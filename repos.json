@@ -81,5 +81,17 @@
   "remoteDefault": "mine",
   "branchMain": "primary",
   "branchUse": "primary"
+ },
+ {"name": "stem-reading-mode",
+  "folder": "~/.emacs.d/notElpa/stem-reading-mode.el",
+  "remotes": [{"sym": "mine",
+               "url": "https://github.com/miketz/stem-reading-mode.el",
+               "alias": "origin"},
+              {"sym": "upstream",
+               "url": "https://gitlab.com/wavexx/stem-reading-mode.el.git",
+               "alias": "upstream"}],
+  "remoteDefault": "mine",
+  "branchMain": "master",
+  "branchUse": "master"
  }
 ]
