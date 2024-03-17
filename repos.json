@@ -256,8 +256,8 @@
                "url": "https://github.com/radian-software/ctrlf",
                "alias": "origin"}],
   "remoteDefault": "mine",
-  "branchMain": "master",
-  "branchUse": "master"
+  "branchMain": "main",
+  "branchUse": "main"
  },
  {"name": "spinner",
   "folder": "~/.emacs.d/notElpa/spinner.el",
