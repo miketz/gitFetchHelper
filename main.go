@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"os/exec"
@@ -13,138 +14,64 @@ import (
 	"golang.org/x/exp/slices"
 )
 
-// GitRepo holds info about a git repo.
-type GitRepo struct {
-	Folder        string
-	UpstreamAlias string
-	UpstreamURL   string
-	MainBranch    string
-	UseBranch     string
+// Info about the server side remote.
+type Remote struct {
+	// A special tag to identify the meaning of the Remote.
+	// "upstream" represents the orignal or canonical repo of the project.
+	// "mine" is my fork.
+	Sym string `json:"sym"`
+	// Git remote URL
+	URL string `json:"url"`
+	// The alias used by git to referece the remote. May match the Sym value
+	// but not always. For example my fork will usually have an alias of "origin" with a
+	// Sym of "mine"
+	Alias string `json:"alias"`
 }
 
-// DUMMY repo project for testing fetch of new commits. https://github.com/miketz/dummyProj
-// var DB = []GitRepo{
-// 	{Folder: "~/proj/dummyProj2", UpstreamAlias: "origin"},
-// }
+// GitRepo holds info about a git repo. In this case my .emacs.d/notElpa submodules.
+type GitRepo struct {
+	// Simple short name of the project. In the case of Emacs packages make this
+	// the feature symbol used by (require 'feature).
+	Name string `json:"name"`
+	// Top level root folder of the project.
+	Folder string `json:"folder"`
+	// List of remotes. Usually will be 2 remotes. It's expected that most repos will have
+	// a remote of Sym "mine" and "upstream", however there can be unlimited remotes. The
+	// Sym field is used to identify the special remotes in the slice.
+	Remotes []Remote `json:"remotes"`
+	// The remote we are tracking aginst. In my case this will be my fork.
+	RemoteDefault string `json:"remoteDefault"`
+	// The branch we are intersted in following for this Emacs package.
+	// It may be a "develop" branch if we are interested in the bleeding edge.
+	BranchMain string `json:"branchMain"`
+	// The branch we will use. Usually the same as BranchMain. But sometimes I
+	// will use a custom branch derived from BranchMain for small modifications,
+	// even if it's a minor change like adding to .gitignore.
+	BranchUse string `json:"branchUse"`
+}
+
+// get the "upstream" remote for the git repo.
+func (r *GitRepo) RemoteUpstream() (Remote, error) {
+	for _, rem := range r.Remotes {
+		if rem.Sym == "upstream" {
+			return rem, nil
+		}
+	}
+	return Remote{}, fmt.Errorf("no upstream remote configured for " + r.Name + " in repos.json")
+}
+
+// get the "mine" remote for the git repo. This is usually my fork or my own project.
+func (r *GitRepo) RemoteMine() (Remote, error) {
+	for _, rem := range r.Remotes {
+		if rem.Sym == "mine" {
+			return rem, nil
+		}
+	}
+	return Remote{}, fmt.Errorf("no mine remote configured for " + r.Name + " in repos.json")
+}
 
 // DB is a database (as a slice) of relevant GitRepos. In this case my .emacs.d/ submodules.
-var DB = []GitRepo{
-	{Folder: "~/.emacs.d/notElpa/paredit", UpstreamAlias: "upstream", UpstreamURL: "https://mumble.net/~campbell/git/paredit.git", MainBranch: "master", UseBranch: "master"},
-	{Folder: "~/.emacs.d/notElpa/combobulate", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/mickeynp/combobulate", MainBranch: "master", UseBranch: "master"},
-	{Folder: "~/.emacs.d/notElpa/emacs-buttercup", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/jorgenschaefer/emacs-buttercup", MainBranch: "master", UseBranch: "master"},
-	{Folder: "~/.emacs.d/notElpa/swiper", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/abo-abo/swiper", MainBranch: "master", UseBranch: "master"},
-	{Folder: "~/.emacs.d/notElpa/ivy-explorer", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/clemera/ivy-explorer", MainBranch: "master", UseBranch: "master"},
-	{Folder: "~/.emacs.d/notElpa/iedit", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/victorhge/iedit", MainBranch: "master", UseBranch: "master"},
-	{Folder: "~/.emacs.d/notElpa/lispy", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/abo-abo/lispy", MainBranch: "master", UseBranch: "master"},
-	{Folder: "~/.emacs.d/notElpa/evil", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/emacs-evil/evil", MainBranch: "master", UseBranch: "master"},
-	{Folder: "~/.emacs.d/notElpa/evil-leader", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/cofi/evil-leader", MainBranch: "master", UseBranch: "master"},
-	{Folder: "~/.emacs.d/notElpa/expand-region.el", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/magnars/expand-region.el", MainBranch: "master", UseBranch: "master"},
-	{Folder: "~/.emacs.d/notElpa/s.el", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/magnars/s.el", MainBranch: "master", UseBranch: "master"},
-	{Folder: "~/.emacs.d/notElpa/dash.el", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/magnars/dash.el", MainBranch: "master", UseBranch: "master"},
-	{Folder: "~/.emacs.d/notElpa/transient", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/magit/transient", MainBranch: "main", UseBranch: "main"},
-	{Folder: "~/.emacs.d/notElpa/with-editor", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/magit/with-editor", MainBranch: "main", UseBranch: "main"},
-	{Folder: "~/.emacs.d/notElpa/magit", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/magit/magit", MainBranch: "main", UseBranch: "mine"},
-	{Folder: "~/.emacs.d/notElpa/libegit2", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/magit/libegit2", MainBranch: "main", UseBranch: "mine"},
-	{Folder: "~/.emacs.d/notElpa/csharp-mode", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/josteink/csharp-mode", MainBranch: "master", UseBranch: "master"},
-	{Folder: "~/.emacs.d/notElpa/ctrlf", UpstreamAlias: "origin", UpstreamURL: "https://github.com/radian-software/ctrlf", MainBranch: "main", UseBranch: "main"},
-	{Folder: "~/.emacs.d/notElpa/spinner.el", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/Malabarba/spinner.el", MainBranch: "master", UseBranch: "mine"},
-	{Folder: "~/.emacs.d/notElpa/ggtags", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/leoliu/ggtags", MainBranch: "master", UseBranch: "master"},
-	{Folder: "~/.emacs.d/notElpa/goto-chg", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/emacs-evil/goto-chg", MainBranch: "master", UseBranch: "master"},
-	{Folder: "~/.emacs.d/notElpa/mine/mor", UpstreamAlias: "origin", UpstreamURL: "https://github.com/miketz/mor", MainBranch: "master", UseBranch: "master"},
-	{Folder: "~/.emacs.d/notElpa/ido-grid.el", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/larkery/ido-grid.el", MainBranch: "master", UseBranch: "mine"},
-	{Folder: "~/.emacs.d/notElpa/ov", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/emacsorphanage/ov", MainBranch: "master", UseBranch: "master"},
-	{Folder: "~/.emacs.d/notElpa/emacs-deferred", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/kiwanami/emacs-deferred", MainBranch: "master", UseBranch: "master"},
-	{Folder: "~/.emacs.d/notElpa/flx", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/lewang/flx", MainBranch: "master", UseBranch: "master"},
-	{Folder: "~/.emacs.d/notElpa/sallet", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/Fuco1/sallet", MainBranch: "master", UseBranch: "mine"},
-	{Folder: "~/.emacs.d/notElpa/eros", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/xiongtx/eros", MainBranch: "master", UseBranch: "master"},
-	{Folder: "~/.emacs.d/notElpa/elisp-slime-nav", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/purcell/elisp-slime-nav", MainBranch: "master", UseBranch: "master"},
-	{Folder: "~/.emacs.d/notElpa/emacs-async", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/jwiegley/emacs-async", MainBranch: "master", UseBranch: "master"},
-	{Folder: "~/.emacs.d/notElpa/lua-mode", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/immerrr/lua-mode", MainBranch: "master", UseBranch: "master"},
-	{Folder: "~/.emacs.d/notElpa/slime", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/slime/slime", MainBranch: "master", UseBranch: "master"},
-	{Folder: "~/.emacs.d/notElpa/slime-company", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/anwyn/slime-company", MainBranch: "master", UseBranch: "mine"},
-	{Folder: "~/.emacs.d/notElpa/sly", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/joaotavora/sly", MainBranch: "master", UseBranch: "master"},
-	{Folder: "~/.emacs.d/notElpa/eglot", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/joaotavora/eglot", MainBranch: "master", UseBranch: "works"},
-	{Folder: "~/.emacs.d/notElpa/lsp-mode", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/emacs-lsp/lsp-mode", MainBranch: "master", UseBranch: "master"},
-	{Folder: "~/.emacs.d/notElpa/f.el", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/rejeep/f.el", MainBranch: "master", UseBranch: "master"},
-	{Folder: "~/.emacs.d/notElpa/ht.el", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/Wilfred/ht.el", MainBranch: "master", UseBranch: "master"},
-	{Folder: "~/.emacs.d/notElpa/markdown-mode", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/jrblevin/markdown-mode", MainBranch: "master", UseBranch: "master"},
-	{Folder: "~/.emacs.d/notElpa/avy", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/abo-abo/avy", MainBranch: "master", UseBranch: "mine"},
-	{Folder: "~/.emacs.d/notElpa/rust-mode", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/rust-lang/rust-mode", MainBranch: "master", UseBranch: "master"},
-	{Folder: "~/.emacs.d/notElpa/emacs-racer", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/racer-rust/emacs-racer", MainBranch: "master", UseBranch: "mine"},
-	{Folder: "~/.emacs.d/notElpa/helm", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/emacs-helm/helm", MainBranch: "master", UseBranch: "master"},
-	{Folder: "~/.emacs.d/notElpa/rg.el", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/dajva/rg.el", MainBranch: "master", UseBranch: "master"},
-	{Folder: "~/.emacs.d/notElpa/rainbow-delimiters", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/Fanael/rainbow-delimiters", MainBranch: "master", UseBranch: "master"},
-	{Folder: "~/.emacs.d/notElpa/js2-mode", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/mooz/js2-mode", MainBranch: "master", UseBranch: "master"},
-	{Folder: "~/.emacs.d/notElpa/js2-highlight-vars.el", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/unhammer/js2-highlight-vars.el", MainBranch: "master", UseBranch: "mine"},
-	{Folder: "~/.emacs.d/notElpa/json-mode", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/joshwnj/json-mode", MainBranch: "master", UseBranch: "mine"},
-	{Folder: "~/.emacs.d/notElpa/json-snatcher", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/Sterlingg/json-snatcher", MainBranch: "master", UseBranch: "mine"},
-	{Folder: "~/.emacs.d/notElpa/leerzeichen.el", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/fgeller/leerzeichen.el", MainBranch: "master", UseBranch: "mine"},
-	{Folder: "~/.emacs.d/notElpa/citre", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/universal-ctags/citre", MainBranch: "master", UseBranch: "master"},
-	{Folder: "~/.emacs.d/notElpa/haskell-mode", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/haskell/haskell-mode", MainBranch: "master", UseBranch: "master"},
-	{Folder: "~/.emacs.d/notElpa/Emacs-wgrep", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/mhayashi1120/Emacs-wgrep", MainBranch: "master", UseBranch: "master"},
-	{Folder: "~/.emacs.d/notElpa/projectile", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/bbatsov/projectile", MainBranch: "master", UseBranch: "master"},
-	{Folder: "~/.emacs.d/notElpa/swift-mode", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/swift-emacs/swift-mode", MainBranch: "master", UseBranch: "master"},
-	{Folder: "~/.emacs.d/notElpa/dank-mode", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/john2x/dank-mode", MainBranch: "master", UseBranch: "mine"},
-	{Folder: "~/.emacs.d/notElpa/darkroom", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/joaotavora/darkroom", MainBranch: "master", UseBranch: "master"},
-	{Folder: "~/.emacs.d/notElpa/smex", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/nonsequitur/smex", MainBranch: "master", UseBranch: "mine"},
-	{Folder: "~/.emacs.d/notElpa/pkg-info", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/emacsorphanage/pkg-info", MainBranch: "master", UseBranch: "master"},
-	{Folder: "~/.emacs.d/notElpa/epl", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/cask/epl", MainBranch: "master", UseBranch: "master"},
-	{Folder: "~/.emacs.d/notElpa/erc-hl-nicks", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/leathekd/erc-hl-nicks", MainBranch: "master", UseBranch: "master"},
-	{Folder: "~/.emacs.d/notElpa/esxml", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/tali713/esxml", MainBranch: "master", UseBranch: "mine"},
-	{Folder: "~/.emacs.d/notElpa/flycheck", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/flycheck/flycheck", MainBranch: "master", UseBranch: "master"},
-	{Folder: "~/.emacs.d/notElpa/smarttabs", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/jcsalomon/smarttabs", MainBranch: "master", UseBranch: "mine"},
-	{Folder: "~/.emacs.d/notElpa/web-mode", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/fxbois/web-mode", MainBranch: "master", UseBranch: "master"},
-	{Folder: "~/.emacs.d/notElpa/puni", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/AmaiKinono/puni", MainBranch: "master", UseBranch: "master"},
-	{Folder: "~/.emacs.d/notElpa/ace-link", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/abo-abo/ace-link", MainBranch: "master", UseBranch: "master"},
-	{Folder: "~/.emacs.d/notElpa/ace-window", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/abo-abo/ace-window", MainBranch: "master", UseBranch: "mine"},
-	{Folder: "~/.emacs.d/notElpa/adoc-mode", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/sensorflo/adoc-mode", MainBranch: "master", UseBranch: "master"},
-	{Folder: "~/.emacs.d/notElpa/markup-faces", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/sensorflo/markup-faces", MainBranch: "master", UseBranch: "mine"},
-	{Folder: "~/.emacs.d/notElpa/hydra", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/abo-abo/hydra", MainBranch: "master", UseBranch: "mine"},
-	{Folder: "~/.emacs.d/notElpa/nov.el", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/wasamasa/nov.el", MainBranch: "master", UseBranch: "mine"},
-	// {Folder: "~/.emacs.d/notElpa/num3-mode", UpstreamAlias: "nil", UpstreamURL: "", MainBranch: "master", UseBranch: "master"},
-	{Folder: "~/.emacs.d/notElpa/nyan-mode", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/TeMPOraL/nyan-mode", MainBranch: "master", UseBranch: "mine"},
-	{Folder: "~/.emacs.d/notElpa/php-mode", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/emacs-php/php-mode", MainBranch: "master", UseBranch: "master"},
-	{Folder: "~/.emacs.d/notElpa/emacs-reformatter", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/purcell/emacs-reformatter", MainBranch: "master", UseBranch: "master"},
-	{Folder: "~/.emacs.d/notElpa/zig-mode", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/ziglang/zig-mode", MainBranch: "master", UseBranch: "master"},
-	{Folder: "~/.emacs.d/notElpa/go-mode.el", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/dominikh/go-mode.el", MainBranch: "master", UseBranch: "master"},
-	{Folder: "~/.emacs.d/notElpa/zoutline", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/abo-abo/zoutline", MainBranch: "master", UseBranch: "mine"},
-	{Folder: "~/.emacs.d/notElpa/yasnippet", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/joaotavora/yasnippet", MainBranch: "master", UseBranch: "master"},
-	{Folder: "~/.emacs.d/notElpa/yaml-mode", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/yoshiki/yaml-mode", MainBranch: "master", UseBranch: "master"},
-	{Folder: "~/.emacs.d/notElpa/vimrc-mode", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/mcandre/vimrc-mode", MainBranch: "master", UseBranch: "mine"},
-	{Folder: "~/.emacs.d/notElpa/unkillable-scratch", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/EricCrosson/unkillable-scratch", MainBranch: "master", UseBranch: "mine"},
-	{Folder: "~/.emacs.d/notElpa/sicp-info", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/webframp/sicp-info", MainBranch: "master", UseBranch: "mine"},
-	{Folder: "~/.emacs.d/notElpa/prescient.el", UpstreamAlias: "origin", UpstreamURL: "https://github.com/radian-software/prescient.el", MainBranch: "main", UseBranch: "main"},
-	{Folder: "~/.emacs.d/notElpa/pos-tip", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/pitkali/pos-tip", MainBranch: "master", UseBranch: "mine"},
-	{Folder: "~/.emacs.d/notElpa/powershell.el", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/jschaf/powershell.el", MainBranch: "master", UseBranch: "master"},
-	{Folder: "~/.emacs.d/notElpa/highlight-indent-guides", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/DarthFennec/highlight-indent-guides", MainBranch: "master", UseBranch: "mine"},
-	{Folder: "~/.emacs.d/notElpa/icicles", UpstreamAlias: "mirror", UpstreamURL: "https://github.com/emacsmirror/icicles", MainBranch: "master", UseBranch: "mine"},
-	// {Folder: "~/.emacs.d/notElpa/hyperspec", UpstreamAlias: "nil", UpstreamURL: "", MainBranch: "master", UseBranch: "master"},
-	{Folder: "~/.emacs.d/notElpa/FlamesOfFreedom", UpstreamAlias: "origin", UpstreamURL: "https://github.com/wiz21b/FlamesOfFreedom", MainBranch: "master", UseBranch: "master"},
-	{Folder: "~/.emacs.d/notElpa/Indium", UpstreamAlias: "origin", UpstreamURL: "https://github.com/NicolasPetton/Indium", MainBranch: "master", UseBranch: "master"},
-	{Folder: "~/.emacs.d/notElpa/posframe", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/tumashu/posframe", MainBranch: "master", UseBranch: "mine"},
-	{Folder: "~/.emacs.d/notElpa/ivy-posframe", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/tumashu/ivy-posframe", MainBranch: "master", UseBranch: "mine"},
-	{Folder: "~/.emacs.d/notElpa/autothemer", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/jasonm23/autothemer", MainBranch: "master", UseBranch: "mine"},
-	{Folder: "~/.emacs.d/notElpa/company-mode", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/company-mode/company-mode", MainBranch: "master", UseBranch: "master"},
-	{Folder: "~/.emacs.d/notElpa/company-web", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/osv/company-web", MainBranch: "master", UseBranch: "mine"},
-	{Folder: "~/.emacs.d/notElpa/company-lsp", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/tigersoldier/company-lsp", MainBranch: "master", UseBranch: "master"},
-	{Folder: "~/.emacs.d/notElpa/web-completion-data", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/osv/web-completion-data", MainBranch: "master", UseBranch: "mine"},
-	{Folder: "~/.emacs.d/notElpa/fennel-mode", UpstreamAlias: "upstream", UpstreamURL: "https://git.sr.ht/~technomancy/fennel-mode", MainBranch: "main", UseBranch: "main"},
-	{Folder: "~/.emacs.d/notElpa/vertico", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/minad/vertico", MainBranch: "main", UseBranch: "main"},
-	{Folder: "~/.emacs.d/notElpa/consult", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/minad/consult", MainBranch: "main", UseBranch: "main"},
-	{Folder: "~/.emacs.d/notElpa/elisp-bug-hunter", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/Malabarba/elisp-bug-hunter", MainBranch: "master", UseBranch: "master"},
-	{Folder: "~/.emacs.d/notElpa/typescript.el", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/emacs-typescript/typescript.el", MainBranch: "master", UseBranch: "master"},
-	{Folder: "~/.emacs.d/notElpa/tide", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/ananthakumaran/tide", MainBranch: "master", UseBranch: "master"},
-	{Folder: "~/.emacs.d/notElpa/compat.el", UpstreamAlias: "mirror", UpstreamURL: "https://github.com/phikal/compat.el", MainBranch: "main", UseBranch: "main"},
-	{Folder: "~/.emacs.d/notElpa/slime-volleyball", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/fitzsim/slime-volleyball", MainBranch: "master", UseBranch: "mine"},
-	{Folder: "~/.emacs.d/notElpa/macrostep", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/emacsorphanage/macrostep", MainBranch: "master", UseBranch: "master"},
-	{Folder: "~/.emacs.d/notElpa/sx.el", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/vermiculus/sx.el", MainBranch: "master", UseBranch: "master"},
-	{Folder: "~/.emacs.d/notElpa/sunrise-commander", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/sunrise-commander/sunrise-commander", MainBranch: "master", UseBranch: "master"},
-	{Folder: "~/.emacs.d/notElpa/visual-fill-column", UpstreamAlias: "upstream", UpstreamURL: "https://codeberg.org/joostkremers/visual-fill-column", MainBranch: "main", UseBranch: "main"},
-	{Folder: "~/.emacs.d/notElpa/Emacs-Klondike", UpstreamAlias: "upstream", UpstreamURL: "https://codeberg.org/WammKD/Emacs-Klondike", MainBranch: "primary", UseBranch: "primary"},
-	{Folder: "~/.emacs.d/notElpa/stem-reading-mode.el", UpstreamAlias: "upstream", UpstreamURL: "https://gitlab.com/wavexx/stem-reading-mode.el.git", MainBranch: "master", UseBranch: "master"},
-	{Folder: "~/.emacs.d/notElpa/clojure-mode", UpstreamAlias: "upstream", UpstreamURL: "https://github.com/clojure-emacs/clojure-mode", MainBranch: "master", UseBranch: "master"},
-	{Folder: "~/.emacs.d/notElpa/mine/rapid-serial-visual-presentation", UpstreamAlias: "origin", UpstreamURL: "https://github.com/miketz/rapid-serial-visual-presentation", MainBranch: "master", UseBranch: "master"},
-}
+var DB = []GitRepo{}
 
 // my home directory. where .emacs.d/ is stored.
 var homeDir string
@@ -155,6 +82,12 @@ var newLine = "\n"
 // initialize global variables.
 func initGlobals() error {
 	isMsWindows := strings.HasPrefix(runtime.GOOS, "windows")
+
+	var err error
+	DB, err = getRepoData()
+	if err != nil {
+		return err
+	}
 
 	usr, err := user.Current()
 	if err != nil {
@@ -200,6 +133,24 @@ func main() {
 	}
 }
 
+func getRepoData() ([]GitRepo, error) {
+	jsonFile, err := os.Open("./repos.json")
+	if err != nil {
+		fmt.Printf("opening json file: %v\n", err.Error())
+		return nil, err
+	}
+	defer jsonFile.Close()
+
+	repos := make([]GitRepo, 0, 256)
+	jsonParser := json.NewDecoder(jsonFile)
+	err = jsonParser.Decode(&repos)
+	if err != nil {
+		fmt.Printf("parsing config file: %v\n", err.Error())
+		return nil, err
+	}
+	return repos, nil
+}
+
 // Fetch upstream repos, measure time, print reports. The main flow.
 func fetchUpstreamRemotes() { //nolint:dupl
 	start := time.Now() // stop watch start
@@ -241,8 +192,16 @@ func fetch(i int, reportFetched *[]string, reportFail *[]string,
 
 	repo := DB[i]
 
+	// get upstream remotet info
+	upstream, err := repo.RemoteUpstream()
+	if err != nil {
+		mutFail.Lock()
+		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %s\n", i, repo.Folder, err.Error()))
+		mutFail.Unlock()
+		return
+	}
 	// prepare fetch command. example: git fetch upstream
-	cmd := exec.Command("git", "fetch", repo.UpstreamAlias) // #nosec G204
+	cmd := exec.Command("git", "fetch", upstream.Alias) // #nosec G204
 	cmd.Dir = expandPath(repo.Folder)
 	// Run git fetch! NOTE: cmd.Output() doesn't include the output when git fetch pulls new data.
 	stdout, err := cmd.CombinedOutput()
@@ -305,6 +264,15 @@ func setUpstreamRemote(i int, reportRemoteCreated *[]string, reportFail *[]strin
 	repo := DB[i]
 	var aliases []string
 
+	// get configured upstream remote info
+	upstream, err := repo.RemoteUpstream()
+	if err != nil {
+		mutFail.Lock()
+		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %s\n", i, repo.Folder, err.Error()))
+		mutFail.Unlock()
+		return
+	}
+
 	// prepare command to get remote aliases. example: git remote
 	cmd := exec.Command("git", "remote") // #nosec G204
 	cmd.Dir = expandPath(repo.Folder)
@@ -324,9 +292,9 @@ func setUpstreamRemote(i int, reportRemoteCreated *[]string, reportFail *[]strin
 	//     upstream
 	// split the raw shell output to a list of alias strings
 	aliases = strings.Split(string(remoteOutput), newLine)
-	if slices.Contains(aliases, repo.UpstreamAlias) {
+	if slices.Contains(aliases, upstream.Alias) {
 		// check if url matches url in DB. git command: git remote get-url {upstream}
-		cmd = exec.Command("git", "remote", "get-url", repo.UpstreamAlias) // #nosec G204
+		cmd = exec.Command("git", "remote", "get-url", upstream.Alias) // #nosec G204
 		cmd.Dir = expandPath(repo.Folder)
 		urlOutput, err := cmd.CombinedOutput() //nolint:govet
 		if err != nil {
@@ -336,12 +304,12 @@ func setUpstreamRemote(i int, reportRemoteCreated *[]string, reportFail *[]strin
 			return
 		}
 		upstreamURL := strings.Trim(string(urlOutput), newLine)
-		mismatch := upstreamURL != repo.UpstreamURL
+		mismatch := upstreamURL != upstream.URL
 		if mismatch {
 			mutFail.Lock()
 			// note: in msg below config: and actual: are same len for visual alignment of url strings.
 			*reportFail = append(*reportFail, fmt.Sprintf("%d: %s mismatched upstream URL.\nconfig: %s\nactual: %s\n\n",
-				i, repo.Folder, repo.UpstreamURL, upstreamURL))
+				i, repo.Folder, upstream.URL, upstreamURL))
 			mutFail.Unlock()
 			return
 		}
@@ -349,7 +317,7 @@ func setUpstreamRemote(i int, reportRemoteCreated *[]string, reportFail *[]strin
 	}
 CREATE_UPSTREAM:
 	// run git command: git remote add {alias} {url}
-	cmd = exec.Command("git", "remote", "add", repo.UpstreamAlias, repo.UpstreamURL) // #nosec G204
+	cmd = exec.Command("git", "remote", "add", upstream.Alias, upstream.URL) // #nosec G204
 	cmd.Dir = expandPath(repo.Folder)
 	createOutput, err := cmd.CombinedOutput()
 	if err != nil {
@@ -429,15 +397,24 @@ func diff(i int, reportDiff *[]string, reportFail *[]string,
 	if branchName == "" {
 		// detached head.
 		branchName = "HEAD"
-	} else if branchName != repo.MainBranch {
+	} else if branchName != repo.BranchMain {
 		// on my custom branch. Dont' compare that.
-		branchName = repo.MainBranch
+		branchName = repo.BranchMain
+	}
+
+	// get configured upstream remote info
+	upstream, err := repo.RemoteUpstream()
+	if err != nil {
+		mutFail.Lock()
+		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %s\n", i, repo.Folder, err.Error()))
+		mutFail.Unlock()
+		return
 	}
 
 	// prepare diff command. example: git diff master upstream/master
 	cmd := exec.Command("git", "diff",
 		branchName,
-		repo.UpstreamAlias+"/"+repo.MainBranch) // #nosec G204
+		upstream.Alias+"/"+repo.BranchMain) // #nosec G204
 	cmd.Dir = expandPath(repo.Folder)
 	// Run git diff!
 	stdout, err := cmd.CombinedOutput()
@@ -509,12 +486,12 @@ func switchToBranch(i int, reportBranchChange *[]string, reportFail *[]string,
 		mutFail.Unlock()
 		return
 	}
-	if branchName == repo.UseBranch {
+	if branchName == repo.BranchUse {
 		return // already using the desired branch. return early.
 	}
 
 	// prepare branch switch command. example: git checkout master
-	cmd := exec.Command("git", "checkout", repo.UseBranch) // #nosec G204
+	cmd := exec.Command("git", "checkout", repo.BranchUse) // #nosec G204
 	cmd.Dir = expandPath(repo.Folder)
 	// Run branch switch!
 	_, err = cmd.CombinedOutput()
