@@ -105,5 +105,29 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "master"
+ },
+ {"name": "iedit",
+  "folder": "~/.emacs.d/notElpa/iedit",
+  "remotes": [{"sym": "mine",
+               "url": "https://github.com/miketz/iedit",
+               "alias": "origin"},
+              {"sym": "upstream",
+               "url": "https://github.com/victorhge/iedit",
+               "alias": "upstream"}],
+  "remoteDefault": "mine",
+  "branchMain": "master",
+  "branchUse": "master"
+ },
+ {"name": "lispy",
+  "folder": "~/.emacs.d/notElpa/lispy",
+  "remotes": [{"sym": "mine",
+               "url": "https://https://github.com/miketz/lispy",
+               "alias": "origin"},
+              {"sym": "upstream",
+               "url": "https://github.com/abo-abo/lispy",
+               "alias": "upstream"}],
+  "remoteDefault": "mine",
+  "branchMain": "master",
+  "branchUse": "master"
  }
 ]
