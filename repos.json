@@ -93,5 +93,17 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "master"
+ },
+ {"name": "clojure-mode",
+  "folder": "~/.emacs.d/notElpa/clojure-mode",
+  "remotes": [{"sym": "mine",
+               "url": "https://github.com/miketz/clojure-mode",
+               "alias": "origin"},
+              {"sym": "upstream",
+               "url": "https://github.com/clojure-emacs/clojure-mode",
+               "alias": "upstream"}],
+  "remoteDefault": "mine",
+  "branchMain": "master",
+  "branchUse": "master"
  }
 ]
