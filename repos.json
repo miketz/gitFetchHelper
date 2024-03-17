@@ -299,7 +299,10 @@
   "folder": "~/.emacs.d/notElpa/mine/mor",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/mor",
-               "alias": "origin"}],
+               "alias": "origin"},
+              {"sym": "upstream",
+               "url": "https://github.com/miketz/mor",
+               "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "master"
