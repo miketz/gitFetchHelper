@@ -923,7 +923,10 @@
   "folder": "~/.emacs.d/notElpa/num3-mode",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/num3-mode",
-               "alias": "origin"}],
+               "alias": "origin"},
+              {"sym": "upstream",
+               "url": "https://github.com/miketz/num3-mode",
+               "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "master"
@@ -1121,7 +1124,10 @@
   "folder": "~/.emacs.d/notElpa/hyperspec",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/hyperspec",
-               "alias": "origin"}],
+               "alias": "origin"},
+              {"sym": "upstream",
+               "url": "https://github.com/miketz/hyperspec",
+               "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "master"
