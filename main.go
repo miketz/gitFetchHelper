@@ -70,6 +70,18 @@ func (r *GitRepo) RemoteMine() (Remote, error) {
 	return Remote{}, fmt.Errorf("no mine remote configured for " + r.Name + " in repos.json")
 }
 
+// get the hash of a branch in this GitRepo
+func (r *GitRepo) GetHash(branchName string) (string, error) {
+	cmd := exec.Command("git", "rev-parse", branchName)
+	cmd.Dir = expandPath(r.Folder)
+	hash, err := cmd.CombinedOutput()
+	if err != nil {
+		return "", err
+	}
+	hashStr := strings.Trim(string(hash), newLine)
+	return hashStr, nil
+}
+
 // DB is a database (as a slice) of relevant GitRepos. In this case my .emacs.d/ submodules.
 var DB = []GitRepo{}
 
@@ -486,26 +498,71 @@ func switchToBranch(i int, reportBranchChange *[]string, reportFail *[]string,
 		mutFail.Unlock()
 		return
 	}
-	if branchName == repo.BranchUse {
-		return // already using the desired branch. return early.
+
+	// switch to branch if not already on it.
+	if branchName != repo.BranchUse {
+		// Action #1
+		// prepare branch switch command. example: git checkout master
+		cmd := exec.Command("git", "checkout", repo.BranchUse) // #nosec G204
+		cmd.Dir = expandPath(repo.Folder)
+		// Run branch switch!
+		_, err = cmd.CombinedOutput()
+		if err != nil {
+			mutFail.Lock()
+			*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %v %s\n", i, repo.Folder, cmd.Args, err.Error()))
+			mutFail.Unlock()
+			return
+		}
+
+		// track the fact we just switched branches
+		mutBranchChange.Lock()
+		*reportBranchChange = append(*reportBranchChange, fmt.Sprintf("%d: %s %v\n",
+			i, repo.Folder, cmd.Args))
+		mutBranchChange.Unlock()
 	}
 
-	// prepare branch switch command. example: git checkout master
-	cmd := exec.Command("git", "checkout", repo.BranchUse) // #nosec G204
-	cmd.Dir = expandPath(repo.Folder)
-	// Run branch switch!
-	_, err = cmd.CombinedOutput()
+	// make sure branch is up to date with origin
+	hashLocalUseBranch, err := repo.GetHash(repo.BranchUse)
 	if err != nil {
 		mutFail.Lock()
-		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %v %s\n", i, repo.Folder, cmd.Args, err.Error()))
+		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %s\n", i, repo.Folder, err.Error()))
+		mutFail.Unlock()
+		return
+	}
+	remoteMine, err := repo.RemoteMine()
+	if err != nil {
+		mutFail.Lock()
+		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %s\n", i, repo.Folder, err.Error()))
+		mutFail.Unlock()
+		return
+	}
+	hashRemoteUseBranch, err := repo.GetHash(remoteMine.Alias + "/" + repo.BranchUse)
+	if err != nil {
+		mutFail.Lock()
+		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %s\n", i, repo.Folder, err.Error()))
 		mutFail.Unlock()
 		return
 	}
 
-	mutBranchChange.Lock()
-	*reportBranchChange = append(*reportBranchChange, fmt.Sprintf("%d: %s %v\n",
-		i, repo.Folder, cmd.Args))
-	mutBranchChange.Unlock()
+	if hashLocalUseBranch != hashRemoteUseBranch {
+		// Action #2.
+		// force reset to remote version of branch
+		cmd := exec.Command("git", "reset", "--hard", remoteMine.Alias+"/"+repo.BranchUse) // #nosec G204
+		cmd.Dir = expandPath(repo.Folder)
+		// Run branch switch!
+		_, err = cmd.CombinedOutput()
+		if err != nil {
+			mutFail.Lock()
+			*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %v %s\n", i, repo.Folder, cmd.Args, err.Error()))
+			mutFail.Unlock()
+			return
+		}
+		// track the fact we just reset the branch to match origin
+		mutBranchChange.Lock()
+		*reportBranchChange = append(*reportBranchChange, fmt.Sprintf("%d: %s %v\n",
+			i, repo.Folder, cmd.Args))
+		mutBranchChange.Unlock()
+	}
 }
 
 // get current checked out branch name for a GitRepo.
