@@ -39,8 +39,8 @@ type GitRepo struct {
 	// a remote of Sym "mine" and "upstream", however there can be unlimited remotes. The
 	// Sym field is used to identify the special remotes in the slice.
 	Remotes []Remote `json:"remotes"`
-	// The remote we are tracking aginst. In my case this will be my fork.
-	RemoteDefault string `json:"remoteDefault"`
+	// The remote we are tracking aginst. In my case this is usually my fork speicifed via sym "mine".
+	RemoteDefaultSym string `json:"remoteDefault"`
 	// The branch we are intersted in following for this Emacs package.
 	// It may be a "develop" branch if we are interested in the bleeding edge.
 	BranchMain string `json:"branchMain"`
@@ -68,6 +68,17 @@ func (r *GitRepo) RemoteMine() (Remote, error) {
 		}
 	}
 	return Remote{}, fmt.Errorf("no mine remote configured for " + r.Name + " in repos.json")
+}
+
+// get the "default" remote specified by "RemoteDefaultSym" for the git repo.
+// Sometimes this may be the upstream, but usually my fork or my own project.
+func (r *GitRepo) RemoteDefault() (Remote, error) {
+	for _, rem := range r.Remotes {
+		if rem.Sym == r.RemoteDefaultSym {
+			return rem, nil
+		}
+	}
+	return Remote{}, fmt.Errorf("no default remote configured for " + r.Name + " in repos.json")
 }
 
 // get the hash of a branch in this GitRepo
@@ -529,14 +540,14 @@ func switchToBranch(i int, reportBranchChange *[]string, reportFail *[]string,
 		mutFail.Unlock()
 		return
 	}
-	remoteMine, err := repo.RemoteMine()
+	remoteDefault, err := repo.RemoteDefault()
 	if err != nil {
 		mutFail.Lock()
 		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %s\n", i, repo.Folder, err.Error()))
 		mutFail.Unlock()
 		return
 	}
-	hashRemoteUseBranch, err := repo.GetHash(remoteMine.Alias + "/" + repo.BranchUse)
+	hashRemoteUseBranch, err := repo.GetHash(remoteDefault.Alias + "/" + repo.BranchUse)
 	if err != nil {
 		mutFail.Lock()
 		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %s\n", i, repo.Folder, err.Error()))
@@ -547,7 +558,7 @@ func switchToBranch(i int, reportBranchChange *[]string, reportFail *[]string,
 	if hashLocalUseBranch != hashRemoteUseBranch {
 		// Action #2.
 		// force reset to remote version of branch
-		cmd := exec.Command("git", "reset", "--hard", remoteMine.Alias+"/"+repo.BranchUse) // #nosec G204
+		cmd := exec.Command("git", "reset", "--hard", remoteDefault.Alias+"/"+repo.BranchUse) // #nosec G204
 		cmd.Dir = expandPath(repo.Folder)
 		// Run branch switch!
 		_, err = cmd.CombinedOutput()
