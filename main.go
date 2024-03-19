@@ -519,10 +519,10 @@ func switchToBranch(i int, reportBranchChange *[]string, reportFail *[]string,
 	}
 	// switch to branch if not already on it.
 	if branchName != repo.BranchUse {
-		hasLocalBranch, err := hasLocalBranch(&repo, repo.BranchUse)
-		if err != nil {
+		hasLocalBranch, err2 := hasLocalBranch(&repo, repo.BranchUse)
+		if err2 != nil {
 			mutFail.Lock()
-			*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %s\n", i, repo.Folder, "problem checking for local branch existence: "+err.Error()))
+			*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %s\n", i, repo.Folder, "problem checking for local branch existence: "+err2.Error()))
 			mutFail.Unlock()
 			return
 		}
@@ -536,10 +536,10 @@ func switchToBranch(i int, reportBranchChange *[]string, reportFail *[]string,
 		}
 		cmd.Dir = expandPath(repo.Folder)
 		// Run branch switch!
-		_, err = cmd.CombinedOutput()
-		if err != nil {
+		_, err2 = cmd.CombinedOutput()
+		if err2 != nil {
 			mutFail.Lock()
-			*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %v %s\n", i, repo.Folder, cmd.Args, err.Error()))
+			*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %v %s\n", i, repo.Folder, cmd.Args, err2.Error()))
 			mutFail.Unlock()
 			return
 		}
