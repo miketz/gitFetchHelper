@@ -53,33 +53,29 @@ type GitRepo struct {
 
 // get the "upstream" remote for the git repo.
 func (r *GitRepo) RemoteUpstream() (Remote, error) {
-	for _, rem := range r.Remotes {
-		if rem.Sym == "upstream" {
-			return rem, nil
-		}
-	}
-	return Remote{}, fmt.Errorf("no upstream remote configured for " + r.Name + " in repos.json")
+	return r.GetRemoteBySym("upstream")
 }
 
 // get the "mine" remote for the git repo. This is usually my fork or my own project.
 func (r *GitRepo) RemoteMine() (Remote, error) {
-	for _, rem := range r.Remotes {
-		if rem.Sym == "mine" {
-			return rem, nil
-		}
-	}
-	return Remote{}, fmt.Errorf("no mine remote configured for " + r.Name + " in repos.json")
+	return r.GetRemoteBySym("mine")
 }
 
 // get the "default" remote specified by "RemoteDefaultSym" for the git repo.
 // Sometimes this may be the upstream, but usually my fork or my own project.
 func (r *GitRepo) RemoteDefault() (Remote, error) {
+	return r.GetRemoteBySym(r.RemoteDefaultSym)
+}
+
+// get the remote based on symbol "sym".
+// sym is a semantic meaning for the remote separate from it's alias name.
+func (r *GitRepo) GetRemoteBySym(sym string) (Remote, error) {
 	for _, rem := range r.Remotes {
-		if rem.Sym == r.RemoteDefaultSym {
+		if rem.Sym == sym {
 			return rem, nil
 		}
 	}
-	return Remote{}, fmt.Errorf("no default remote configured for " + r.Name + " in repos.json")
+	return Remote{}, fmt.Errorf("no " + sym + " remote configured for " + r.Name + " in repos.json")
 }
 
 // get the hash of a branch in this GitRepo.
