@@ -519,10 +519,21 @@ func switchToBranch(i int, reportBranchChange *[]string, reportFail *[]string,
 	}
 	// switch to branch if not already on it.
 	if branchName != repo.BranchUse {
+		hasLocalBranch, err := hasLocalBranch(&repo, repo.BranchUse)
+		if err != nil {
+			mutFail.Lock()
+			*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %s\n", i, repo.Folder, "problem checking for local branch existence: "+err.Error()))
+			mutFail.Unlock()
+			return
+		}
 		// Action #1
 		// prepare branch switch command. example: git checkout --track origin/master
-		// TODO: if branch already exists switch without --track
-		cmd := exec.Command("git", "checkout", "--track", remoteDefault.Alias+"/"+repo.BranchUse) // #nosec G204
+		var cmd *exec.Cmd
+		if hasLocalBranch {
+			cmd = exec.Command("git", "checkout", repo.BranchUse) // #nosec G204
+		} else {
+			cmd = exec.Command("git", "checkout", "--track", remoteDefault.Alias+"/"+repo.BranchUse) // #nosec G204
+		}
 		cmd.Dir = expandPath(repo.Folder)
 		// Run branch switch!
 		_, err = cmd.CombinedOutput()
@@ -589,6 +600,30 @@ func getCurrBranch(repo *GitRepo) (string, error) {
 	}
 	branchName := strings.Trim(string(branchOut), newLine)
 	return branchName, nil
+}
+
+// True if the repo has a local version of the branch. (ignore remote tracking branches)
+func hasLocalBranch(repo *GitRepo, branchName string) (bool, error) {
+	cmd := exec.Command("git", "branch") // #nosec G204
+	cmd.Dir = expandPath(repo.Folder)
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		return false, err
+	}
+	if len(output) == 0 { // no branches at all!
+		return false, nil
+	}
+	// output might be something like:
+	//     master
+	//     mine
+	// split the raw shell output to a list of strings
+	branches := strings.Split(string(output), newLine)
+	// trim whitespace and * character from branch names
+	for i, br := range branches {
+		branches[i] = strings.Trim(br, "\n *")
+	}
+	hasBranch := slices.Contains(branches, branchName)
+	return hasBranch, nil
 }
 
 // expand "~" in path to user's home dir.
