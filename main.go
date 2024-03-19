@@ -478,7 +478,7 @@ func switchToBranches() { //nolint:dupl
 		len(DB), duration)
 
 	// branch change report. only includes repos that needed a switch to UseBranch.
-	fmt.Printf("\nCHECKED OUT UseBranches: %d\n", len(reportBranchChange))
+	fmt.Printf("\nBranch change actions: %d\n", len(reportBranchChange))
 	for i := 0; i < len(reportBranchChange); i++ {
 		fmt.Print(reportBranchChange[i])
 	}
