@@ -329,7 +329,7 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "mine"
  },
  {"name": "ov",
   "folder": "~/.emacs.d/notElpa/ov",
