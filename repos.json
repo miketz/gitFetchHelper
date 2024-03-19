@@ -255,7 +255,7 @@
   "remotes": [{"sym": "upstream",
                "url": "https://github.com/radian-software/ctrlf",
                "alias": "origin"}],
-  "remoteDefault": "mine",
+  "remoteDefault": "upstream",
   "branchMain": "main",
   "branchUse": "main"
  },
