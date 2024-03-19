@@ -81,7 +81,7 @@ func (r *GitRepo) RemoteDefault() (Remote, error) {
 	return Remote{}, fmt.Errorf("no default remote configured for " + r.Name + " in repos.json")
 }
 
-// get the hash of a branch in this GitRepo
+// get the hash of a branch in this GitRepo.
 func (r *GitRepo) GetHash(branchName string) (string, error) {
 	cmd := exec.Command("git", "rev-parse", branchName)
 	cmd.Dir = expandPath(r.Folder)
@@ -602,7 +602,7 @@ func getCurrBranch(repo *GitRepo) (string, error) {
 	return branchName, nil
 }
 
-// True if the repo has a local version of the branch. (ignore remote tracking branches)
+// True if the repo has a local version of the branch. (ignore remote tracking branches).
 func hasLocalBranch(repo *GitRepo, branchName string) (bool, error) {
 	cmd := exec.Command("git", "branch") // #nosec G204
 	cmd.Dir = expandPath(repo.Folder)
