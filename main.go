@@ -510,11 +510,19 @@ func switchToBranch(i int, reportBranchChange *[]string, reportFail *[]string,
 		return
 	}
 
+	remoteDefault, err := repo.RemoteDefault()
+	if err != nil {
+		mutFail.Lock()
+		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %s\n", i, repo.Folder, err.Error()))
+		mutFail.Unlock()
+		return
+	}
 	// switch to branch if not already on it.
 	if branchName != repo.BranchUse {
 		// Action #1
-		// prepare branch switch command. example: git checkout master
-		cmd := exec.Command("git", "checkout", repo.BranchUse) // #nosec G204
+		// prepare branch switch command. example: git checkout --track origin/master
+		// TODO: if branch already exists switch without --track
+		cmd := exec.Command("git", "checkout", "--track", remoteDefault.Alias+"/"+repo.BranchUse) // #nosec G204
 		cmd.Dir = expandPath(repo.Folder)
 		// Run branch switch!
 		_, err = cmd.CombinedOutput()
@@ -534,13 +542,6 @@ func switchToBranch(i int, reportBranchChange *[]string, reportFail *[]string,
 
 	// make sure branch is up to date with origin
 	hashLocalUseBranch, err := repo.GetHash(repo.BranchUse)
-	if err != nil {
-		mutFail.Lock()
-		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %s\n", i, repo.Folder, err.Error()))
-		mutFail.Unlock()
-		return
-	}
-	remoteDefault, err := repo.RemoteDefault()
 	if err != nil {
 		mutFail.Lock()
 		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %s\n", i, repo.Folder, err.Error()))
