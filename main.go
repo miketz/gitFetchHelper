@@ -17,6 +17,7 @@ import (
 // Info about the server side remote.
 type Remote struct {
 	// A special tag to identify the meaning of the Remote.
+	// Alias is not enough to convey meaning as it's often "origin" by default after a git clone.
 	// "upstream" represents the orignal or canonical repo of the project.
 	// "mine" is my fork.
 	Sym string `json:"sym"`
