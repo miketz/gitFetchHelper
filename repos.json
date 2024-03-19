@@ -269,7 +269,7 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "mine"
  },
  {"name": "ggtags",
   "folder": "~/.emacs.d/notElpa/ggtags",
@@ -377,7 +377,7 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "mine"
  },
  {"name": "eros",
   "folder": "~/.emacs.d/notElpa/eros",
