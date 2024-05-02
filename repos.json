@@ -1160,7 +1160,7 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "mine"
+  "branchUse": "master"
  },
  {"name": "ivy-posframe",
   "folder": "~/.emacs.d/notElpa/ivy-posframe",
