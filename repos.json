@@ -4,7 +4,7 @@
                "url": "https://github.com/miketz/paredit",
                "alias": "origin"},
               {"sym": "upstream",
-               "url": "https://mumble.net/~campbell/git/paredit.git",
+               "url": "https://paredit.org/paredit.git",
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
