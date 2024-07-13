@@ -19,8 +19,8 @@
                "url": "https://github.com/mickeynp/combobulate",
                "alias": "upstream"}],
   "remoteDefault": "mine",
-  "branchMain": "master",
-  "branchUse": "master"
+  "branchMain": "development",
+  "branchUse": "development"
  },
  {"name": "buttercup",
   "folder": "~/.emacs.d/notElpa/emacs-buttercup",
