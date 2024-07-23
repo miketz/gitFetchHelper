@@ -22,6 +22,18 @@
   "branchMain": "development",
   "branchUse": "development"
  },
+ {"name": "treesitter-context",
+  "folder": "~/.emacs.d/notElpa/treesitter-context.el",
+  "remotes": [{"sym": "mine",
+               "url": "https://github.com/miketz/treesitter-context.el",
+               "alias": "origin"},
+              {"sym": "upstream",
+               "url": "https://github.com/zbelial/treesitter-context.el",
+               "alias": "upstream"}],
+  "remoteDefault": "mine",
+  "branchMain": "master",
+  "branchUse": "master"
+ },
  {"name": "buttercup",
   "folder": "~/.emacs.d/notElpa/emacs-buttercup",
   "remotes": [{"sym": "mine",
