@@ -18,12 +18,12 @@ import (
 type Remote struct {
 	// A special tag to identify the meaning of the Remote.
 	// Alias is not enough to convey meaning as it's often "origin" by default after a git clone.
-	// "upstream" represents the orignal or canonical repo of the project.
+	// "upstream" represents the original or canonical repo of the project.
 	// "mine" is my fork.
 	Sym string `json:"sym"`
 	// Git remote URL
 	URL string `json:"url"`
-	// The alias used by git to referece the remote. May match the Sym value
+	// The alias used by git to reference the remote. May match the Sym value
 	// but not always. For example my fork will usually have an alias of "origin" with a
 	// Sym of "mine"
 	Alias string `json:"alias"`
@@ -40,9 +40,9 @@ type GitRepo struct {
 	// a remote of Sym "mine" and "upstream", however there can be unlimited remotes. The
 	// Sym field is used to identify the special remotes in the slice.
 	Remotes []Remote `json:"remotes"`
-	// The remote we are tracking aginst. In my case this is usually my fork speicifed via sym "mine".
+	// The remote we are tracking against. In my case this is usually my fork specified via sym "mine".
 	RemoteDefaultSym string `json:"remoteDefault"`
-	// The branch we are intersted in following for this Emacs package.
+	// The branch we are interested in following for this Emacs package.
 	// It may be a "develop" branch if we are interested in the bleeding edge.
 	BranchMain string `json:"branchMain"`
 	// The branch we will use. Usually the same as BranchMain. But sometimes I
@@ -212,7 +212,7 @@ func fetch(i int, reportFetched *[]string, reportFail *[]string,
 
 	repo := DB[i]
 
-	// get upstream remotet info
+	// get upstream remote info
 	upstream, err := repo.RemoteUpstream()
 	if err != nil {
 		mutFail.Lock()
@@ -313,7 +313,7 @@ func setUpstreamRemote(i int, reportRemoteCreated *[]string, reportFail *[]strin
 	// split the raw shell output to a list of alias strings
 	aliases = strings.Split(string(remoteOutput), newLine)
 	if slices.Contains(aliases, upstream.Alias) {
-		// check if url matches url in DB. git command: git remote get-url {upstream}
+		// check if URL matches URL in DB. git command: git remote get-url {upstream}
 		cmd = exec.Command("git", "remote", "get-url", upstream.Alias) // #nosec G204
 		cmd.Dir = expandPath(repo.Folder)
 		urlOutput, err := cmd.CombinedOutput() //nolint:govet
@@ -402,23 +402,23 @@ func diff(i int, reportDiff *[]string, reportFail *[]string,
 	repo := DB[i]
 
 	// get current checked out branch name.
-	// It may be the configured repo.MainBranch, or custom "mine", or empty "" (detatched head)
+	// It may be the configured repo.MainBranch, or custom "mine", or empty "" (detached head)
 	branchName, err := getCurrBranch(&repo)
 	if err != nil {
 		mutFail.Lock()
-		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %s\n", i, repo.Folder, "problem getting current brnach name: "+err.Error()))
+		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %s\n", i, repo.Folder, "problem getting current branch name: "+err.Error()))
 		mutFail.Unlock()
 		return
 	}
 
 	// when comparing our current to upstream, we don't care about any custom changes in "mine" as those are expected difference from upstream.
-	// instead compare repo.Mainbranch if possible
+	// instead compare repo.BranchMain if possible
 	// or use HEAD if we are in a detached head state.
 	if branchName == "" {
 		// detached head.
 		branchName = "HEAD"
 	} else if branchName != repo.BranchMain {
-		// on my custom branch. Dont' compare that.
+		// on my custom branch. Don't' compare that.
 		branchName = repo.BranchMain
 	}
 
@@ -449,7 +449,7 @@ func diff(i int, reportDiff *[]string, reportFail *[]string,
 		return
 	}
 	mutDiff.Lock()
-	// don't incldue the diff output in stdout as it's too verbose to display
+	// don't include the diff output in stdout as it's too verbose to display
 	*reportDiff = append(*reportDiff, fmt.Sprintf("%d: %s %v\n",
 		i, repo.Folder, cmd.Args))
 	mutDiff.Unlock()
@@ -498,11 +498,11 @@ func switchToBranch(i int, reportBranchChange *[]string, reportFail *[]string,
 	repo := DB[i]
 
 	// get current checked out branch name.
-	// It may be the configured repo.MainBranch, or custom "mine", or empty "" (detatched head)
+	// It may be the configured repo.MainBranch, or custom "mine", or empty "" (detached head)
 	branchName, err := getCurrBranch(&repo)
 	if err != nil {
 		mutFail.Lock()
-		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %s\n", i, repo.Folder, "problem getting current brnach name: "+err.Error()))
+		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %s\n", i, repo.Folder, "problem getting current branch name: "+err.Error()))
 		mutFail.Unlock()
 		return
 	}
@@ -588,7 +588,7 @@ func switchToBranch(i int, reportBranchChange *[]string, reportFail *[]string,
 // get current checked out branch name for a GitRepo.
 func getCurrBranch(repo *GitRepo) (string, error) {
 	// get current checked out branch name.
-	// It may be the configured repo.MainBranch, or custom "mine", or empty "" (detatched head)
+	// It may be the configured repo.MainBranch, or custom "mine", or empty "" (detached head)
 	cmdBranch := exec.Command("git", "branch", "--show-current")
 	cmdBranch.Dir = expandPath(repo.Folder)
 	branchOut, err := cmdBranch.CombinedOutput()
@@ -615,7 +615,7 @@ func hasLocalBranch(repo *GitRepo, branchName string) (bool, error) {
 	//     mine
 	// split the raw shell output to a list of strings
 	branches := strings.Split(string(output), newLine)
-	// trim whitespace and * character from branch names
+	// trim white space and * character from branch names
 	for i, br := range branches {
 		branches[i] = strings.Trim(br, "\n *")
 	}
