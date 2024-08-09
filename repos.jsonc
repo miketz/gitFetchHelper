@@ -19,7 +19,7 @@
                "url": "https://github.com/mickeynp/combobulate",
                "alias": "upstream"}],
   "remoteDefault": "mine",
-  "branchMain": "development",
+  "branchMain": "development", // all the action seems to be going on here so treat it as the main branch.
   "branchUse": "development"
  },
  {"name": "treesitter-context",
@@ -236,7 +236,7 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "main",
-  "branchUse": "mine"
+  "branchUse": "mine" // ignore *.elc files
  },
  {"name": "libgit",
   "folder": "~/.emacs.d/notElpa/libegit2",
@@ -248,9 +248,11 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "main",
-  "branchUse": "mine"
+  "branchUse": "mine" // ignore .elc files
  },
- {"name": "csharp-mode",
+ {// NOTE: as of 11-19-2022 this is moved into emacs core. But keep this
+  // submodule to support older Emacs versions.
+  "name": "csharp-mode",
   "folder": "~/.emacs.d/notElpa/csharp-mode",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/csharp-mode",
@@ -295,7 +297,8 @@
   "branchMain": "master",
   "branchUse": "master"
  },
- {"name": "goto-chg",
+ {// NOTE: this package is is no longer bundled/vendored with evil.
+  "name": "goto-chg",
   "folder": "~/.emacs.d/notElpa/goto-chg",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/goto-chg",
@@ -312,6 +315,7 @@
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/mor",
                "alias": "origin"},
+              // my own project, so no 3rd party upstream
               {"sym": "upstream",
                "url": "https://github.com/miketz/mor",
                "alias": "upstream"}],
@@ -324,6 +328,7 @@
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/rapid-serial-visual-presentation",
                "alias": "origin"},
+              // my own project, so no 3rd party upstream
               {"sym": "upstream",
                "url": "https://github.com/miketz/rapid-serial-visual-presentation",
                "alias": "origin"}],
@@ -384,6 +389,7 @@
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/sallet",
                "alias": "origin"},
+              // NOTE: original upstream url was https://github.com/tetracat/sallet
               {"sym": "upstream",
                "url": "https://github.com/Fuco1/sallet",
                "alias": "upstream"}],
@@ -485,7 +491,7 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "works"
+  "branchUse": "works" // using an old version of eglot that works with Emacs 28.2. naming branch "works".
  },
  {"name": "lsp-mode",
   "folder": "~/.emacs.d/notElpa/lsp-mode",
@@ -905,7 +911,7 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "mine"
+  "branchUse": "mine" // ignore .elc files
  },
  {"name": "hydra",
   "folder": "~/.emacs.d/notElpa/hydra",
@@ -919,7 +925,9 @@
   "branchMain": "master",
   "branchUse": "mine"
  },
- {"name": "nov",
+ {// see web page https://depp.brause.cc/nov.el/
+  // TODO: point to the new upstream.
+  "name": "nov",
   "folder": "~/.emacs.d/notElpa/nov.el",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/nov.el",
@@ -933,6 +941,9 @@
  },
  {"name": "num3-mode",
   "folder": "~/.emacs.d/notElpa/num3-mode",
+  // Upstream not wired up because it's in elpa. I think elpa combines
+  // multiple projects in 1 repo so it's difficult to use an an "upstream".
+  // The "mine" fork is just a copy/paste of the code then upload to github.
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/num3-mode",
                "alias": "origin"},
@@ -1125,6 +1136,7 @@
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/icicles",
                "alias": "origin"},
+              // this is actually a mirror. The real upstream is emacs wiki.
               {"sym": "upstream",
                "url": "https://github.com/emacsmirror/icicles",
                "alias": "mirror"}],
@@ -1132,7 +1144,9 @@
   "branchMain": "master",
   "branchUse": "mine"
  },
- {"name": "hyperspec",
+ {// NOTE: not an elisp package. documentation package for common lisp from
+  // NOTE: Cannot modify this package due to license. Must be kept in it's full unmodified form.
+   "name": "hyperspec",
   "folder": "~/.emacs.d/notElpa/hyperspec",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/hyperspec",
@@ -1146,6 +1160,7 @@
  },
  {"name": "flames-of-freedom",
   "folder": "~/.emacs.d/notElpa/FlamesOfFreedom",
+  // just a fun package so no fork.
   "remotes": [{"sym": "upstream",
                "url": "https://github.com/wiz21b/FlamesOfFreedom",
                "alias": "origin"}],
@@ -1153,7 +1168,8 @@
   "branchMain": "master",
   "branchUse": "master"
  },
- {"name": "indium",
+ {// not using this. delete git submodule later
+  "name": "indium",
   "folder": "~/.emacs.d/notElpa/Indium",
   "remotes": [{"sym": "upstream",
                "url": "https://github.com/NicolasPetton/Indium",
@@ -1254,6 +1270,8 @@
               {"sym": "upstream",
                "url": "https://git.sr.ht/~technomancy/fennel-mode",
                "alias": "upstream"},
+              // used this mirror for my "mine" fork on github. But
+              // completely unused.
               {"sym": "mirror",
                "url": "https://github.com/emacsmirror/fennel-mode",
                "alias": "mirror"}],
@@ -1326,6 +1344,7 @@
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/compat.el",
                "alias": "origin"},
+              // this is really a mirror, not the root upstream
               {"sym": "upstream",
                "url": "https://github.com/phikal/compat.el",
                "alias": "mirror"}],
@@ -1343,7 +1362,7 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "mine"
+  "branchUse": "mine" // ignores .elc files
  },
  {"name": "macrostep",
   "folder": "~/.emacs.d/notElpa/macrostep",

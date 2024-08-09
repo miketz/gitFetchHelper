@@ -1,7 +1,8 @@
 package main
 
 import (
-	"encoding/json"
+	"bufio"
+	// "encoding/json"
 	"fmt"
 	"os"
 	"os/exec"
@@ -11,6 +12,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/komkom/jsonc/jsonc"
 	"golang.org/x/exp/slices"
 )
 
@@ -75,7 +77,7 @@ func (r *GitRepo) GetRemoteBySym(sym string) (Remote, error) {
 			return rem, nil
 		}
 	}
-	return Remote{}, fmt.Errorf("no " + sym + " remote configured for " + r.Name + " in repos.json")
+	return Remote{}, fmt.Errorf("no " + sym + " remote configured for " + r.Name + " in repos.jsonc")
 }
 
 // get the hash of a branch in this GitRepo.
@@ -154,7 +156,7 @@ func main() {
 }
 
 func getRepoData() ([]GitRepo, error) {
-	jsonFile, err := os.Open("./repos.json")
+	jsonFile, err := os.Open("./repos.jsonc")
 	if err != nil {
 		fmt.Printf("opening json file: %v\n", err.Error())
 		return nil, err
@@ -162,7 +164,13 @@ func getRepoData() ([]GitRepo, error) {
 	defer jsonFile.Close()
 
 	repos := make([]GitRepo, 0, 256)
-	jsonParser := json.NewDecoder(jsonFile)
+	// jsonParser := json.NewDecoder(jsonFile)
+	reader := bufio.NewReader(jsonFile)
+	jsonParser, err := jsonc.NewDecoder(reader)
+	if err != nil {
+		fmt.Printf("failed to create jsonc decoder: %v\n", err.Error())
+		return nil, err
+	}
 	err = jsonParser.Decode(&repos)
 	if err != nil {
 		fmt.Printf("parsing config file: %v\n", err.Error())
