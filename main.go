@@ -345,7 +345,7 @@ func setUpstreamRemote(i int, reportRemoteCreated *[]string, reportFail *[]strin
 	}
 CREATE_UPSTREAM:
 	// run git command: git remote add {alias} {url}
-	cmd = exec.Command("git", "remote", "add", upstream.Alias, upstream.URL) // #nosec G204
+	cmd = exec.Command("git", "remote", "add", upstream.Alias, upstream.URL) //nolint:gosec // #nosec G204
 	cmd.Dir = expandPath(repo.Folder)
 	createOutput, err := cmd.CombinedOutput()
 	if err != nil {
