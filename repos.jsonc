@@ -1391,6 +1391,18 @@
   "branchMain": "master",
   "branchUse": "master"
  },
+ {"name": "indent-bars",
+  "folder": "~/.emacs.d/notElpa/indent-bars",
+  "remotes": [{"sym": "mine",
+               "url": "https://github.com/miketz/indent-bars",
+               "alias": "origin"},
+              {"sym": "upstream",
+               "url": "https://github.com/jdtsmith/indent-bars",
+               "alias": "upstream"}],
+  "remoteDefault": "mine",
+  "branchMain": "main",
+  "branchUse": "main"
+ },
  {"name": "sunrise",
   "folder": "~/.emacs.d/notElpa/sunrise-commander",
   "remotes": [{"sym": "upstream",
