@@ -1403,6 +1403,18 @@
   "branchMain": "main",
   "branchUse": "main"
  },
+ {"name": "devdocs",
+  "folder": "~/.emacs.d/notElpa/devdocs.el",
+  "remotes": [{"sym": "mine",
+               "url": "https://github.com/miketz/devdocs.el",
+               "alias": "origin"},
+              {"sym": "upstream",
+               "url": "https://github.com/astoff/devdocs.el",
+               "alias": "upstream"}],
+  "remoteDefault": "mine",
+  "branchMain": "main",
+  "branchUse": "main"
+ },
  {"name": "sunrise",
   "folder": "~/.emacs.d/notElpa/sunrise-commander",
   "remotes": [{"sym": "upstream",
