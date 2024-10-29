@@ -1424,4 +1424,14 @@
   "branchMain": "master",
   "branchUse": "master"
  }
+ {"name": "binky",
+  "folder": "~/.emacs.d/notElpaYolo/binky.el",
+  "remotes": [{"sym": "upstream",
+               "url": "https://github.com/liuyinz/binky.el",
+               "alias": "origin"}],
+  "remoteDefault": "upstream",
+  "branchMain": "master",
+  "branchUse": "master",
+  "isYolo": true
+ }
 ]
