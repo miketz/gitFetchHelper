@@ -157,6 +157,7 @@ func main() {
 	}
 }
 
+// read repos.jsonc into memory
 func getRepoData() ([]GitRepo, error) {
 	jsonFile, err := os.Open("./repos.jsonc")
 	if err != nil {
