@@ -51,6 +51,8 @@ type GitRepo struct {
 	// will use a custom branch derived from BranchMain for small modifications,
 	// even if it's a minor change like adding to .gitignore.
 	BranchUse string `json:"branchUse"`
+	// not a git submodule
+	IsYolo bool `json:"isYolo"`
 }
 
 // get the "upstream" remote for the git repo.
