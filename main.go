@@ -643,3 +643,33 @@ func expandPath(path string) string {
 	path = strings.Replace(path, "~", homeDir, 1)
 	return path
 }
+
+// Returns true if folder path is inside a git repo.
+func isInGitRepo(path string) bool {
+	// git rev-parse --is-inside-work-tree
+	// "true\n"
+	cmd := exec.Command("git", "rev-parse", "--is-inside-work-tree") // #nosec G204
+	cmd.Dir = expandPath(path)
+	stdout, err := cmd.CombinedOutput()
+	if err != nil {
+		// git rev-parse throws a fatal err if not in a git repo.
+		// So just interpret err as not in a repo. (don't propogate the err up the chain)
+		return false
+	}
+	return string(stdout) == "true\n"
+}
+
+// Returns true if folder path is inside a git submodule.
+func isInGitSubmodule(path string) bool {
+	// git rev-parse --show-superproject-working-tree
+	// len(output) > 0
+	cmd := exec.Command("git", "rev-parse", "--show-superproject-working-tree") // #nosec G204
+	cmd.Dir = expandPath(path)
+	stdout, err := cmd.CombinedOutput()
+	if err != nil {
+		// git rev-parse throws a fatal err if not in a git repo.
+		// So just interpret err as not in a git submodule. (don't propogate the err up the chain)
+		return false
+	}
+	return len(stdout) > 0
+}
