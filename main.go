@@ -130,7 +130,7 @@ func initGlobals() error {
 // cmd := exec.Command("git", "config", "--file", ".gitmodules", "--get-regexp", "path", "|", "awk", "'{ print $2 }'")
 
 func printCommands() {
-	fmt.Printf("Enter a command: [fetch, diff, init, init2]\n")
+	fmt.Printf("Enter a command: [fetch, diff, init, init2, init3]\n")
 }
 
 func main() {
