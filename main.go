@@ -606,6 +606,15 @@ func cloneYoloRepos() {
 	reportClone := make([]string, 0, len(DB)) // alloc 100%. no realloc on happy path.
 	reportFail := make([]string, 0, 4)        // alloc for low failure rate
 
+	yoloFolder := expandPath("~/.emacs.d/notElpaYolo")
+	yoloFolderExists, _ := exists(yoloFolder)
+	if !yoloFolderExists {
+		if err := os.Mkdir(yoloFolder, os.ModePerm); err != nil {
+			fmt.Printf("Failed to create folder %s, err: %v\n", yoloFolder, err)
+			return
+		}
+	}
+
 	wg := sync.WaitGroup{}
 	mutClone := sync.Mutex{}
 	mutFail := sync.Mutex{}
