@@ -1454,4 +1454,14 @@
   "branchUse": "master",
   "isYolo": true
  }
+ {"name": "embark",
+  "folder": "~/.emacs.d/notElpaYolo/embark",
+  "remotes": [{"sym": "upstream",
+               "url": "https://github.com/oantolin/embark",
+               "alias": "origin"}],
+  "remoteDefault": "upstream",
+  "branchMain": "master",
+  "branchUse": "master",
+  "isYolo": true
+ }
 ]
