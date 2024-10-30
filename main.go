@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"path/filepath"
 	// "encoding/json".
 	"fmt"
 	"os"
@@ -51,6 +52,8 @@ type GitRepo struct {
 	// will use a custom branch derived from BranchMain for small modifications,
 	// even if it's a minor change like adding to .gitignore.
 	BranchUse string `json:"branchUse"`
+	// not a git submodule
+	IsYolo bool `json:"isYolo"`
 }
 
 // get the "upstream" remote for the git repo.
@@ -150,11 +153,14 @@ func main() {
 		setUpstreamRemotesIfMissing()
 	case "init2":
 		switchToBranches()
+	case "init3":
+		cloneYoloRepos()
 	default:
 		printCommands()
 	}
 }
 
+// read repos.jsonc into memory
 func getRepoData() ([]GitRepo, error) {
 	jsonFile, err := os.Open("./repos.jsonc")
 	if err != nil {
@@ -593,6 +599,93 @@ func switchToBranch(i int, reportBranchChange *[]string, reportFail *[]string,
 	}
 }
 
+// for each "yolo" repo, clone it if it does not yet exist
+func cloneYoloRepos() {
+	start := time.Now() // stop watch start
+
+	reportClone := make([]string, 0, len(DB)) // alloc 100%. no realloc on happy path.
+	reportFail := make([]string, 0, 4)        // alloc for low failure rate
+
+	wg := sync.WaitGroup{}
+	mutClone := sync.Mutex{}
+	mutFail := sync.Mutex{}
+	yoloCnt := 0
+	for i := 0; i < len(DB); i++ { // clone each "yolo" repo if missing
+		if !DB[i].IsYolo {
+			continue
+		}
+		yoloCnt++
+		wg.Add(1)
+		go cloneYolo(i, &reportClone, &reportFail, &wg, &mutClone, &mutFail)
+	}
+	wg.Wait()
+
+	// summary report. print # of branches checked out, duration
+	duration := time.Since(start) // stop watch end
+	fmt.Printf("\nChecked for existence of %d yolo repos, clone if not exist. time elapsed: %v\n",
+		yoloCnt, duration)
+
+	// clone report. only includes repos that needed to be cloned
+	fmt.Printf("\nClones performend: %d\n", len(reportClone))
+	for i := 0; i < len(reportClone); i++ {
+		fmt.Print(reportClone[i])
+	}
+	// failure report
+	fmt.Printf("\nFAILURES: %d\n", len(reportFail))
+	for i := 0; i < len(reportFail); i++ {
+		fmt.Print(reportFail[i])
+	}
+}
+
+// clone the "yolo" repo if it does not exist in target location.
+func cloneYolo(i int, reportClone *[]string, reportFail *[]string,
+	wg *sync.WaitGroup, mutClone *sync.Mutex, mutFail *sync.Mutex,
+) {
+	defer wg.Done()
+
+	repo := DB[i]
+	if !repo.IsYolo { // GUARD: for "yolo" repos only, not submodules
+		return
+	}
+
+	folder := expandPath(repo.Folder)
+	folderExists, _ := exists(folder)
+	if folderExists {
+		// assume folder is the cloned repo. don't bother verifying git repo status, etc. maybe later?
+		// return early early, nothing to clone
+		return
+	}
+
+	// get default remote
+	remote, err := repo.RemoteDefault()
+	if err != nil {
+		mutFail.Lock()
+		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %s\n", i, repo.Folder, err.Error()))
+		mutFail.Unlock()
+		return
+	}
+
+	// git clone --depth 1 --branch master url
+	// using a minimal clone for performance.
+	// for full history manually run: git fetch --unshallow
+	cmd := exec.Command("git", "clone", "--depth", "1", "--branch", repo.BranchUse, remote.URL) // #nosec G204
+	// go to parent folder 1 level up to execute the clone command.
+	// because the target folder does not exist until after clone
+	cmd.Dir = parentDir(folder)
+	stdout, err := cmd.CombinedOutput()
+	if err != nil {
+		mutFail.Lock()
+		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %v %s\n", i, repo.Folder, cmd.Args, err.Error()))
+		mutFail.Unlock()
+		return
+	}
+	// TODO: make sure there's nothing else i need to check for clone success/fail
+	mutClone.Lock()
+	*reportClone = append(*reportClone, fmt.Sprintf("%d: %s %v %s\n",
+		i, repo.Folder, cmd.Args, string(stdout)))
+	mutClone.Unlock()
+}
+
 // get current checked out branch name for a GitRepo.
 func getCurrBranch(repo *GitRepo) (string, error) {
 	// get current checked out branch name.
@@ -639,4 +732,54 @@ func expandPath(path string) string {
 	// replace 1st instance of ~ only.
 	path = strings.Replace(path, "~", homeDir, 1)
 	return path
+}
+
+// Returns true if folder path is inside a git repo.
+func isInGitRepo(path string) bool {
+	// git rev-parse --is-inside-work-tree
+	// "true\n"
+	cmd := exec.Command("git", "rev-parse", "--is-inside-work-tree") // #nosec G204
+	cmd.Dir = expandPath(path)
+	stdout, err := cmd.CombinedOutput()
+	if err != nil {
+		// git rev-parse throws a fatal err if not in a git repo.
+		// So just interpret err as not in a repo. (don't propogate the err up the chain)
+		return false
+	}
+	return string(stdout) == "true\n"
+}
+
+// Returns true if folder path is inside a git submodule.
+func isInGitSubmodule(path string) bool {
+	// git rev-parse --show-superproject-working-tree
+	// len(output) > 0
+	cmd := exec.Command("git", "rev-parse", "--show-superproject-working-tree") // #nosec G204
+	cmd.Dir = expandPath(path)
+	stdout, err := cmd.CombinedOutput()
+	if err != nil {
+		// git rev-parse throws a fatal err if not in a git repo.
+		// So just interpret err as not in a git submodule. (don't propogate the err up the chain)
+		return false
+	}
+	return len(stdout) > 0
+}
+
+// returns true if file or directory exists
+func exists(path string) (bool, error) {
+	_, err := os.Stat(path)
+	if err == nil {
+		return true, nil
+	}
+	if os.IsNotExist(err) {
+		return false, nil
+	}
+	return false, err
+}
+
+// get a path string to the parent dir of path.
+// string manipulation, directories do not need to exist on disk.
+func parentDir(path string) string {
+	path = expandPath(path)
+	parentDir := filepath.Join(path, "../")
+	return parentDir
 }

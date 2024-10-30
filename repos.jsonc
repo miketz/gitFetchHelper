@@ -1424,4 +1424,34 @@
   "branchMain": "master",
   "branchUse": "master"
  }
+ {"name": "binky",
+  "folder": "~/.emacs.d/notElpaYolo/binky.el",
+  "remotes": [{"sym": "upstream",
+               "url": "https://github.com/liuyinz/binky.el",
+               "alias": "origin"}],
+  "remoteDefault": "upstream",
+  "branchMain": "master",
+  "branchUse": "master",
+  "isYolo": true
+ }
+ {"name": "typing-game",
+  "folder": "~/.emacs.d/notElpaYolo/el-typing-game",
+  "remotes": [{"sym": "upstream",
+               "url": "https://github.com/lujun9972/el-typing-game",
+               "alias": "origin"}],
+  "remoteDefault": "upstream",
+  "branchMain": "master",
+  "branchUse": "master",
+  "isYolo": true
+ }
+ {"name": "2048-game",
+  "folder": "~/.emacs.d/notElpaYolo/2048-game",
+  "remotes": [{"sym": "mirror",
+               "url": "https://github.com/emacsmirror/2048-game",
+               "alias": "origin"}],
+  "remoteDefault": "mirror",
+  "branchMain": "master",
+  "branchUse": "master",
+  "isYolo": true
+ }
 ]
