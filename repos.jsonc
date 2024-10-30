@@ -1446,10 +1446,10 @@
  }
  {"name": "2048-game",
   "folder": "~/.emacs.d/notElpaYolo/2048-game",
-  "remotes": [{"sym": "mirror",
+  "remotes": [{"sym": "upstream", // acutally a mirror of the real upstream
                "url": "https://github.com/emacsmirror/2048-game",
                "alias": "origin"}],
-  "remoteDefault": "mirror",
+  "remoteDefault": "upstream",
   "branchMain": "master",
   "branchUse": "master",
   "isYolo": true
