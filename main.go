@@ -781,6 +781,5 @@ func exists(path string) (bool, error) {
 func parentDir(path string) string {
 	path = expandPath(path)
 	parentDir := filepath.Join(path, "../")
-	fmt.Printf("\ndir: %s\nparentDir: %s\n", path, parentDir)
 	return parentDir
 }
