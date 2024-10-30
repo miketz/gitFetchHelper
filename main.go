@@ -626,7 +626,7 @@ func cloneYoloRepos() {
 		yoloCnt, duration)
 
 	// clone report. only includes repos that needed to be cloned
-	fmt.Printf("\nClones performend: %d\n", len(reportClone))
+	fmt.Printf("\nClones performed: %d\n", len(reportClone))
 	for i := 0; i < len(reportClone); i++ {
 		fmt.Print(reportClone[i])
 	}
