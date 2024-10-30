@@ -743,7 +743,7 @@ func isInGitRepo(path string) bool {
 	stdout, err := cmd.CombinedOutput()
 	if err != nil {
 		// git rev-parse throws a fatal err if not in a git repo.
-		// So just interpret err as not in a repo. (don't propogate the err up the chain)
+		// So just interpret err as not in a repo. (don't propagate the err up the chain)
 		return false
 	}
 	return string(stdout) == "true\n"
@@ -758,7 +758,7 @@ func isInGitSubmodule(path string) bool {
 	stdout, err := cmd.CombinedOutput()
 	if err != nil {
 		// git rev-parse throws a fatal err if not in a git repo.
-		// So just interpret err as not in a git submodule. (don't propogate the err up the chain)
+		// So just interpret err as not in a git submodule. (don't propagate the err up the chain)
 		return false
 	}
 	return len(stdout) > 0
