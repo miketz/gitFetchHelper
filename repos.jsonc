@@ -1,5 +1,5 @@
 [{"name": "paredit",
-  "folder": "~/.emacs.d/notElpa/paredit",
+  "folder": "~/.emacs.d/notElpaYolo/paredit",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/paredit",
                "alias": "origin"},
@@ -8,10 +8,11 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "master",
+  "isYolo": true
  },
  {"name": "combobulate",
-  "folder": "~/.emacs.d/notElpa/combobulate",
+  "folder": "~/.emacs.d/notElpaYolo/combobulate",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/combobulate",
                "alias": "origin"},
@@ -20,10 +21,11 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "development", // all the action seems to be going on here so treat it as the main branch.
-  "branchUse": "development"
+  "branchUse": "development",
+  "isYolo": true
  },
  {"name": "treesitter-context",
-  "folder": "~/.emacs.d/notElpa/treesitter-context.el",
+  "folder": "~/.emacs.d/notElpaYolo/treesitter-context.el",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/treesitter-context.el",
                "alias": "origin"},
@@ -32,10 +34,11 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "master",
+  "isYolo": true
  },
  {"name": "buttercup",
-  "folder": "~/.emacs.d/notElpa/emacs-buttercup",
+  "folder": "~/.emacs.d/notElpaYolo/emacs-buttercup",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/emacs-buttercup",
                "alias": "origin"},
@@ -44,10 +47,11 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "master",
+  "isYolo": true
  },
  {"name": "swiper",
-  "folder": "~/.emacs.d/notElpa/swiper",
+  "folder": "~/.emacs.d/notElpaYolo/swiper",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/swiper",
                "alias": "origin"},
@@ -56,10 +60,11 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "master",
+  "isYolo": true
  },
  {"name": "ivy-explorer",
-  "folder": "~/.emacs.d/notElpa/ivy-explorer",
+  "folder": "~/.emacs.d/notElpaYolo/ivy-explorer",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/ivy-explorer",
                "alias": "origin"},
@@ -68,10 +73,11 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "master",
+  "isYolo": true
  },
  {"name": "visual-fill-column",
-  "folder": "~/.emacs.d/notElpa/visual-fill-column",
+  "folder": "~/.emacs.d/notElpaYolo/visual-fill-column",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/visual-fill-column",
                "alias": "origin"},
@@ -80,10 +86,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "main",
-  "branchUse": "main"
+  "branchUse": "main",
+
+  "isYolo": true
  },
  {"name": "klondike",
-  "folder": "~/.emacs.d/notElpa/Emacs-Klondike",
+  "folder": "~/.emacs.d/notElpaYolo/Emacs-Klondike",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/Emacs-Klondike",
                "alias": "origin"},
@@ -92,10 +100,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "primary",
-  "branchUse": "primary"
+  "branchUse": "primary",
+
+  "isYolo": true
  },
  {"name": "stem-reading-mode",
-  "folder": "~/.emacs.d/notElpa/stem-reading-mode.el",
+  "folder": "~/.emacs.d/notElpaYolo/stem-reading-mode.el",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/stem-reading-mode.el",
                "alias": "origin"},
@@ -104,10 +114,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "master",
+
+  "isYolo": true
  },
  {"name": "clojure-mode",
-  "folder": "~/.emacs.d/notElpa/clojure-mode",
+  "folder": "~/.emacs.d/notElpaYolo/clojure-mode",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/clojure-mode",
                "alias": "origin"},
@@ -116,10 +128,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "master",
+
+  "isYolo": true
  },
  {"name": "iedit",
-  "folder": "~/.emacs.d/notElpa/iedit",
+  "folder": "~/.emacs.d/notElpaYolo/iedit",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/iedit",
                "alias": "origin"},
@@ -128,22 +142,26 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "master",
+
+  "isYolo": true
  },
  {"name": "lispy",
-  "folder": "~/.emacs.d/notElpa/lispy",
+  "folder": "~/.emacs.d/notElpaYolo/lispy",
   "remotes": [{"sym": "mine",
-               "url": "https://https://github.com/miketz/lispy",
+               "url": "https://github.com/miketz/lispy",
                "alias": "origin"},
               {"sym": "upstream",
                "url": "https://github.com/abo-abo/lispy",
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "master",
+
+  "isYolo": true
  },
  {"name": "evil",
-  "folder": "~/.emacs.d/notElpa/evil",
+  "folder": "~/.emacs.d/notElpaYolo/evil",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/evil",
                "alias": "origin"},
@@ -152,10 +170,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "master",
+
+  "isYolo": true
  },
  {"name": "evil-leader",
-  "folder": "~/.emacs.d/notElpa/evil-leader",
+  "folder": "~/.emacs.d/notElpaYolo/evil-leader",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/evil-leader",
                "alias": "origin"},
@@ -164,10 +184,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "master",
+
+  "isYolo": true
  },
  {"name": "expand-region",
-  "folder": "~/.emacs.d/notElpa/expand-region.el",
+  "folder": "~/.emacs.d/notElpaYolo/expand-region.el",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/expand-region.el",
                "alias": "origin"},
@@ -176,10 +198,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "master",
+
+  "isYolo": true
  },
  {"name": "s",
-  "folder": "~/.emacs.d/notElpa/s.el",
+  "folder": "~/.emacs.d/notElpaYolo/s.el",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/s.el",
                "alias": "origin"},
@@ -188,10 +212,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "master",
+
+  "isYolo": true
  },
  {"name": "dash",
-  "folder": "~/.emacs.d/notElpa/dash.el",
+  "folder": "~/.emacs.d/notElpaYolo/dash.el",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/dash.el",
                "alias": "origin"},
@@ -200,10 +226,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "master",
+
+  "isYolo": true
  },
  {"name": "transient",
-  "folder": "~/.emacs.d/notElpa/transient",
+  "folder": "~/.emacs.d/notElpaYolo/transient",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/transient",
                "alias": "origin"},
@@ -212,22 +240,26 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "main",
-  "branchUse": "main"
+  "branchUse": "main",
+
+  "isYolo": true
  },
  {"name": "with-editor",
-  "folder": "~/.emacs.d/notElpa/with-editor",
+  "folder": "~/.emacs.d/notElpaYolo/with-editor",
   "remotes": [{"sym": "mine",
-               "url": "https://https://github.com/miketz/with-editor",
+               "url": "https://github.com/miketz/with-editor",
                "alias": "origin"},
               {"sym": "upstream",
                "url": "https://github.com/magit/with-editor",
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "main",
-  "branchUse": "main"
+  "branchUse": "main",
+
+  "isYolo": true
  },
  {"name": "magit",
-  "folder": "~/.emacs.d/notElpa/magit",
+  "folder": "~/.emacs.d/notElpaYolo/magit",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/magit",
                "alias": "origin"},
@@ -236,10 +268,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "main",
-  "branchUse": "mine" // ignore *.elc files
+  "branchUse": "mine" // ignore *.elc files,
+
+  "isYolo": true
  },
  {"name": "libgit",
-  "folder": "~/.emacs.d/notElpa/libegit2",
+  "folder": "~/.emacs.d/notElpaYolo/libegit2",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/libegit2",
                "alias": "origin"},
@@ -248,12 +282,14 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "main",
-  "branchUse": "mine" // ignore .elc files
+  "branchUse": "mine" // ignore .elc files,
+
+  "isYolo": true
  },
  {// NOTE: as of 11-19-2022 this is moved into emacs core. But keep this
   // submodule to support older Emacs versions.
   "name": "csharp-mode",
-  "folder": "~/.emacs.d/notElpa/csharp-mode",
+  "folder": "~/.emacs.d/notElpaYolo/csharp-mode",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/csharp-mode",
                "alias": "origin"},
@@ -262,19 +298,23 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "master",
+
+  "isYolo": true
  },
  {"name": "ctrlf",
-  "folder": "~/.emacs.d/notElpa/ctrlf",
+  "folder": "~/.emacs.d/notElpaYolo/ctrlf",
   "remotes": [{"sym": "upstream",
                "url": "https://github.com/radian-software/ctrlf",
                "alias": "origin"}],
   "remoteDefault": "upstream",
   "branchMain": "main",
-  "branchUse": "main"
+  "branchUse": "main",
+
+  "isYolo": true
  },
  {"name": "spinner",
-  "folder": "~/.emacs.d/notElpa/spinner.el",
+  "folder": "~/.emacs.d/notElpaYolo/spinner.el",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/spinner.el",
                "alias": "origin"},
@@ -283,23 +323,27 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "mine"
+  "branchUse": "mine",
+
+  "isYolo": true
  },
  {"name": "ggtags",
-  "folder": "~/.emacs.d/notElpa/ggtags",
+  "folder": "~/.emacs.d/notElpaYolo/ggtags",
   "remotes": [{"sym": "mine",
-               "url": "https://https://github.com/miketz/ggtags",
+               "url": "https://github.com/miketz/ggtags",
                "alias": "origin"},
               {"sym": "upstream",
                "url": "https://github.com/leoliu/ggtags",
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "master",
+
+  "isYolo": true
  },
  {// NOTE: this package is is no longer bundled/vendored with evil.
   "name": "goto-chg",
-  "folder": "~/.emacs.d/notElpa/goto-chg",
+  "folder": "~/.emacs.d/notElpaYolo/goto-chg",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/goto-chg",
                "alias": "origin"},
@@ -308,10 +352,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "master",
+
+  "isYolo": true
  },
  {"name": "mode-on-region",
-  "folder": "~/.emacs.d/notElpa/mine/mor",
+  "folder": "~/.emacs.d/notElpaYolo/mor",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/mor",
                "alias": "origin"},
@@ -321,10 +367,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "master",
+
+  "isYolo": true
  },
  {"name": "rsvp",
-  "folder": "~/.emacs.d/notElpa/mine/rapid-serial-visual-presentation",
+  "folder": "~/.emacs.d/notElpaYolo/rapid-serial-visual-presentation",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/rapid-serial-visual-presentation",
                "alias": "origin"},
@@ -334,10 +382,12 @@
                "alias": "origin"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "master",
+
+  "isYolo": true
  },
  {"name": "ido-grid",
-  "folder": "~/.emacs.d/notElpa/ido-grid.el",
+  "folder": "~/.emacs.d/notElpaYolo/ido-grid.el",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/ido-grid.el",
                "alias": "origin"},
@@ -346,10 +396,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "mine"
+  "branchUse": "mine",
+
+  "isYolo": true
  },
  {"name": "ov",
-  "folder": "~/.emacs.d/notElpa/ov",
+  "folder": "~/.emacs.d/notElpaYolo/ov",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/ov",
                "alias": "origin"},
@@ -358,10 +410,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "master",
+
+  "isYolo": true
  },
  {"name": "deferred",
-  "folder": "~/.emacs.d/notElpa/emacs-deferred",
+  "folder": "~/.emacs.d/notElpaYolo/emacs-deferred",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/emacs-deferred",
                "alias": "origin"},
@@ -370,10 +424,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "master",
+
+  "isYolo": true
  },
  {"name": "flx",
-  "folder": "~/.emacs.d/notElpa/flx",
+  "folder": "~/.emacs.d/notElpaYolo/flx",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/flx",
                "alias": "origin"},
@@ -382,10 +438,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "master",
+
+  "isYolo": true
  },
  {"name": "sallet",
-  "folder": "~/.emacs.d/notElpa/sallet",
+  "folder": "~/.emacs.d/notElpaYolo/sallet",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/sallet",
                "alias": "origin"},
@@ -395,10 +453,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "mine"
+  "branchUse": "mine",
+
+  "isYolo": true
  },
  {"name": "eros",
-  "folder": "~/.emacs.d/notElpa/eros",
+  "folder": "~/.emacs.d/notElpaYolo/eros",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/eros",
                "alias": "origin"},
@@ -407,10 +467,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "master",
+
+  "isYolo": true
  },
  {"name": "elisp-slime-nav",
-  "folder": "~/.emacs.d/notElpa/elisp-slime-nav",
+  "folder": "~/.emacs.d/notElpaYolo/elisp-slime-nav",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/elisp-slime-nav",
                "alias": "origin"},
@@ -419,10 +481,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "master",
+
+  "isYolo": true
  },
  {"name": "async",
-  "folder": "~/.emacs.d/notElpa/emacs-async",
+  "folder": "~/.emacs.d/notElpaYolo/emacs-async",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/emacs-async",
                "alias": "origin"},
@@ -431,10 +495,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "master",
+
+  "isYolo": true
  },
  {"name": "lua-mode",
-  "folder": "~/.emacs.d/notElpa/lua-mode",
+  "folder": "~/.emacs.d/notElpaYolo/lua-mode",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/lua-mode",
                "alias": "origin"},
@@ -443,10 +509,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "master",
+
+  "isYolo": true
  },
  {"name": "slime",
-  "folder": "~/.emacs.d/notElpa/slime",
+  "folder": "~/.emacs.d/notElpaYolo/slime",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/slime",
                "alias": "origin"},
@@ -455,10 +523,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "master",
+
+  "isYolo": true
  },
  {"name": "slime-company",
-  "folder": "~/.emacs.d/notElpa/slime-company",
+  "folder": "~/.emacs.d/notElpaYolo/slime-company",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/slime-company",
                "alias": "origin"},
@@ -467,10 +537,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "mine"
+  "branchUse": "mine",
+
+  "isYolo": true
  },
  {"name": "sly",
-  "folder": "~/.emacs.d/notElpa/sly",
+  "folder": "~/.emacs.d/notElpaYolo/sly",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/sly",
                "alias": "origin"},
@@ -479,10 +551,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "master",
+
+  "isYolo": true
  },
  {"name": "eglot",
-  "folder": "~/.emacs.d/notElpa/eglot",
+  "folder": "~/.emacs.d/notElpaYolo/eglot",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/eglot",
                "alias": "origin"},
@@ -491,10 +565,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "works" // using an old version of eglot that works with Emacs 28.2. naming branch "works".
+  "branchUse": "works" // using an old version of eglot that works with Emacs 28.2. naming branch "works".,
+
+  "isYolo": true
  },
  {"name": "lsp-mode",
-  "folder": "~/.emacs.d/notElpa/lsp-mode",
+  "folder": "~/.emacs.d/notElpaYolo/lsp-mode",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/lsp-mode",
                "alias": "origin"},
@@ -503,10 +579,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "master",
+
+  "isYolo": true
  },
  {"name": "f",
-  "folder": "~/.emacs.d/notElpa/f.el",
+  "folder": "~/.emacs.d/notElpaYolo/f.el",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/f.el",
                "alias": "origin"},
@@ -515,10 +593,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "master",
+
+  "isYolo": true
  },
  {"name": "ht",
-  "folder": "~/.emacs.d/notElpa/ht.el",
+  "folder": "~/.emacs.d/notElpaYolo/ht.el",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/ht.el",
                "alias": "origin"},
@@ -527,10 +607,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "master",
+
+  "isYolo": true
  },
  {"name": "markdown-mode",
-  "folder": "~/.emacs.d/notElpa/markdown-mode",
+  "folder": "~/.emacs.d/notElpaYolo/markdown-mode",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/markdown-mode",
                "alias": "origin"},
@@ -539,10 +621,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "master",
+
+  "isYolo": true
  },
  {"name": "avy",
-  "folder": "~/.emacs.d/notElpa/avy",
+  "folder": "~/.emacs.d/notElpaYolo/avy",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/avy",
                "alias": "origin"},
@@ -551,10 +635,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "mine"
+  "branchUse": "mine",
+
+  "isYolo": true
  },
  {"name": "rust-mode",
-  "folder": "~/.emacs.d/notElpa/rust-mode",
+  "folder": "~/.emacs.d/notElpaYolo/rust-mode",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/rust-mode",
                "alias": "origin"},
@@ -563,10 +649,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "master",
+
+  "isYolo": true
  },
  {"name": "racer",
-  "folder": "~/.emacs.d/notElpa/emacs-racer",
+  "folder": "~/.emacs.d/notElpaYolo/emacs-racer",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/emacs-racer",
                "alias": "origin"},
@@ -575,10 +663,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "mine"
+  "branchUse": "mine",
+
+  "isYolo": true
  },
  {"name": "helm",
-  "folder": "~/.emacs.d/notElpa/helm",
+  "folder": "~/.emacs.d/notElpaYolo/helm",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/helm",
                "alias": "origin"},
@@ -587,10 +677,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "master",
+
+  "isYolo": true
  },
  {"name": "rg",
-  "folder": "~/.emacs.d/notElpa/rg.el",
+  "folder": "~/.emacs.d/notElpaYolo/rg.el",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/rg.el",
                "alias": "origin"},
@@ -599,10 +691,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "master",
+
+  "isYolo": true
  },
  {"name": "rainbow-delimiters",
-  "folder": "~/.emacs.d/notElpa/rainbow-delimiters",
+  "folder": "~/.emacs.d/notElpaYolo/rainbow-delimiters",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/rainbow-delimiters",
                "alias": "origin"},
@@ -611,10 +705,25 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "master",
+
+  "isYolo": true
+ },
+ {"name": "rainbow-mode",
+  "folder": "~/.emacs.d/notElpaYolo/rainbow-delimiters",
+  "remotes": [{"sym": "mine",
+               "url": "https://github.com/miketz/rainbow-mode",
+               "alias": "origin"},
+              {"sym": "upstream",
+               "url": "https://github.com/ruediger/rainbow-mode",
+               "alias": "upstream"}],
+  "remoteDefault": "mine",
+  "branchMain": "master",
+  "branchUse": "master",
+  "isYolo": true
  },
  {"name": "js2-mode",
-  "folder": "~/.emacs.d/notElpa/js2-mode",
+  "folder": "~/.emacs.d/notElpaYolo/js2-mode",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/js2-mode",
                "alias": "origin"},
@@ -623,10 +732,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "master",
+
+  "isYolo": true
  },
  {"name": "js2-highlight-vars",
-  "folder": "~/.emacs.d/notElpa/js2-highlight-vars.el",
+  "folder": "~/.emacs.d/notElpaYolo/js2-highlight-vars.el",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/js2-highlight-vars.el",
                "alias": "origin"},
@@ -635,10 +746,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "mine"
+  "branchUse": "mine",
+
+  "isYolo": true
  },
  {"name": "json-mode",
-  "folder": "~/.emacs.d/notElpa/json-mode",
+  "folder": "~/.emacs.d/notElpaYolo/json-mode",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/json-mode",
                "alias": "origin"},
@@ -647,10 +760,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "mine"
+  "branchUse": "mine",
+
+  "isYolo": true
  },
  {"name": "json-snatcher",
-  "folder": "~/.emacs.d/notElpa/json-snatcher",
+  "folder": "~/.emacs.d/notElpaYolo/json-snatcher",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/json-snatcher",
                "alias": "origin"},
@@ -659,10 +774,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "mine"
+  "branchUse": "mine",
+
+  "isYolo": true
  },
  {"name": "leerzeichen",
-  "folder": "~/.emacs.d/notElpa/leerzeichen.el",
+  "folder": "~/.emacs.d/notElpaYolo/leerzeichen.el",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/leerzeichen.el",
                "alias": "origin"},
@@ -671,10 +788,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "mine"
+  "branchUse": "mine",
+
+  "isYolo": true
  },
  {"name": "citre",
-  "folder": "~/.emacs.d/notElpa/citre",
+  "folder": "~/.emacs.d/notElpaYolo/citre",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/citre",
                "alias": "origin"},
@@ -683,10 +802,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "master",
+
+  "isYolo": true
  },
  {"name": "haskell-mode",
-  "folder": "~/.emacs.d/notElpa/haskell-mode",
+  "folder": "~/.emacs.d/notElpaYolo/haskell-mode",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/haskell-mode",
                "alias": "origin"},
@@ -695,10 +816,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "master",
+
+  "isYolo": true
  },
  {"name": "wgrep",
-  "folder": "~/.emacs.d/notElpa/Emacs-wgrep",
+  "folder": "~/.emacs.d/notElpaYolo/Emacs-wgrep",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/Emacs-wgrep",
                "alias": "origin"},
@@ -707,10 +830,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "master",
+
+  "isYolo": true
  },
  {"name": "projectile",
-  "folder": "~/.emacs.d/notElpa/projectile",
+  "folder": "~/.emacs.d/notElpaYolo/projectile",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/projectile",
                "alias": "origin"},
@@ -719,10 +844,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "master",
+
+  "isYolo": true
  },
  {"name": "swift-mode",
-  "folder": "~/.emacs.d/notElpa/swift-mode",
+  "folder": "~/.emacs.d/notElpaYolo/swift-mode",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/swift-mode",
                "alias": "origin"},
@@ -731,10 +858,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "master",
+
+  "isYolo": true
  },
  {"name": "dank-mode",
-  "folder": "~/.emacs.d/notElpa/dank-mode",
+  "folder": "~/.emacs.d/notElpaYolo/dank-mode",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/dank-mode",
                "alias": "origin"},
@@ -743,10 +872,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "mine"
+  "branchUse": "mine",
+
+  "isYolo": true
  },
  {"name": "darkroom",
-  "folder": "~/.emacs.d/notElpa/darkroom",
+  "folder": "~/.emacs.d/notElpaYolo/darkroom",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/darkroom",
                "alias": "origin"},
@@ -755,10 +886,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "master",
+
+  "isYolo": true
  },
  {"name": "smex",
-  "folder": "~/.emacs.d/notElpa/smex",
+  "folder": "~/.emacs.d/notElpaYolo/smex",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/smex",
                "alias": "origin"},
@@ -767,10 +900,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "mine"
+  "branchUse": "mine",
+
+  "isYolo": true
  },
  {"name": "pkg-info",
-  "folder": "~/.emacs.d/notElpa/pkg-info",
+  "folder": "~/.emacs.d/notElpaYolo/pkg-info",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/pkg-info",
                "alias": "origin"},
@@ -779,10 +914,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "master",
+
+  "isYolo": true
  },
  {"name": "epl",
-  "folder": "~/.emacs.d/notElpa/epl",
+  "folder": "~/.emacs.d/notElpaYolo/epl",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/epl",
                "alias": "origin"},
@@ -791,10 +928,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "master",
+
+  "isYolo": true
  },
  {"name": "erc-hl-nicks",
-  "folder": "~/.emacs.d/notElpa/erc-hl-nicks",
+  "folder": "~/.emacs.d/notElpaYolo/erc-hl-nicks",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/erc-hl-nicks",
                "alias": "origin"},
@@ -803,10 +942,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "master",
+
+  "isYolo": true
  },
  {"name": "esxml",
-  "folder": "~/.emacs.d/notElpa/esxml",
+  "folder": "~/.emacs.d/notElpaYolo/esxml",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/esxml",
                "alias": "origin"},
@@ -815,10 +956,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "mine"
+  "branchUse": "mine",
+
+  "isYolo": true
  },
  {"name": "flycheck",
-  "folder": "~/.emacs.d/notElpa/flycheck",
+  "folder": "~/.emacs.d/notElpaYolo/flycheck",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/flycheck",
                "alias": "origin"},
@@ -827,10 +970,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "master",
+
+  "isYolo": true
  },
  {"name": "smart-tabs-mode",
-  "folder": "~/.emacs.d/notElpa/smarttabs",
+  "folder": "~/.emacs.d/notElpaYolo/smarttabs",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/smarttabs",
                "alias": "origin"},
@@ -839,10 +984,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "mine"
+  "branchUse": "mine",
+
+  "isYolo": true
  },
  {"name": "web-mode",
-  "folder": "~/.emacs.d/notElpa/web-mode",
+  "folder": "~/.emacs.d/notElpaYolo/web-mode",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/web-mode",
                "alias": "origin"},
@@ -851,10 +998,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "master",
+
+  "isYolo": true
  },
  {"name": "puni",
-  "folder": "~/.emacs.d/notElpa/puni",
+  "folder": "~/.emacs.d/notElpaYolo/puni",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/puni",
                "alias": "origin"},
@@ -863,10 +1012,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "master",
+
+  "isYolo": true
  },
  {"name": "ace-link",
-  "folder": "~/.emacs.d/notElpa/ace-link",
+  "folder": "~/.emacs.d/notElpaYolo/ace-link",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/ace-link",
                "alias": "origin"},
@@ -875,10 +1026,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "master",
+
+  "isYolo": true
  },
  {"name": "ace-window",
-  "folder": "~/.emacs.d/notElpa/ace-window",
+  "folder": "~/.emacs.d/notElpaYolo/ace-window",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/ace-window",
                "alias": "origin"},
@@ -887,10 +1040,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "mine"
+  "branchUse": "mine",
+
+  "isYolo": true
  },
  {"name": "adoc-mode",
-  "folder": "~/.emacs.d/notElpa/adoc-mode",
+  "folder": "~/.emacs.d/notElpaYolo/adoc-mode",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/adoc-mode",
                "alias": "origin"},
@@ -899,10 +1054,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "master",
+
+  "isYolo": true
  },
  {"name": "markup-faces",
-  "folder": "~/.emacs.d/notElpa/markup-faces",
+  "folder": "~/.emacs.d/notElpaYolo/markup-faces",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/markup-faces",
                "alias": "origin"},
@@ -911,10 +1068,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "mine" // ignore .elc files
+  "branchUse": "mine" // ignore .elc files,
+
+  "isYolo": true
  },
  {"name": "hydra",
-  "folder": "~/.emacs.d/notElpa/hydra",
+  "folder": "~/.emacs.d/notElpaYolo/hydra",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/hydra",
                "alias": "origin"},
@@ -923,12 +1082,14 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "mine"
+  "branchUse": "mine",
+
+  "isYolo": true
  },
  {// see web page https://depp.brause.cc/nov.el/
   // TODO: point to the new upstream.
   "name": "nov",
-  "folder": "~/.emacs.d/notElpa/nov.el",
+  "folder": "~/.emacs.d/notElpaYolo/nov.el",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/nov.el",
                "alias": "origin"},
@@ -937,10 +1098,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "mine"
+  "branchUse": "mine",
+
+  "isYolo": true
  },
  {"name": "num3-mode",
-  "folder": "~/.emacs.d/notElpa/num3-mode",
+  "folder": "~/.emacs.d/notElpaYolo/num3-mode",
   // Upstream not wired up because it's in elpa. I think elpa combines
   // multiple projects in 1 repo so it's difficult to use an an "upstream".
   // The "mine" fork is just a copy/paste of the code then upload to github.
@@ -952,10 +1115,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "master",
+
+  "isYolo": true
  },
  {"name": "nyan-mode",
-  "folder": "~/.emacs.d/notElpa/nyan-mode",
+  "folder": "~/.emacs.d/notElpaYolo/nyan-mode",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/nyan-mode",
                "alias": "origin"},
@@ -964,10 +1129,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "mine"
+  "branchUse": "mine",
+
+  "isYolo": true
  },
  {"name": "php-mode",
-  "folder": "~/.emacs.d/notElpa/php-mode",
+  "folder": "~/.emacs.d/notElpaYolo/php-mode",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/php-mode",
                "alias": "origin"},
@@ -976,10 +1143,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "master",
+
+  "isYolo": true
  },
  {"name": "reformatter",
-  "folder": "~/.emacs.d/notElpa/emacs-reformatter",
+  "folder": "~/.emacs.d/notElpaYolo/emacs-reformatter",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/emacs-reformatter",
                "alias": "origin"},
@@ -988,10 +1157,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "master",
+
+  "isYolo": true
  },
  {"name": "zig-mode",
-  "folder": "~/.emacs.d/notElpa/zig-mode",
+  "folder": "~/.emacs.d/notElpaYolo/zig-mode",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/zig-mode",
                "alias": "origin"},
@@ -1000,10 +1171,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "master",
+
+  "isYolo": true
  },
  {"name": "go-mode",
-  "folder": "~/.emacs.d/notElpa/go-mode.el",
+  "folder": "~/.emacs.d/notElpaYolo/go-mode.el",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/go-mode.el",
                "alias": "origin"},
@@ -1012,10 +1185,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "master",
+
+  "isYolo": true
  },
  {"name": "zoutline",
-  "folder": "~/.emacs.d/notElpa/zoutline",
+  "folder": "~/.emacs.d/notElpaYolo/zoutline",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/zoutline",
                "alias": "origin"},
@@ -1024,10 +1199,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "mine"
+  "branchUse": "mine",
+
+  "isYolo": true
  },
  {"name": "yasnippet",
-  "folder": "~/.emacs.d/notElpa/yasnippet",
+  "folder": "~/.emacs.d/notElpaYolo/yasnippet",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/yasnippet",
                "alias": "origin"},
@@ -1036,10 +1213,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "master",
+
+  "isYolo": true
  },
  {"name": "yaml-mode",
-  "folder": "~/.emacs.d/notElpa/yaml-mode",
+  "folder": "~/.emacs.d/notElpaYolo/yaml-mode",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/yaml-mode",
                "alias": "origin"},
@@ -1048,10 +1227,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "master",
+
+  "isYolo": true
  },
  {"name": "vimrc-mode",
-  "folder": "~/.emacs.d/notElpa/vimrc-mode",
+  "folder": "~/.emacs.d/notElpaYolo/vimrc-mode",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/vimrc-mode",
                "alias": "origin"},
@@ -1060,10 +1241,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "mine"
+  "branchUse": "mine",
+
+  "isYolo": true
  },
  {"name": "unkillable-scratch",
-  "folder": "~/.emacs.d/notElpa/unkillable-scratch",
+  "folder": "~/.emacs.d/notElpaYolo/unkillable-scratch",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/unkillable-scratch",
                "alias": "origin"},
@@ -1072,10 +1255,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "mine"
+  "branchUse": "mine",
+
+  "isYolo": true
  },
  {"name": "sicp",
-  "folder": "~/.emacs.d/notElpa/sicp-info",
+  "folder": "~/.emacs.d/notElpaYolo/sicp-info",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/sicp-info",
                "alias": "origin"},
@@ -1084,19 +1269,23 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "mine"
+  "branchUse": "mine",
+
+  "isYolo": true
  },
  {"name": "prescient",
-  "folder": "~/.emacs.d/notElpa/prescient.el",
+  "folder": "~/.emacs.d/notElpaYolo/prescient.el",
   "remotes": [{"sym": "upstream",
                "url": "https://github.com/radian-software/prescient.el",
                "alias": "origin"}],
   "remoteDefault": "upstream",
   "branchMain": "main",
-  "branchUse": "main"
+  "branchUse": "main",
+
+  "isYolo": true
  },
  {"name": "pos-tip",
-  "folder": "~/.emacs.d/notElpa/pos-tip",
+  "folder": "~/.emacs.d/notElpaYolo/pos-tip",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/pos-tip",
                "alias": "origin"},
@@ -1105,10 +1294,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "mine"
+  "branchUse": "mine",
+
+  "isYolo": true
  },
  {"name": "powershell",
-  "folder": "~/.emacs.d/notElpa/powershell.el",
+  "folder": "~/.emacs.d/notElpaYolo/powershell.el",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/powershell.el",
                "alias": "origin"},
@@ -1117,10 +1308,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "master",
+
+  "isYolo": true
  },
  {"name": "highlight-indent-guides",
-  "folder": "~/.emacs.d/notElpa/highlight-indent-guides",
+  "folder": "~/.emacs.d/notElpaYolo/highlight-indent-guides",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/highlight-indent-guides",
                "alias": "origin"},
@@ -1129,10 +1322,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "mine"
+  "branchUse": "mine",
+
+  "isYolo": true
  },
  {"name": "icicles",
-  "folder": "~/.emacs.d/notElpa/icicles",
+  "folder": "~/.emacs.d/notElpaYolo/icicles",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/icicles",
                "alias": "origin"},
@@ -1142,12 +1337,14 @@
                "alias": "mirror"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "mine"
+  "branchUse": "mine",
+
+  "isYolo": true
  },
  {// NOTE: not an elisp package. documentation package for common lisp from
   // NOTE: Cannot modify this package due to license. Must be kept in it's full unmodified form.
    "name": "hyperspec",
-  "folder": "~/.emacs.d/notElpa/hyperspec",
+  "folder": "~/.emacs.d/notElpaYolo/hyperspec",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/hyperspec",
                "alias": "origin"},
@@ -1156,30 +1353,36 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "master",
+
+  "isYolo": true
  },
  {"name": "flames-of-freedom",
-  "folder": "~/.emacs.d/notElpa/FlamesOfFreedom",
+  "folder": "~/.emacs.d/notElpaYolo/FlamesOfFreedom",
   // just a fun package so no fork.
   "remotes": [{"sym": "upstream",
                "url": "https://github.com/wiz21b/FlamesOfFreedom",
                "alias": "origin"}],
   "remoteDefault": "upstream",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "master",
+
+  "isYolo": true
  },
  {// not using this. delete git submodule later
   "name": "indium",
-  "folder": "~/.emacs.d/notElpa/Indium",
+  "folder": "~/.emacs.d/notElpaYolo/Indium",
   "remotes": [{"sym": "upstream",
                "url": "https://github.com/NicolasPetton/Indium",
                "alias": "origin"}],
   "remoteDefault": "upstream",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "master",
+
+  "isYolo": true
  },
  {"name": "posframe",
-  "folder": "~/.emacs.d/notElpa/posframe",
+  "folder": "~/.emacs.d/notElpaYolo/posframe",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/posframe",
                "alias": "origin"},
@@ -1188,10 +1391,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "master",
+
+  "isYolo": true
  },
  {"name": "ivy-posframe",
-  "folder": "~/.emacs.d/notElpa/ivy-posframe",
+  "folder": "~/.emacs.d/notElpaYolo/ivy-posframe",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/ivy-posframe",
                "alias": "origin"},
@@ -1200,10 +1405,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "mine"
+  "branchUse": "mine",
+
+  "isYolo": true
  },
  {"name": "autothemer",
-  "folder": "~/.emacs.d/notElpa/autothemer",
+  "folder": "~/.emacs.d/notElpaYolo/autothemer",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/autothemer",
                "alias": "origin"},
@@ -1212,10 +1419,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "mine"
+  "branchUse": "mine",
+
+  "isYolo": true
  },
  {"name": "company",
-  "folder": "~/.emacs.d/notElpa/company-mode",
+  "folder": "~/.emacs.d/notElpaYolo/company-mode",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/company-mode",
                "alias": "origin"},
@@ -1224,10 +1433,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "master",
+
+  "isYolo": true
  },
  {"name": "company-web",
-  "folder": "~/.emacs.d/notElpa/company-web",
+  "folder": "~/.emacs.d/notElpaYolo/company-web",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/company-web",
                "alias": "origin"},
@@ -1236,10 +1447,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "mine"
+  "branchUse": "mine",
+
+  "isYolo": true
  },
  {"name": "company-lsp",
-  "folder": "~/.emacs.d/notElpa/company-lsp",
+  "folder": "~/.emacs.d/notElpaYolo/company-lsp",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/company-lsp",
                "alias": "origin"},
@@ -1248,10 +1461,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "master",
+
+  "isYolo": true
  },
  {"name": "web-completion-data",
-  "folder": "~/.emacs.d/notElpa/web-completion-data",
+  "folder": "~/.emacs.d/notElpaYolo/web-completion-data",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/web-completion-data",
                "alias": "origin"},
@@ -1260,10 +1475,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "mine"
+  "branchUse": "mine",
+
+  "isYolo": true
  },
  {"name": "fennel-mode",
-  "folder": "~/.emacs.d/notElpa/fennel-mode",
+  "folder": "~/.emacs.d/notElpaYolo/fennel-mode",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/fennel-mode",
                "alias": "origin"},
@@ -1277,10 +1494,12 @@
                "alias": "mirror"}],
   "remoteDefault": "mine",
   "branchMain": "main",
-  "branchUse": "main"
+  "branchUse": "main",
+
+  "isYolo": true
  },
  {"name": "vertico",
-  "folder": "~/.emacs.d/notElpa/vertico",
+  "folder": "~/.emacs.d/notElpaYolo/vertico",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/vertico",
                "alias": "origin"},
@@ -1289,10 +1508,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "main",
-  "branchUse": "main"
+  "branchUse": "main",
+
+  "isYolo": true
  },
  {"name": "consult",
-  "folder": "~/.emacs.d/notElpa/consult",
+  "folder": "~/.emacs.d/notElpaYolo/consult",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/consult",
                "alias": "origin"},
@@ -1301,10 +1522,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "main",
-  "branchUse": "main"
+  "branchUse": "main",
+
+  "isYolo": true
  },
  {"name": "bug-hunter",
-  "folder": "~/.emacs.d/notElpa/elisp-bug-hunter",
+  "folder": "~/.emacs.d/notElpaYolo/elisp-bug-hunter",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/elisp-bug-hunter",
                "alias": "origin"},
@@ -1313,10 +1536,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "master",
+
+  "isYolo": true
  },
  {"name": "typescript-mode",
-  "folder": "~/.emacs.d/notElpa/typescript.el",
+  "folder": "~/.emacs.d/notElpaYolo/typescript.el",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/typescript.el",
                "alias": "origin"},
@@ -1325,10 +1550,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "master",
+
+  "isYolo": true
  },
  {"name": "tide",
-  "folder": "~/.emacs.d/notElpa/tide",
+  "folder": "~/.emacs.d/notElpaYolo/tide",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/tide",
                "alias": "origin"},
@@ -1337,10 +1564,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "master",
+
+  "isYolo": true
  },
  {"name": "compat",
-  "folder": "~/.emacs.d/notElpa/compat.el",
+  "folder": "~/.emacs.d/notElpaYolo/compat.el",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/compat.el",
                "alias": "origin"},
@@ -1350,10 +1579,12 @@
                "alias": "mirror"}],
   "remoteDefault": "mine",
   "branchMain": "main",
-  "branchUse": "main"
+  "branchUse": "main",
+
+  "isYolo": true
  },
  {"name": "slime-volleyball",
-  "folder": "~/.emacs.d/notElpa/slime-volleyball",
+  "folder": "~/.emacs.d/notElpaYolo/slime-volleyball",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/slime-volleyball",
                "alias": "origin"},
@@ -1362,10 +1593,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "mine" // ignores .elc files
+  "branchUse": "mine" // ignores .elc files,
+
+  "isYolo": true
  },
  {"name": "macrostep",
-  "folder": "~/.emacs.d/notElpa/macrostep",
+  "folder": "~/.emacs.d/notElpaYolo/macrostep",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/macrostep",
                "alias": "origin"},
@@ -1377,10 +1610,12 @@
                "alias": "upstreamOrig"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "master",
+
+  "isYolo": true
  },
  {"name": "sx",
-  "folder": "~/.emacs.d/notElpa/sx.el",
+  "folder": "~/.emacs.d/notElpaYolo/sx.el",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/sx.el",
                "alias": "origin"},
@@ -1389,10 +1624,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "master",
+
+  "isYolo": true
  },
  {"name": "indent-bars",
-  "folder": "~/.emacs.d/notElpa/indent-bars",
+  "folder": "~/.emacs.d/notElpaYolo/indent-bars",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/indent-bars",
                "alias": "origin"},
@@ -1401,10 +1638,12 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "main",
-  "branchUse": "main"
+  "branchUse": "main",
+
+  "isYolo": true
  },
  {"name": "devdocs",
-  "folder": "~/.emacs.d/notElpa/devdocs.el",
+  "folder": "~/.emacs.d/notElpaYolo/devdocs.el",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/devdocs.el",
                "alias": "origin"},
@@ -1413,16 +1652,20 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "main",
-  "branchUse": "main"
+  "branchUse": "main",
+
+  "isYolo": true
  },
  {"name": "sunrise",
-  "folder": "~/.emacs.d/notElpa/sunrise-commander",
+  "folder": "~/.emacs.d/notElpaYolo/sunrise-commander",
   "remotes": [{"sym": "upstream",
                "url": "https://github.com/sunrise-commander/sunrise-commander",
                "alias": "upstream"}],
   "remoteDefault": "upstream",
   "branchMain": "master",
-  "branchUse": "master"
+  "branchUse": "master",
+
+  "isYolo": true
  }
  {"name": "binky",
   "folder": "~/.emacs.d/notElpaYolo/binky.el",
@@ -1458,6 +1701,20 @@
   "folder": "~/.emacs.d/notElpaYolo/embark",
   "remotes": [{"sym": "upstream",
                "url": "https://github.com/oantolin/embark",
+               "alias": "origin"}],
+  "remoteDefault": "upstream",
+  "branchMain": "master",
+  "branchUse": "master",
+  "isYolo": true
+ }
+ {"name": "gitFetchHelper",
+  "folder": "~/.emacs.d/notElpaYolo/gitFetchHelper",
+  "remotes": [{"sym": "mine",
+               "url": "https://github.com/miketz/gitFetchHelper",
+               "alias": "origin"},
+              // my own project, so no 3rd party upstream
+              {"sym": "upstream",
+               "url": "https://github.com/miketz/gitFetchHelper",
                "alias": "origin"}],
   "remoteDefault": "upstream",
   "branchMain": "master",
