@@ -446,6 +446,8 @@ func diff(i int, reportDiff *[]string, reportFail *[]string,
 	}
 
 	// prepare diff command. example: git diff master upstream/master
+	// TODO: maybe compare git diff origin/master upstream/master
+	//       to handle case where i'm on a "mine" branch and "master" only exists as a remote-tracking branch after a clone
 	cmd := exec.Command("git", "diff",
 		branchName,
 		upstream.Alias+"/"+repo.BranchMain) // #nosec G204
