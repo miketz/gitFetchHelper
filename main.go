@@ -155,6 +155,8 @@ func main() {
 		switchToBranches()
 	case "init3":
 		cloneYoloRepos()
+	case "init4":
+		createLocalBranches()
 	default:
 		printCommands()
 	}
@@ -469,6 +471,46 @@ func diff(i int, reportDiff *[]string, reportFail *[]string,
 	*reportDiff = append(*reportDiff, fmt.Sprintf("%d: %s %v\n",
 		i, repo.Folder, cmd.Args))
 	mutDiff.Unlock()
+}
+
+// create local branches (ie featureX) for each remote tracking branch (ie origin/featureX).
+// For all remote tracking of the default remote.
+// this is needed for things like listReposWithUpstreamCodeToMerge() to work as it diffs
+// the "local" branch (at least currently), and a differnet branch may be checked out (featureQ).
+func createLocalBranches() {
+	start := time.Now() // stop watch start
+
+	reportBranch := make([]string, 0, len(DB)) // alloc 100%. no realloc on happy path.
+	reportFail := make([]string, 0, 4)         // alloc for low failure rate
+
+	wg := sync.WaitGroup{}
+	mutBranch := sync.Mutex{}
+	mutFail := sync.Mutex{}
+	for i := 0; i < len(DB); i++ { // clone each "yolo" repo if missing
+		wg.Add(1)
+		go createLocalBranch(i, &reportClone, &reportFail, &wg, &mutClone, &mutFail)
+	}
+	wg.Wait()
+
+	// summary report. print # of branches checked out, duration
+	duration := time.Since(start) // stop watch end
+	fmt.Printf("\nChecked for existence of local branches in %d repos, create if not exist. time elapsed: %v\n",
+		len(DB), duration)
+
+	// clone report. only includes repos that needed to be cloned
+	fmt.Printf("\nRepos with local branches created: %d\n", len(reportBranch))
+	for i := 0; i < len(reportBranch); i++ {
+		fmt.Print(reportBranch[i])
+	}
+	// failure report
+	fmt.Printf("\nFAILURES: %d\n", len(reportFail))
+	for i := 0; i < len(reportFail); i++ {
+		fmt.Print(reportFail[i])
+	}
+}
+
+// create "local" branch if it does not exist yet.
+func createLocalBranch() {
 }
 
 // Checkout the "UseBranch" for each git submodule.
