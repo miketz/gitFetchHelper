@@ -674,10 +674,13 @@ func cloneYolo(i int, reportClone *[]string, reportFail *[]string,
 		return
 	}
 
-	// git clone --depth 1 --branch master url
-	// using a minimal clone for performance.
+	// git clone --depth 1 --branch master --no-single-branch remoteUrl
+	// using a shallow clone for performance. But still get the tip of each branch
+	// with "--no-single-branch" to avoid a headache later when trying to switch to
+	// other branches. git makes you go through convoluted steps if you don't get
+	// the branches during the clone.
 	// for full history manually run: git fetch --unshallow
-	cmd := exec.Command("git", "clone", "--depth", "1", "--branch", repo.BranchUse, remote.URL) // #nosec G204
+	cmd := exec.Command("git", "clone", "--depth", "1", "--branch", repo.BranchUse, "--no-single-branch", remote.URL) // #nosec G204
 	// go to parent folder 1 level up to execute the clone command.
 	// because the target folder does not exist until after clone
 	cmd.Dir = parentDir(folder)
