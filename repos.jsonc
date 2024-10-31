@@ -710,7 +710,7 @@
   "isYolo": true
  },
  {"name": "rainbow-mode",
-  "folder": "~/.emacs.d/notElpaYolo/rainbow-delimiters",
+  "folder": "~/.emacs.d/notElpaYolo/rainbow-mode",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/rainbow-mode",
                "alias": "origin"},
