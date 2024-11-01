@@ -519,13 +519,13 @@ func createLocalBranch(i int, reportBranch *[]string, reportFail *[]string,
 
 	// get current checked out branch name.
 	// It may be the configured repo.MainBranch, or custom "mine", or empty "" (detached head)
-	currBranchName, err := getCurrBranch(&repo)
-	if err != nil {
-		mutFail.Lock()
-		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %s\n", i, repo.Folder, "problem getting current branch name: "+err.Error()))
-		mutFail.Unlock()
-		return
-	}
+	// currBranchName, err := getCurrBranch(&repo)
+	// if err != nil {
+	// 	mutFail.Lock()
+	// 	*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %s\n", i, repo.Folder, "problem getting current branch name: "+err.Error()))
+	// 	mutFail.Unlock()
+	// 	return
+	// }
 
 	remoteDefault, err := repo.RemoteDefault()
 	if err != nil {
@@ -534,8 +534,13 @@ func createLocalBranch(i int, reportBranch *[]string, reportFail *[]string,
 		mutFail.Unlock()
 		return
 	}
+	fmt.Println(remoteDefault)
+	fmt.Println(reportBranch)
+	fmt.Println(mutBranch)
 
-	// Action: create local branches to match each remote tracking branch.
+	// 1. get all remote branch names from the default remote
+
+	// 2. for each remote tracking branch: create local branch if it does not exist
 	// git checkout --track origin/featureX
 
 }
@@ -767,6 +772,44 @@ func cloneYolo(i int, reportClone *[]string, reportFail *[]string,
 	*reportClone = append(*reportClone, fmt.Sprintf("%d: %s %v %s\n",
 		i, repo.Folder, cmd.Args, string(stdout)))
 	mutClone.Unlock()
+}
+
+// get list of remote tracking branches for a remote.
+func TrackingBranches(repoFolder, remoteAlias string) ([]string, error) {
+	cmd := exec.Command("git", "branch", "-r") // #nosec G204
+	cmd.Dir = expandPath(repoFolder)
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		return nil, err
+	}
+	if len(output) == 0 { // no branches at all!
+		return make([]string, 0, 0), nil
+	}
+	// output might be something like:
+	//     origin/master
+	//     origin/mine
+	//     upstream/master
+	// split the raw shell output to a list of strings
+	allTrackingBranches := strings.Split(string(output), newLine)
+	// trim white space and * character from branch names
+	for i, br := range allTrackingBranches {
+		allTrackingBranches[i] = strings.Trim(br, "\n *")
+	}
+	// only include branches for THIS remote.
+	remoteTrackingBranches := make([]string, 0, len(allTrackingBranches))
+	remoteAliasSlash := remoteAlias + "/"
+	remoteHEAD := remoteAliasSlash + "HEAD"
+	for i := 0; i < len(allTrackingBranches); i++ {
+		branchName := allTrackingBranches[i]
+		isForThisRemote := strings.HasPrefix(branchName, remoteAliasSlash)
+		if isForThisRemote {
+			if strings.HasPrefix(branchName, remoteHEAD) {
+				continue // not interested in the HEAD entry
+			}
+			remoteTrackingBranches = append(remoteTrackingBranches, branchName)
+		}
+	}
+	return remoteTrackingBranches, nil
 }
 
 // get current checked out branch name for a GitRepo.
