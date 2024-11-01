@@ -488,7 +488,7 @@ func createLocalBranches() {
 	mutFail := sync.Mutex{}
 	for i := 0; i < len(DB); i++ { // clone each "yolo" repo if missing
 		wg.Add(1)
-		go createLocalBranch(i, &reportClone, &reportFail, &wg, &mutClone, &mutFail)
+		go createLocalBranch(i, &reportBranch, &reportFail, &wg, &mutBranch, &mutFail)
 	}
 	wg.Wait()
 
@@ -510,7 +510,34 @@ func createLocalBranches() {
 }
 
 // create "local" branch if it does not exist yet.
-func createLocalBranch() {
+func createLocalBranch(i int, reportBranch *[]string, reportFail *[]string,
+	wg *sync.WaitGroup, mutBranch *sync.Mutex, mutFail *sync.Mutex,
+) {
+	defer wg.Done()
+
+	repo := DB[i]
+
+	// get current checked out branch name.
+	// It may be the configured repo.MainBranch, or custom "mine", or empty "" (detached head)
+	currBranchName, err := getCurrBranch(&repo)
+	if err != nil {
+		mutFail.Lock()
+		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %s\n", i, repo.Folder, "problem getting current branch name: "+err.Error()))
+		mutFail.Unlock()
+		return
+	}
+
+	remoteDefault, err := repo.RemoteDefault()
+	if err != nil {
+		mutFail.Lock()
+		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %s\n", i, repo.Folder, err.Error()))
+		mutFail.Unlock()
+		return
+	}
+
+	// Action: create local branches to match each remote tracking branch.
+	// git checkout --track origin/featureX
+
 }
 
 // Checkout the "UseBranch" for each git submodule.
