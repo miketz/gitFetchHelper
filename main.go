@@ -488,7 +488,7 @@ func createLocalBranches() {
 	mutFail := sync.Mutex{}
 	for i := 0; i < len(DB); i++ { // clone each "yolo" repo if missing
 		wg.Add(1)
-		go createLocalBranch(i, &reportBranch, &reportFail, &wg, &mutBranch, &mutFail)
+		go createLocalBranchesForRepo(i, &reportBranch, &reportFail, &wg, &mutBranch, &mutFail)
 	}
 	wg.Wait()
 
@@ -509,8 +509,8 @@ func createLocalBranches() {
 	}
 }
 
-// create "local" branch if it does not exist yet.
-func createLocalBranch(i int, reportBranch *[]string, reportFail *[]string,
+// create "local" branches if they do not exist yet.
+func createLocalBranchesForRepo(i int, reportBranch *[]string, reportFail *[]string,
 	wg *sync.WaitGroup, mutBranch *sync.Mutex, mutFail *sync.Mutex,
 ) {
 	defer wg.Done()
@@ -519,13 +519,14 @@ func createLocalBranch(i int, reportBranch *[]string, reportFail *[]string,
 
 	// get current checked out branch name.
 	// It may be the configured repo.MainBranch, or custom "mine", or empty "" (detached head)
-	// currBranchName, err := getCurrBranch(&repo)
-	// if err != nil {
-	// 	mutFail.Lock()
-	// 	*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %s\n", i, repo.Folder, "problem getting current branch name: "+err.Error()))
-	// 	mutFail.Unlock()
-	// 	return
-	// }
+	// we will need to checkout this branch at the end as the act of creating branches will switch to them
+	startingBranch, err := getCurrBranch(&repo)
+	if err != nil {
+		mutFail.Lock()
+		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %s\n", i, repo.Folder, "problem getting current branch name: "+err.Error()))
+		mutFail.Unlock()
+		return
+	}
 
 	remoteDefault, err := repo.RemoteDefault()
 	if err != nil {
@@ -534,15 +535,79 @@ func createLocalBranch(i int, reportBranch *[]string, reportFail *[]string,
 		mutFail.Unlock()
 		return
 	}
-	fmt.Println(remoteDefault)
-	fmt.Println(reportBranch)
-	fmt.Println(mutBranch)
 
 	// 1. get all remote branch names from the default remote
+	trackingBranches, err := TrackingBranches(repo.Folder, remoteDefault.Alias)
+	if err != nil {
+		mutFail.Lock()
+		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %s\n", i, repo.Folder, err.Error()))
+		mutFail.Unlock()
+		return
+	}
+	if len(trackingBranches) == 0 {
+		return // no branches to checkout!
+	}
 
+	checkoutCnt := 0
+	var collectOutput strings.Builder
+	collectOutput.Grow(100 * len(trackingBranches)) // allocate enough space up front
 	// 2. for each remote tracking branch: create local branch if it does not exist
-	// git checkout --track origin/featureX
+	for i := 0; i < len(trackingBranches); i++ {
+		// fullBranchName should be something like "origin/master"
+		fullBranchName := trackingBranches[i]
+		parts := strings.Split(fullBranchName, "/")
+		branchName := "" //:= parts[1]
+		// trim off the "origin" prefix, but also handle "/" in the remainder of the name
+		for i := 1; i < len(parts)-1; i++ {
+			branchName += parts[i]
+		}
+		hasBranch, _ := hasLocalBranch(&repo, branchName)
+		if hasBranch {
+			continue // local branch already exists. no need to create it.
+		}
+		// create branch!
+		// git checkout --track origin/featureX
+		cmd := exec.Command("git", "checkout", "--track", fullBranchName) // #nosec G204
+		cmd.Dir = expandPath(repo.Folder)
+		stdout, err := cmd.CombinedOutput()
+		if err != nil {
+			mutFail.Lock()
+			*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %v %s\n", i, repo.Folder, cmd.Args, err.Error()))
+			mutFail.Unlock()
+			return
+		}
+		collectOutput.WriteString(fmt.Sprintf("%d: %s %v %s\n",
+			i, repo.Folder, cmd.Args, string(stdout)))
+		checkoutCnt++
+	}
+	if checkoutCnt == 0 {
+		return // don't write to the "success" reprot if we didn't do anything
+	}
+	// successfully checked out 1 or more branches
+	mutBranch.Lock()
+	*reportBranch = append(*reportBranch, collectOutput.String())
+	mutBranch.Unlock()
 
+	// 3. finally switch back to the starting branch. When creating "local" branches we
+	// also checked them out!
+	wasDetachedHead := startingBranch == ""
+	if wasDetachedHead {
+		// if we were in a detached head state, just stay where we are.
+		// TODO: go back to commit of detatched head state
+		return
+	}
+	// git checkout mine
+	cmd := exec.Command("git", "checkout", startingBranch) // #nosec G204
+	cmd.Dir = expandPath(repo.Folder)
+	_, err = cmd.CombinedOutput()
+	// possible for this function to be a success with local branch creation, but
+	// fail when going back to starting branch
+	if err != nil {
+		mutFail.Lock()
+		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %v %s\n", i, repo.Folder, cmd.Args, err.Error()))
+		mutFail.Unlock()
+		return
+	}
 }
 
 // Checkout the "UseBranch" for each git submodule.
