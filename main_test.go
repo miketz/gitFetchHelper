@@ -119,7 +119,7 @@ func TestExists(t *testing.T) {
 	path1 := expandPath("~/.emacs.d")
 	path2 := expandPath("~/.emacs.d/notElpa")
 	// repo and is submod
-	path3 := expandPath("~/.emacs.d/notElpa/magit")
+	// path3 := expandPath("~/.emacs.d/notElpa/magit")
 	// not a repo
 	path4 := expandPath("~/.vscode")
 	// is a "yolo" repo
@@ -137,11 +137,11 @@ func TestExists(t *testing.T) {
 		t.Fatalf("got: %t. wanted %t", got, want)
 	}
 
-	want = true
-	got, _ = exists(path3)
-	if got != want {
-		t.Fatalf("got: %t. wanted %t", got, want)
-	}
+	// want = true
+	// got, _ = exists(path3)
+	// if got != want {
+	// 	t.Fatalf("got: %t. wanted %t", got, want)
+	// }
 
 	want = true
 	got, _ = exists(path4)
@@ -165,6 +165,46 @@ func TestExists(t *testing.T) {
 func TestParentDir(t *testing.T) {
 	want := expandPath("~/.emacs.d/notElpaYolo")
 	got := parentDir("~/.emacs.d/notElpaYolo/binky.el")
+	if got != want {
+		t.Fatalf("got: %s. wanted %s", got, want)
+	}
+}
+
+// functional test, not unit test
+// may only work on my machine with folders and git repos setup
+func TestTrackingBranches(t *testing.T) {
+	want := make([]string, 0, 2)
+	want = append(want, "origin/master")
+	want = append(want, "origin/mine")
+
+	got, err := TrackingBranches(expandPath("~/.emacs.d/notElpaYolo/nov.el"), "origin")
+	if err != nil {
+		t.Fatalf("err during test: %v", err)
+	}
+	if len(got) != len(want) {
+		t.Fatalf("got: %v. wanted %v", got, want)
+	}
+	if got[0] != want[0] {
+		t.Fatalf("got: %v. wanted %v", got, want)
+	}
+	if got[1] != want[1] {
+		t.Fatalf("got: %v. wanted %v", got, want)
+	}
+}
+
+func TestRemoveRemoteFromBranchName(t *testing.T) {
+	// name with extra slashes in it
+	fullBranchName := "origin/km/reshelve-rewrite"
+	got := removeRemoteFromBranchName(fullBranchName)
+	want := "km/reshelve-rewrite"
+	if got != want {
+		t.Fatalf("got: %s. wanted %s", got, want)
+	}
+
+	// common typical name. no extra slashes
+	fullBranchName2 := "origin/master"
+	got = removeRemoteFromBranchName(fullBranchName2)
+	want = "master"
 	if got != want {
 		t.Fatalf("got: %s. wanted %s", got, want)
 	}

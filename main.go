@@ -155,6 +155,8 @@ func main() {
 		switchToBranches()
 	case "init3":
 		cloneYoloRepos()
+	case "init4":
+		createLocalBranches()
 	default:
 		printCommands()
 	}
@@ -471,6 +473,152 @@ func diff(i int, reportDiff *[]string, reportFail *[]string,
 	mutDiff.Unlock()
 }
 
+// create local branches (ie featureX) for each remote tracking branch (ie origin/featureX).
+// For all remote tracking of the default remote.
+// this is needed for things like listReposWithUpstreamCodeToMerge() to work as it diffs
+// the "local" branch (at least currently), and a differnet branch may be checked out (featureQ).
+func createLocalBranches() {
+	start := time.Now() // stop watch start
+
+	reportBranch := make([]string, 0, len(DB)) // alloc 100%. no realloc on happy path.
+	reportFail := make([]string, 0, 4)         // alloc for low failure rate
+
+	wg := sync.WaitGroup{}
+	mutBranch := sync.Mutex{}
+	mutFail := sync.Mutex{}
+	for i := 0; i < len(DB); i++ { // clone each "yolo" repo if missing
+		wg.Add(1)
+		go createLocalBranchesForRepo(i, &reportBranch, &reportFail, &wg, &mutBranch, &mutFail)
+	}
+	wg.Wait()
+
+	// summary report. print # of branches checked out, duration
+	duration := time.Since(start) // stop watch end
+	fmt.Printf("\nChecked for existence of local branches in %d repos, create if not exist. time elapsed: %v\n",
+		len(DB), duration)
+
+	// clone report. only includes repos that needed to be cloned
+	fmt.Printf("\nRepos with local branches created: %d\n", len(reportBranch))
+	for i := 0; i < len(reportBranch); i++ {
+		fmt.Print(reportBranch[i])
+	}
+	// failure report
+	fmt.Printf("\nFAILURES: %d\n", len(reportFail))
+	for i := 0; i < len(reportFail); i++ {
+		fmt.Print(reportFail[i])
+	}
+}
+
+// create "local" branches if they do not exist yet.
+func createLocalBranchesForRepo(i int, reportBranch *[]string, reportFail *[]string,
+	wg *sync.WaitGroup, mutBranch *sync.Mutex, mutFail *sync.Mutex,
+) {
+	defer wg.Done()
+
+	repo := DB[i]
+
+	// get current checked out branch name.
+	// It may be the configured repo.MainBranch, repo.BranchUse (ie "mine"), or empty "" (detached head)
+	// we will need to checkout this branch at the end as the act of creating branches will switch to them
+	startingBranch, err := getCurrBranch(&repo)
+	if err != nil {
+		mutFail.Lock()
+		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %s\n", i, repo.Folder, "problem getting current branch name: "+err.Error()))
+		mutFail.Unlock()
+		return
+	}
+
+	// default remote repo is using. usually my fork. sometimes direclty use the upstream.
+	remoteDefault, err := repo.RemoteDefault()
+	if err != nil {
+		mutFail.Lock()
+		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %s\n", i, repo.Folder, err.Error()))
+		mutFail.Unlock()
+		return
+	}
+
+	// // 1. get all remote branch names from the default remote
+	// trackingBranches, err := TrackingBranches(repo.Folder, remoteDefault.Alias)
+	// if err != nil {
+	// 	mutFail.Lock()
+	// 	*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %s\n", i, repo.Folder, err.Error()))
+	// 	mutFail.Unlock()
+	// 	return
+	// }
+	// if len(trackingBranches) == 0 {
+	// 	return // no branches to checkout!
+	// }
+
+	checkoutCnt := 0
+	var collectOutput strings.Builder
+	collectOutput.Grow(100 * 2) // allocate enough space up front
+
+	// 2. for each remote tracking branch: create local branch if it does not exist
+	// actually don't bother creating all remote tracking branches
+	// only 2: repo.BranchMain, repo.BranchUse. if i need an odd branch I can manullay create as needed.
+	branches := make([]string, 0, 2)
+	branches = append(branches, remoteDefault.Alias+"/"+repo.BranchMain)
+	// in theory BranchUse should always exist locally. And if BranchMain is the same branch then ditto.
+	// but we will proceed with the checks and creation attempts anyway to fill in any gaps where
+	// a branch doesn't exist for some reason.
+	if repo.BranchMain != repo.BranchUse {
+		branches = append(branches, remoteDefault.Alias+"/"+repo.BranchUse)
+	}
+	// check for, then create the branches
+	for i := 0; i < len(branches); i++ {
+		// fullBranchName should be something like "origin/master"
+		fullBranchName := branches[i]
+		// should be something like "master"
+		branchName := removeRemoteFromBranchName(fullBranchName)
+		hasBranch, _ := hasLocalBranch(&repo, branchName)
+		if hasBranch {
+			continue // local branch already exists. no need to create it.
+		}
+		// create branch!
+		// git checkout --track origin/featureX
+		cmd := exec.Command("git", "checkout", "--track", fullBranchName) // #nosec G204
+		cmd.Dir = expandPath(repo.Folder)
+		stdout, err := cmd.CombinedOutput()
+		if err != nil {
+			mutFail.Lock()
+			*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %v %s\n", i, repo.Folder, cmd.Args, err.Error()))
+			mutFail.Unlock()
+			return
+		}
+		collectOutput.WriteString(fmt.Sprintf("%d: %s %v %s\n",
+			i, repo.Folder, cmd.Args, string(stdout)))
+		checkoutCnt++
+	}
+	if checkoutCnt == 0 {
+		return // don't write to the "success" report if we didn't do anything
+	}
+	// successfully checked out 1 or more branches
+	mutBranch.Lock()
+	*reportBranch = append(*reportBranch, collectOutput.String())
+	mutBranch.Unlock()
+
+	// 3. finally switch back to the starting branch. When creating "local" branches we
+	// also checked them out!
+	wasDetachedHead := startingBranch == ""
+	if wasDetachedHead {
+		// if we were in a detached head state, just stay where we are.
+		// TODO: remember commit and switch back to commit of detatched head state
+		return
+	}
+	// git checkout mine
+	cmd := exec.Command("git", "checkout", startingBranch) // #nosec G204
+	cmd.Dir = expandPath(repo.Folder)
+	_, err = cmd.CombinedOutput()
+	// possible for this function to be a success with local branch creation, but
+	// fail when going back to starting branch
+	if err != nil {
+		mutFail.Lock()
+		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %v %s\n", i, repo.Folder, cmd.Args, err.Error()))
+		mutFail.Unlock()
+		return
+	}
+}
+
 // Checkout the "UseBranch" for each git submodule.
 // Useful after a fresh emacs config clone to a new computer to avoid detached head state.
 func switchToBranches() { //nolint:dupl
@@ -700,6 +848,44 @@ func cloneYolo(i int, reportClone *[]string, reportFail *[]string,
 	mutClone.Unlock()
 }
 
+// get list of remote tracking branches for a remote.
+func TrackingBranches(repoFolder, remoteAlias string) ([]string, error) {
+	cmd := exec.Command("git", "branch", "-r") // #nosec G204
+	cmd.Dir = expandPath(repoFolder)
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		return nil, err
+	}
+	if len(output) == 0 { // no branches at all!
+		return make([]string, 0, 0), nil
+	}
+	// output might be something like:
+	//     origin/master
+	//     origin/mine
+	//     upstream/master
+	// split the raw shell output to a list of strings
+	allTrackingBranches := strings.Split(string(output), newLine)
+	// trim white space and * character from branch names
+	for i, br := range allTrackingBranches {
+		allTrackingBranches[i] = strings.Trim(br, "\n *")
+	}
+	// only include branches for THIS remote.
+	remoteTrackingBranches := make([]string, 0, len(allTrackingBranches))
+	remoteAliasSlash := remoteAlias + "/"
+	remoteHEAD := remoteAliasSlash + "HEAD"
+	for i := 0; i < len(allTrackingBranches); i++ {
+		branchName := allTrackingBranches[i]
+		isForThisRemote := strings.HasPrefix(branchName, remoteAliasSlash)
+		if isForThisRemote {
+			if strings.HasPrefix(branchName, remoteHEAD) {
+				continue // not interested in the HEAD entry
+			}
+			remoteTrackingBranches = append(remoteTrackingBranches, branchName)
+		}
+	}
+	return remoteTrackingBranches, nil
+}
+
 // get current checked out branch name for a GitRepo.
 func getCurrBranch(repo *GitRepo) (string, error) {
 	// get current checked out branch name.
@@ -796,4 +982,25 @@ func parentDir(path string) string {
 	path = expandPath(path)
 	parentDir := filepath.Join(path, "../")
 	return parentDir
+}
+
+// remove the "remote" prefix from a remote tracking branch name
+// input:  "origin/km/reshelve-rewrite"
+// output: "km/reshelve-rewrite"
+// TODO: optimize this. maybe a substring after first "/" character?
+func removeRemoteFromBranchName(remoteBranch string) string {
+	parts := strings.Split(remoteBranch, "/")
+
+	// we cannot simply use parts[1] becuase the remainder of the name may have
+	// contained slashes "/".
+	branchName := "" //:= parts[1]
+	// trim off the "origin" prefix, but also add back the "/" in the remainder of the name
+	for i := 1; i < len(parts); i++ {
+		if i == 1 {
+			branchName += parts[i]
+		} else {
+			branchName += "/" + parts[i]
+		}
+	}
+	return branchName
 }
