@@ -191,3 +191,21 @@ func TestTrackingBranches(t *testing.T) {
 		t.Fatalf("got: %v. wanted %v", got, want)
 	}
 }
+
+func TestRemoveRemoteFromBranchName(t *testing.T) {
+	// name with extra slashes in it
+	fullBranchName := "origin/km/reshelve-rewrite"
+	got := removeRemoteFromBranchName(fullBranchName)
+	want := "km/reshelve-rewrite"
+	if got != want {
+		t.Fatalf("got: %s. wanted %s", got, want)
+	}
+
+	// common typical name. no extra slashes
+	fullBranchName2 := "origin/master"
+	got = removeRemoteFromBranchName(fullBranchName2)
+	want = "master"
+	if got != want {
+		t.Fatalf("got: %s. wanted %s", got, want)
+	}
+}

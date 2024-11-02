@@ -518,7 +518,7 @@ func createLocalBranchesForRepo(i int, reportBranch *[]string, reportFail *[]str
 	repo := DB[i]
 
 	// get current checked out branch name.
-	// It may be the configured repo.MainBranch, or custom "mine", or empty "" (detached head)
+	// It may be the configured repo.MainBranch, repo.BranchUse (ie "mine"), or empty "" (detached head)
 	// we will need to checkout this branch at the end as the act of creating branches will switch to them
 	startingBranch, err := getCurrBranch(&repo)
 	if err != nil {
@@ -528,6 +528,7 @@ func createLocalBranchesForRepo(i int, reportBranch *[]string, reportFail *[]str
 		return
 	}
 
+	// default remote repo is using. usually my fork. sometimes direclty use the upstream.
 	remoteDefault, err := repo.RemoteDefault()
 	if err != nil {
 		mutFail.Lock()
@@ -536,31 +537,39 @@ func createLocalBranchesForRepo(i int, reportBranch *[]string, reportFail *[]str
 		return
 	}
 
-	// 1. get all remote branch names from the default remote
-	trackingBranches, err := TrackingBranches(repo.Folder, remoteDefault.Alias)
-	if err != nil {
-		mutFail.Lock()
-		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %s\n", i, repo.Folder, err.Error()))
-		mutFail.Unlock()
-		return
-	}
-	if len(trackingBranches) == 0 {
-		return // no branches to checkout!
-	}
+	// // 1. get all remote branch names from the default remote
+	// trackingBranches, err := TrackingBranches(repo.Folder, remoteDefault.Alias)
+	// if err != nil {
+	// 	mutFail.Lock()
+	// 	*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %s\n", i, repo.Folder, err.Error()))
+	// 	mutFail.Unlock()
+	// 	return
+	// }
+	// if len(trackingBranches) == 0 {
+	// 	return // no branches to checkout!
+	// }
 
 	checkoutCnt := 0
 	var collectOutput strings.Builder
-	collectOutput.Grow(100 * len(trackingBranches)) // allocate enough space up front
+	collectOutput.Grow(100 * 2) // allocate enough space up front
+
 	// 2. for each remote tracking branch: create local branch if it does not exist
-	for i := 0; i < len(trackingBranches); i++ {
+	// actually don't bother creating all remote tracking branches
+	// only 2: repo.BranchMain, repo.BranchUse. if i need an odd branch I can manullay create as needed.
+	branches := make([]string, 0, 2)
+	branches = append(branches, remoteDefault.Alias+"/"+repo.BranchMain)
+	// in theory BranchUse should always exist locally. And if BranchMain is the same branch then ditto.
+	// but we will proceed with the checks and creation attempts anyway to fill in any gaps where
+	// a branch doesn't exist for some reason.
+	if repo.BranchMain != repo.BranchUse {
+		branches = append(branches, remoteDefault.Alias+"/"+repo.BranchUse)
+	}
+	// check for, then create the branches
+	for i := 0; i < len(branches); i++ {
 		// fullBranchName should be something like "origin/master"
-		fullBranchName := trackingBranches[i]
-		parts := strings.Split(fullBranchName, "/")
-		branchName := "" //:= parts[1]
-		// trim off the "origin" prefix, but also handle "/" in the remainder of the name
-		for i := 1; i < len(parts)-1; i++ {
-			branchName += parts[i]
-		}
+		fullBranchName := branches[i]
+		// should be something like "master"
+		branchName := removeRemoteFromBranchName(fullBranchName)
 		hasBranch, _ := hasLocalBranch(&repo, branchName)
 		if hasBranch {
 			continue // local branch already exists. no need to create it.
@@ -581,7 +590,7 @@ func createLocalBranchesForRepo(i int, reportBranch *[]string, reportFail *[]str
 		checkoutCnt++
 	}
 	if checkoutCnt == 0 {
-		return // don't write to the "success" reprot if we didn't do anything
+		return // don't write to the "success" report if we didn't do anything
 	}
 	// successfully checked out 1 or more branches
 	mutBranch.Lock()
@@ -593,7 +602,7 @@ func createLocalBranchesForRepo(i int, reportBranch *[]string, reportFail *[]str
 	wasDetachedHead := startingBranch == ""
 	if wasDetachedHead {
 		// if we were in a detached head state, just stay where we are.
-		// TODO: go back to commit of detatched head state
+		// TODO: remember commit and switch back to commit of detatched head state
 		return
 	}
 	// git checkout mine
@@ -973,4 +982,25 @@ func parentDir(path string) string {
 	path = expandPath(path)
 	parentDir := filepath.Join(path, "../")
 	return parentDir
+}
+
+// remove the "remote" prefix from a remote tracking branch name
+// input:  "origin/km/reshelve-rewrite"
+// output: "km/reshelve-rewrite"
+// TODO: optimize this. maybe a substring after first "/" character?
+func removeRemoteFromBranchName(remoteBranch string) string {
+	parts := strings.Split(remoteBranch, "/")
+
+	// we cannot simply use parts[1] becuase the remainder of the name may have
+	// contained slashes "/".
+	branchName := "" //:= parts[1]
+	// trim off the "origin" prefix, but also add back the "/" in the remainder of the name
+	for i := 1; i < len(parts); i++ {
+		if i == 1 {
+			branchName += parts[i]
+		} else {
+			branchName += "/" + parts[i]
+		}
+	}
+	return branchName
 }
