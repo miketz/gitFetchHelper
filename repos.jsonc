@@ -255,7 +255,7 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "main",
-  "branchUse": "mine", // ignore *.elc files
+  "branchUse": "main",
   "isYolo": true
  },
  {"name": "libgit",
