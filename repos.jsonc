@@ -87,7 +87,6 @@
   "remoteDefault": "mine",
   "branchMain": "main",
   "branchUse": "main",
-
   "isYolo": true
  },
  {"name": "klondike",
@@ -101,7 +100,6 @@
   "remoteDefault": "mine",
   "branchMain": "primary",
   "branchUse": "primary",
-
   "isYolo": true
  },
  {"name": "stem-reading-mode",
@@ -115,7 +113,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "master",
-
   "isYolo": true
  },
  {"name": "clojure-mode",
@@ -129,7 +126,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "master",
-
   "isYolo": true
  },
  {"name": "iedit",
@@ -143,7 +139,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "master",
-
   "isYolo": true
  },
  {"name": "lispy",
@@ -157,7 +152,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "master",
-
   "isYolo": true
  },
  {"name": "evil",
@@ -171,7 +165,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "master",
-
   "isYolo": true
  },
  {"name": "evil-leader",
@@ -185,7 +178,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "master",
-
   "isYolo": true
  },
  {"name": "expand-region",
@@ -199,7 +191,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "master",
-
   "isYolo": true
  },
  {"name": "s",
@@ -213,7 +204,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "master",
-
   "isYolo": true
  },
  {"name": "dash",
@@ -227,7 +217,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "master",
-
   "isYolo": true
  },
  {"name": "transient",
@@ -241,7 +230,6 @@
   "remoteDefault": "mine",
   "branchMain": "main",
   "branchUse": "main",
-
   "isYolo": true
  },
  {"name": "with-editor",
@@ -255,7 +243,6 @@
   "remoteDefault": "mine",
   "branchMain": "main",
   "branchUse": "main",
-
   "isYolo": true
  },
  {"name": "magit",
@@ -268,8 +255,7 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "main",
-  "branchUse": "mine" // ignore *.elc files,
-
+  "branchUse": "mine", // ignore *.elc files
   "isYolo": true
  },
  {"name": "libgit",
@@ -283,7 +269,6 @@
   "remoteDefault": "mine",
   "branchMain": "main",
   "branchUse": "mine" // ignore .elc files,
-
   "isYolo": true
  },
  {// NOTE: as of 11-19-2022 this is moved into emacs core. But keep this
@@ -299,7 +284,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "master",
-
   "isYolo": true
  },
  {"name": "ctrlf",
@@ -310,7 +294,6 @@
   "remoteDefault": "upstream",
   "branchMain": "main",
   "branchUse": "main",
-
   "isYolo": true
  },
  {"name": "spinner",
@@ -324,7 +307,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "mine",
-
   "isYolo": true
  },
  {"name": "ggtags",
@@ -338,7 +320,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "master",
-
   "isYolo": true
  },
  {// NOTE: this package is is no longer bundled/vendored with evil.
@@ -353,7 +334,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "master",
-
   "isYolo": true
  },
  {"name": "mode-on-region",
@@ -368,7 +348,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "master",
-
   "isYolo": true
  },
  {"name": "rsvp",
@@ -383,7 +362,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "master",
-
   "isYolo": true
  },
  {"name": "ido-grid",
@@ -397,7 +375,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "mine",
-
   "isYolo": true
  },
  {"name": "ov",
@@ -411,7 +388,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "master",
-
   "isYolo": true
  },
  {"name": "deferred",
@@ -425,7 +401,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "master",
-
   "isYolo": true
  },
  {"name": "flx",
@@ -439,7 +414,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "master",
-
   "isYolo": true
  },
  {"name": "sallet",
@@ -454,7 +428,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "mine",
-
   "isYolo": true
  },
  {"name": "eros",
@@ -468,7 +441,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "master",
-
   "isYolo": true
  },
  {"name": "elisp-slime-nav",
@@ -482,7 +454,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "master",
-
   "isYolo": true
  },
  {"name": "async",
@@ -496,7 +467,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "master",
-
   "isYolo": true
  },
  {"name": "lua-mode",
@@ -510,7 +480,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "master",
-
   "isYolo": true
  },
  {"name": "slime",
@@ -524,7 +493,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "master",
-
   "isYolo": true
  },
  {"name": "slime-company",
@@ -538,7 +506,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "mine",
-
   "isYolo": true
  },
  {"name": "sly",
@@ -552,7 +519,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "master",
-
   "isYolo": true
  },
  {"name": "eglot",
@@ -565,8 +531,7 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "works" // using an old version of eglot that works with Emacs 28.2. naming branch "works".,
-
+  "branchUse": "works", // using an old version of eglot that works with Emacs 28.2. naming branch "works".
   "isYolo": true
  },
  {"name": "lsp-mode",
@@ -580,7 +545,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "master",
-
   "isYolo": true
  },
  {"name": "f",
@@ -594,7 +558,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "master",
-
   "isYolo": true
  },
  {"name": "ht",
@@ -608,7 +571,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "master",
-
   "isYolo": true
  },
  {"name": "markdown-mode",
@@ -622,7 +584,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "master",
-
   "isYolo": true
  },
  {"name": "avy",
@@ -636,7 +597,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "mine",
-
   "isYolo": true
  },
  {"name": "rust-mode",
@@ -650,7 +610,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "master",
-
   "isYolo": true
  },
  {"name": "racer",
@@ -664,7 +623,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "mine",
-
   "isYolo": true
  },
  {"name": "helm",
@@ -678,7 +636,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "master",
-
   "isYolo": true
  },
  {"name": "rg",
@@ -692,7 +649,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "master",
-
   "isYolo": true
  },
  {"name": "rainbow-delimiters",
@@ -706,7 +662,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "master",
-
   "isYolo": true
  },
  {"name": "rainbow-mode",
@@ -733,7 +688,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "master",
-
   "isYolo": true
  },
  {"name": "js2-highlight-vars",
@@ -747,7 +701,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "mine",
-
   "isYolo": true
  },
  {"name": "json-mode",
@@ -761,7 +714,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "mine",
-
   "isYolo": true
  },
  {"name": "json-snatcher",
@@ -775,7 +727,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "mine",
-
   "isYolo": true
  },
  {"name": "leerzeichen",
@@ -789,7 +740,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "mine",
-
   "isYolo": true
  },
  {"name": "citre",
@@ -803,7 +753,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "master",
-
   "isYolo": true
  },
  {"name": "haskell-mode",
@@ -817,7 +766,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "master",
-
   "isYolo": true
  },
  {"name": "wgrep",
@@ -831,7 +779,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "master",
-
   "isYolo": true
  },
  {"name": "projectile",
@@ -845,7 +792,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "master",
-
   "isYolo": true
  },
  {"name": "swift-mode",
@@ -859,7 +805,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "master",
-
   "isYolo": true
  },
  {"name": "dank-mode",
@@ -873,7 +818,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "mine",
-
   "isYolo": true
  },
  {"name": "darkroom",
@@ -887,7 +831,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "master",
-
   "isYolo": true
  },
  {"name": "smex",
@@ -901,7 +844,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "mine",
-
   "isYolo": true
  },
  {"name": "pkg-info",
@@ -915,7 +857,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "master",
-
   "isYolo": true
  },
  {"name": "epl",
@@ -929,7 +870,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "master",
-
   "isYolo": true
  },
  {"name": "erc-hl-nicks",
@@ -943,7 +883,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "master",
-
   "isYolo": true
  },
  {"name": "esxml",
@@ -957,7 +896,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "mine",
-
   "isYolo": true
  },
  {"name": "flycheck",
@@ -971,7 +909,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "master",
-
   "isYolo": true
  },
  {"name": "smart-tabs-mode",
@@ -985,7 +922,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "mine",
-
   "isYolo": true
  },
  {"name": "web-mode",
@@ -999,7 +935,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "master",
-
   "isYolo": true
  },
  {"name": "puni",
@@ -1013,7 +948,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "master",
-
   "isYolo": true
  },
  {"name": "ace-link",
@@ -1027,7 +961,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "master",
-
   "isYolo": true
  },
  {"name": "ace-window",
@@ -1041,7 +974,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "mine",
-
   "isYolo": true
  },
  {"name": "adoc-mode",
@@ -1055,7 +987,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "master",
-
   "isYolo": true
  },
  {"name": "markup-faces",
@@ -1068,8 +999,7 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "mine" // ignore .elc files,
-
+  "branchUse": "mine", // ignore .elc files
   "isYolo": true
  },
  {"name": "hydra",
@@ -1083,7 +1013,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "mine",
-
   "isYolo": true
  },
  {// see web page https://depp.brause.cc/nov.el/
@@ -1099,7 +1028,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "mine",
-
   "isYolo": true
  },
  {"name": "num3-mode",
@@ -1116,7 +1044,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "master",
-
   "isYolo": true
  },
  {"name": "nyan-mode",
@@ -1130,7 +1057,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "mine",
-
   "isYolo": true
  },
  {"name": "php-mode",
@@ -1144,7 +1070,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "master",
-
   "isYolo": true
  },
  {"name": "reformatter",
@@ -1158,7 +1083,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "master",
-
   "isYolo": true
  },
  {"name": "zig-mode",
@@ -1172,7 +1096,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "master",
-
   "isYolo": true
  },
  {"name": "go-mode",
@@ -1186,7 +1109,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "master",
-
   "isYolo": true
  },
  {"name": "zoutline",
@@ -1200,7 +1122,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "mine",
-
   "isYolo": true
  },
  {"name": "yasnippet",
@@ -1214,7 +1135,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "master",
-
   "isYolo": true
  },
  {"name": "yaml-mode",
@@ -1228,7 +1148,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "master",
-
   "isYolo": true
  },
  {"name": "vimrc-mode",
@@ -1242,7 +1161,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "mine",
-
   "isYolo": true
  },
  {"name": "unkillable-scratch",
@@ -1256,7 +1174,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "mine",
-
   "isYolo": true
  },
  {"name": "sicp",
@@ -1270,7 +1187,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "mine",
-
   "isYolo": true
  },
  {"name": "prescient",
@@ -1281,7 +1197,6 @@
   "remoteDefault": "upstream",
   "branchMain": "main",
   "branchUse": "main",
-
   "isYolo": true
  },
  {"name": "pos-tip",
@@ -1295,7 +1210,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "mine",
-
   "isYolo": true
  },
  {"name": "powershell",
@@ -1309,7 +1223,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "master",
-
   "isYolo": true
  },
  {"name": "highlight-indent-guides",
@@ -1323,7 +1236,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "mine",
-
   "isYolo": true
  },
  {"name": "icicles",
@@ -1338,7 +1250,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "mine",
-
   "isYolo": true
  },
  {// NOTE: not an elisp package. documentation package for common lisp from
@@ -1354,7 +1265,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "master",
-
   "isYolo": true
  },
  {"name": "flames-of-freedom",
@@ -1366,7 +1276,6 @@
   "remoteDefault": "upstream",
   "branchMain": "master",
   "branchUse": "master",
-
   "isYolo": true
  },
  {// not using this. delete git submodule later
@@ -1378,7 +1287,6 @@
   "remoteDefault": "upstream",
   "branchMain": "master",
   "branchUse": "master",
-
   "isYolo": true
  },
  {"name": "posframe",
@@ -1392,7 +1300,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "master",
-
   "isYolo": true
  },
  {"name": "ivy-posframe",
@@ -1406,7 +1313,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "mine",
-
   "isYolo": true
  },
  {"name": "autothemer",
@@ -1420,7 +1326,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "mine",
-
   "isYolo": true
  },
  {"name": "company",
@@ -1434,7 +1339,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "master",
-
   "isYolo": true
  },
  {"name": "company-web",
@@ -1448,7 +1352,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "mine",
-
   "isYolo": true
  },
  {"name": "company-lsp",
@@ -1462,7 +1365,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "master",
-
   "isYolo": true
  },
  {"name": "web-completion-data",
@@ -1476,7 +1378,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "mine",
-
   "isYolo": true
  },
  {"name": "fennel-mode",
@@ -1495,7 +1396,6 @@
   "remoteDefault": "mine",
   "branchMain": "main",
   "branchUse": "main",
-
   "isYolo": true
  },
  {"name": "vertico",
@@ -1509,7 +1409,6 @@
   "remoteDefault": "mine",
   "branchMain": "main",
   "branchUse": "main",
-
   "isYolo": true
  },
  {"name": "consult",
@@ -1523,7 +1422,6 @@
   "remoteDefault": "mine",
   "branchMain": "main",
   "branchUse": "main",
-
   "isYolo": true
  },
  {"name": "bug-hunter",
@@ -1537,7 +1435,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "master",
-
   "isYolo": true
  },
  {"name": "typescript-mode",
@@ -1551,7 +1448,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "master",
-
   "isYolo": true
  },
  {"name": "tide",
@@ -1565,7 +1461,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "master",
-
   "isYolo": true
  },
  {"name": "compat",
@@ -1580,7 +1475,6 @@
   "remoteDefault": "mine",
   "branchMain": "main",
   "branchUse": "main",
-
   "isYolo": true
  },
  {"name": "slime-volleyball",
@@ -1593,8 +1487,7 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "mine" // ignores .elc files,
-
+  "branchUse": "mine", // ignores .elc files
   "isYolo": true
  },
  {"name": "macrostep",
@@ -1611,7 +1504,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "master",
-
   "isYolo": true
  },
  {"name": "sx",
@@ -1625,7 +1517,6 @@
   "remoteDefault": "mine",
   "branchMain": "master",
   "branchUse": "master",
-
   "isYolo": true
  },
  {"name": "indent-bars",
@@ -1639,7 +1530,6 @@
   "remoteDefault": "mine",
   "branchMain": "main",
   "branchUse": "main",
-
   "isYolo": true
  },
  {"name": "devdocs",
@@ -1653,7 +1543,6 @@
   "remoteDefault": "mine",
   "branchMain": "main",
   "branchUse": "main",
-
   "isYolo": true
  },
  {"name": "sunrise",
@@ -1664,7 +1553,6 @@
   "remoteDefault": "upstream",
   "branchMain": "master",
   "branchUse": "master",
-
   "isYolo": true
  }
  {"name": "binky",
