@@ -718,8 +718,8 @@
                "url": "https://github.com/ruediger/rainbow-mode",
                "alias": "upstream"}],
   "remoteDefault": "mine",
-  "branchMain": "master",
-  "branchUse": "master",
+  "branchMain": "elpa",
+  "branchUse": "elpa",
   "isYolo": true
  },
  {"name": "js2-mode",
