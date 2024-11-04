@@ -130,7 +130,16 @@ func initGlobals() error {
 // cmd := exec.Command("git", "config", "--file", ".gitmodules", "--get-regexp", "path", "|", "awk", "'{ print $2 }'")
 
 func printCommands() {
-	fmt.Printf("Enter a command: [fetch, diff, init, init2, init3]\n")
+	fmt.Printf(`Enter a command:
+	fetchUpstream
+	fetchDefault
+	fetchMine
+	diff  (listReposWithUpstreamCodeToMerge)
+	init  (setUpstreamRemotesIfMissing)
+	init2 (switchToBranches)
+	init3 (cloneYoloRepos)
+	init4 (createLocalBranches)
+`)
 }
 
 func main() {
@@ -145,8 +154,12 @@ func main() {
 		return
 	}
 	switch command := os.Args[1]; command {
-	case "fetch":
-		fetchUpstreamRemotes()
+	case "fetchUpstream": // original
+		fetchRemotes(RemoteUpstream)
+	case "fetchDefault":
+		fetchRemotes(RemoteDefault)
+	case "fetchMine":
+		fetchRemotes(RemoteMine)
 	case "diff":
 		listReposWithUpstreamCodeToMerge()
 	case "init":
@@ -187,8 +200,16 @@ func getRepoData() ([]GitRepo, error) {
 	return repos, nil
 }
 
-// Fetch upstream repos, measure time, print reports. The main flow.
-func fetchUpstreamRemotes() { //nolint:dupl
+type RemoteType int
+
+const (
+	RemoteUpstream RemoteType = iota + 1
+	RemoteMine
+	RemoteDefault
+)
+
+// Fetch from remote for each repo, measure time, print reports. The main flow.
+func fetchRemotes(remoteType RemoteType) { //nolint:dupl
 	start := time.Now() // stop watch start
 
 	reportFetched := make([]string, 0, len(DB)) // alloc 100%. no realloc on happy path.
@@ -199,7 +220,7 @@ func fetchUpstreamRemotes() { //nolint:dupl
 	mutFail := sync.Mutex{}
 	for i := 0; i < len(DB); i++ { // fetch upstream for each remote.
 		wg.Add(1)
-		go fetch(i, &reportFetched, &reportFail, &wg, &mutFetched, &mutFail)
+		go fetch(i, remoteType, &reportFetched, &reportFail, &wg, &mutFetched, &mutFail)
 	}
 	wg.Wait()
 
@@ -220,24 +241,38 @@ func fetchUpstreamRemotes() { //nolint:dupl
 	}
 }
 
-// Fetch upstream remote for repo. Repo is identified by index i in DB.
-func fetch(i int, reportFetched *[]string, reportFail *[]string,
+// Fetch remote for repo. Repo is identified by index i in DB.
+func fetch(i int, remoteType RemoteType, reportFetched *[]string, reportFail *[]string,
 	wg *sync.WaitGroup, mutFetched *sync.Mutex, mutFail *sync.Mutex,
 ) {
 	defer wg.Done()
 
 	repo := DB[i]
 
-	// get upstream remote info
-	upstream, err := repo.RemoteUpstream()
+	// get remote info
+	var remote Remote
+	var err error
+	if remoteType == RemoteUpstream {
+		remote, err = repo.RemoteUpstream()
+	} else if remoteType == RemoteDefault {
+		remote, err = repo.RemoteDefault()
+	} else if remoteType == RemoteMine {
+		remote, err = repo.RemoteMine()
+	} else {
+		mutFail.Lock()
+		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s unknown repo type: %v\n", i, repo.Folder, remoteType))
+		mutFail.Unlock()
+		return
+	}
 	if err != nil {
 		mutFail.Lock()
 		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %s\n", i, repo.Folder, err.Error()))
 		mutFail.Unlock()
 		return
 	}
+
 	// prepare fetch command. example: git fetch upstream
-	cmd := exec.Command("git", "fetch", upstream.Alias) // #nosec G204
+	cmd := exec.Command("git", "fetch", remote.Alias) // #nosec G204
 	cmd.Dir = expandPath(repo.Folder)
 	// Run git fetch! NOTE: cmd.Output() doesn't include the output when git fetch pulls new data.
 	stdout, err := cmd.CombinedOutput()
