@@ -292,6 +292,76 @@ func fetch(i int, remoteType RemoteType, reportFetched *[]string, reportFail *[]
 	mutFetched.Unlock()
 }
 
+// merge in the code form "mine" remotes for BranchUse. the "mine" remotes are my forks
+// or personal projects so it's OK for them to be merged without review.
+func mergeMineRemotes() {
+	start := time.Now() // stop watch start
+
+	reportMerged := make([]string, 0, len(DB)) // alloc 100%. no realloc on happy path.
+	reportFail := make([]string, 0, 4)         // alloc for low failure rate
+
+	wg := sync.WaitGroup{}
+	mutMerged := sync.Mutex{}
+	mutFail := sync.Mutex{}
+	for i := 0; i < len(DB); i++ { // fetch upstream for each remote.
+		repo := DB[i]
+		remoteMine, err := repo.RemoteMine()
+		// this err just means no "mine" remote was configured in the
+		// jsonc. so don't add to reportFail, just skip. TODO: make it return a bool, not err
+		hasRemoteMine := err == nil
+		if !hasRemoteMine {
+			continue
+		}
+		wg.Add(1)
+		go merge(i, &remoteMine, &reportMerged, &reportFail, &wg, &mutMerged, &mutFail)
+	}
+	wg.Wait()
+
+	// summary report. print # of remotes merged, duration
+	duration := time.Since(start) // stop watch end
+	fmt.Printf("\nMerged %d of %d remotes. time elapsed: %v\n",
+		len(reportMerged), len(DB), duration)
+
+	// merge report. only includes repos that had new data to merge.
+	fmt.Printf("\nRepos merged: %d\n", len(reportMerged))
+	for i := 0; i < len(reportMerged); i++ {
+		fmt.Print(reportMerged[i])
+	}
+	// failure report
+	fmt.Printf("\nFAILURES: %d\n", len(reportFail))
+	for i := 0; i < len(reportFail); i++ {
+		fmt.Print(reportFail[i])
+	}
+}
+
+func merge(i int, remoteMine *Remote, reportMerged *[]string, reportFail *[]string,
+	wg *sync.WaitGroup, mutMerged *sync.Mutex, mutFail *sync.Mutex,
+) {
+	defer wg.Done()
+
+	repo := DB[i]
+
+	// in theory remote was already vetted to be a "mine" remote. but make sure
+	if remoteMine.Sym != "mine" {
+		return
+	}
+	currBranch, err := getCurrBranch(&repo)
+	if err != nil {
+		mutFail.Lock()
+		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %s\n", i, repo.Folder, "problem getting current branch name: "+err.Error()))
+		mutFail.Unlock()
+		return
+	}
+	// verify BranchUse is checked out. don't switch to BranchUse as there may be
+	// unstaged changes. just fail.
+	if currBranch != repo.BranchUse {
+		mutFail.Lock()
+		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %s must be checked out before a merging from my remote.\n", i, repo.Folder, repo.BranchUse))
+		mutFail.Unlock()
+		return
+	}
+}
+
 // Set up upstream remotes.
 // Useful after a fresh emacs config clone to a new computer. Or after getting latest
 // when a new package has been added.
