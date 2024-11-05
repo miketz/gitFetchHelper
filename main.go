@@ -134,6 +134,7 @@ func printCommands() {
 	fetchUpstream
 	fetchDefault
 	fetchMine
+	mergeMine
 	diff  (listReposWithUpstreamCodeToMerge)
 	init  (setUpstreamRemotesIfMissing)
 	init2 (switchToBranches)
