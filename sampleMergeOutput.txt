@@ -1,0 +1,48 @@
+############################################################
+# Sample output of git merge.
+# Currently I try to determine a merge's success/fail status
+# from the command line output.
+############################################################
+
+# output: in sync already
+Already up to date.
+
+
+# output: uncommited changes
+Updating b725b23..af07577
+error: Your local changes to the following files would be overwritten by merge:
+        NEWS
+Please commit your changes or stash them before you merge.
+Aborting
+
+
+# output: merge conflict
+Auto-merging NEWS
+CONFLICT (content): Merge conflict in NEWS
+Recorded preimage for 'NEWS'
+Automatic merge failed; fix conflicts and then commit the result.
+
+# output: git status after a conflict
+On branch master
+Your branch and 'origin/master' have diverged,
+and have 1 and 1 different commits each, respectively.
+  (use "git pull" if you want to integrate the remote branch with yours)
+
+You have unmerged paths.
+  (fix conflicts and run "git commit")
+  (use "git merge --abort" to abort the merge)
+
+Unmerged paths:
+  (use "git add <file>..." to mark resolution)
+        both modified:   NEWS
+
+no changes added to commit (use "git add" and/or "git commit -a")
+
+
+
+
+# output: successful merge. fast foward
+Updating b725b23..af07577
+Fast-forward
+ NEWS | 1 +
+ 1 file changed, 1 insertion(+)
