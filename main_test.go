@@ -2,9 +2,6 @@ package main
 
 import (
 	"os"
-	"os/user"
-	"runtime"
-	"strings"
 	"testing"
 )
 
@@ -21,13 +18,8 @@ func TestMain(m *testing.M) {
 // functional test, not unit test
 // may only work on my machine with folders setup
 func TestIsGitRepo(t *testing.T) {
-	// ~ path handling setup
-	usr, _ := user.Current()
-	homeDir = usr.HomeDir
-	isMsWindows := strings.HasPrefix(runtime.GOOS, "windows")
-	if isMsWindows {
-		homeDir += "/AppData/Local"
-	}
+	homeDir, _ = getHomeDir() // ~ path handling setup
+
 	// repos, but not submods
 	path1 := expandPath("~/.emacs.d")
 	path2 := expandPath("~/.emacs.d/notElpa")
@@ -65,13 +57,8 @@ func TestIsGitRepo(t *testing.T) {
 // functional test, not unit test
 // may only work on my machine with folders setup
 func TestIsInGitSubmodule(t *testing.T) {
-	// ~ path handling setup
-	usr, _ := user.Current()
-	homeDir = usr.HomeDir
-	isMsWindows := strings.HasPrefix(runtime.GOOS, "windows")
-	if isMsWindows {
-		homeDir += "/AppData/Local"
-	}
+	homeDir, _ = getHomeDir() // ~ path handling setup
+
 	// repos, but not submods
 	path1 := expandPath("~/.emacs.d")
 	path2 := expandPath("~/.emacs.d/notElpa")
@@ -108,13 +95,8 @@ func TestIsInGitSubmodule(t *testing.T) {
 // functional test, not unit test
 // may only work on my machine with folders setup
 func TestExists(t *testing.T) {
-	// ~ path handling setup
-	usr, _ := user.Current()
-	homeDir = usr.HomeDir
-	isMsWindows := strings.HasPrefix(runtime.GOOS, "windows")
-	if isMsWindows {
-		homeDir += "/AppData/Local"
-	}
+	homeDir, _ = getHomeDir() // ~ path handling setup
+
 	// repos, but not submods
 	path1 := expandPath("~/.emacs.d")
 	path2 := expandPath("~/.emacs.d/notElpa")
