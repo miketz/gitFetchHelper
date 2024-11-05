@@ -160,6 +160,8 @@ func main() {
 		fetchRemotes(RemoteDefault)
 	case "fetchMine":
 		fetchRemotes(RemoteMine)
+	case "mergeMine":
+		mergeMineRemotes()
 	case "diff":
 		listReposWithUpstreamCodeToMerge()
 	case "init":
@@ -360,6 +362,43 @@ func merge(i int, remoteMine *Remote, reportMerged *[]string, reportFail *[]stri
 		mutFail.Unlock()
 		return
 	}
+
+	// git merge origin/master
+	cmd := exec.Command("git", "merge", remoteMine.Alias+"/"+repo.BranchUse) // #nosec G204
+	cmd.Dir = expandPath(repo.Folder)
+	// Run branch switch!
+	stdout, err := cmd.CombinedOutput()
+	if err != nil {
+		mutFail.Lock()
+		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %v %s\n", i, repo.Folder, cmd.Args, err.Error()))
+		mutFail.Unlock()
+		return
+	}
+	output := string(stdout)
+	if output == "Already up to date.\n" {
+		return // nothing to merge, don't add to success report
+	}
+	lines := strings.Split(output, newLine)
+	line2 := lines[1]
+	// TODO: find a better way of detecting error. They could change the error message to
+	// not start with "error" and that would break this code.
+	if strings.HasPrefix(line2, "error") {
+		mutFail.Lock()
+		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %s\n", i, repo.Folder, output))
+		mutFail.Unlock()
+		return
+	}
+	if strings.HasPrefix(line2, "CONFLICT") {
+		mutFail.Lock()
+		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %s\n", i, repo.Folder, output))
+		mutFail.Unlock()
+		return
+	}
+	// successful merge
+	mutMerged.Lock()
+	*reportMerged = append(*reportMerged, fmt.Sprintf("%d: %s %v %s\n",
+		i, repo.Folder, cmd.Args, output))
+	mutMerged.Unlock()
 }
 
 // Set up upstream remotes.
