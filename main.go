@@ -384,15 +384,10 @@ func merge(i int, remoteMine *Remote, reportMerged *[]string, reportFail *[]stri
 	}
 	lines := strings.Split(output, newLine)
 	line2 := lines[1]
-	// TODO: find a better way of detecting error. They could change the error message to
-	// not start with "error" and that would break this code.
-	if strings.HasPrefix(line2, "error") {
-		mutFail.Lock()
-		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %s\n", i, repo.Folder, output))
-		mutFail.Unlock()
-		return
-	}
-	if strings.HasPrefix(line2, "CONFLICT") {
+	// TODO: find a better way of detecting error or conflict. They could change the
+	// message break this code.
+	mergeFailed := strings.HasPrefix(line2, "error") || strings.HasPrefix(line2, "CONFLICT")
+	if mergeFailed {
 		mutFail.Lock()
 		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %s\n", i, repo.Folder, output))
 		mutFail.Unlock()
