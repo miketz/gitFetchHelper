@@ -7,6 +7,7 @@ import (
 
 func TestMain(m *testing.M) {
 	// setup code here
+	homeDir, _ = getHomeDir() // ~ path handling setup
 
 	exitCode := m.Run()
 
@@ -18,8 +19,6 @@ func TestMain(m *testing.M) {
 // functional test, not unit test
 // may only work on my machine with folders setup
 func TestIsGitRepo(t *testing.T) {
-	homeDir, _ = getHomeDir() // ~ path handling setup
-
 	// repos, but not submods
 	path1 := expandPath("~/.emacs.d")
 	path2 := expandPath("~/.emacs.d/notElpa")
@@ -57,8 +56,6 @@ func TestIsGitRepo(t *testing.T) {
 // functional test, not unit test
 // may only work on my machine with folders setup
 func TestIsInGitSubmodule(t *testing.T) {
-	homeDir, _ = getHomeDir() // ~ path handling setup
-
 	// repos, but not submods
 	path1 := expandPath("~/.emacs.d")
 	path2 := expandPath("~/.emacs.d/notElpa")
@@ -95,8 +92,6 @@ func TestIsInGitSubmodule(t *testing.T) {
 // functional test, not unit test
 // may only work on my machine with folders setup
 func TestExists(t *testing.T) {
-	homeDir, _ = getHomeDir() // ~ path handling setup
-
 	// repos, but not submods
 	path1 := expandPath("~/.emacs.d")
 	path2 := expandPath("~/.emacs.d/notElpa")
