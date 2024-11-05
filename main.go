@@ -106,21 +106,15 @@ var newLine = "\n"
 
 // initialize global variables.
 func initGlobals() error {
-	isMsWindows := strings.HasPrefix(runtime.GOOS, "windows")
-
 	var err error
 	DB, err = getRepoData()
 	if err != nil {
 		return err
 	}
 
-	usr, err := user.Current()
+	homeDir, err = getHomeDir()
 	if err != nil {
 		return err
-	}
-	homeDir = usr.HomeDir
-	if isMsWindows {
-		homeDir += "/AppData/Local"
 	}
 	return nil
 }
@@ -1146,4 +1140,25 @@ func removeRemoteFromBranchName(remoteBranch string) string {
 		}
 	}
 	return branchName
+}
+
+// true if this program is running on MS Windows.
+func isMsWindows() bool {
+	return strings.HasPrefix(runtime.GOOS, "windows")
+}
+
+// Get user's home directory.
+// If on MS Windows do a custom adjustment to my emacs config location.
+func getHomeDir() (string, error) {
+	usr, err := user.Current()
+	if err != nil {
+		return "", err
+	}
+	homeDir := usr.HomeDir
+	if isMsWindows() {
+		// NOTE: this is a custom adjustment for my personal emacs config location
+		// on MS Windows.
+		homeDir += "/AppData/Local"
+	}
+	return homeDir, nil
 }
