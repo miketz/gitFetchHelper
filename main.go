@@ -375,6 +375,9 @@ func merge(i int, remoteMine *Remote, reportMerged *[]string, reportFail *[]stri
 		mutFail.Unlock()
 		return
 	}
+	// TODO: compare hashes to see if a merge is needed first. measure performance to
+	// see if that helps. This would also avoids an output msg comparison which will
+	// break if the msg changes in the future.
 	output := string(stdout)
 	if output == "Already up to date.\n" {
 		return // nothing to merge, don't add to success report
