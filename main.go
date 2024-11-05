@@ -967,7 +967,14 @@ func cloneYolo(i int, reportClone *[]string, reportFail *[]string,
 	// other branches. git makes you go through convoluted steps if you don't get
 	// the branches during the clone.
 	// for full history manually run: git fetch --unshallow
-	cmd := exec.Command("git", "clone", "--depth", "1", "--branch", repo.BranchUse, "--no-single-branch", remote.URL) // #nosec G204
+	// cmd := exec.Command("git", "clone", "--depth", "1", "--branch", repo.BranchUse, "--no-single-branch", remote.URL) // #nosec G204
+
+	// for now do not do shallow clone. although it's better for performance it messes up
+	// subsequent merge/rebases (requireing fetch --unshallow).
+	// The clone step in theory only executes 1 time ever on first setup of a new computer,
+	// so it's OK if it's slower.
+	cmd := exec.Command("git", "clone", "--branch", repo.BranchUse, remote.URL) // #nosec G204
+
 	// go to parent folder 1 level up to execute the clone command.
 	// because the target folder does not exist until after clone
 	cmd.Dir = parentDir(folder)
