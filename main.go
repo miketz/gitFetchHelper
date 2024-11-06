@@ -85,8 +85,13 @@ func (r *GitRepo) GetRemoteBySym(sym string) (Remote, error) {
 
 // get the hash of a branch in this GitRepo.
 func (r *GitRepo) GetHash(branchName string) (string, error) {
-	cmd := exec.Command("git", "rev-parse", branchName)
-	cmd.Dir = expandPath(r.Folder)
+	return GetHash(r.Folder, branchName)
+}
+
+// get the hash of a branch, tag, or "HEAD" in git repo folder.
+func GetHash(repoFolder, branchTagOrHead string) (string, error) {
+	cmd := exec.Command("git", "rev-parse", branchTagOrHead)
+	cmd.Dir = expandPath(repoFolder)
 	hash, err := cmd.CombinedOutput()
 	if err != nil {
 		return "", err
