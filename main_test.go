@@ -1,7 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"os"
+	"os/exec"
 	"testing"
 )
 
@@ -185,4 +187,40 @@ func TestRemoveRemoteFromBranchName(t *testing.T) {
 	if got != want {
 		t.Fatalf("got: %s. wanted %s", got, want)
 	}
+}
+
+func BenchmarkMergeAlreadyLatest(b *testing.B) {
+	var hasLatest bool
+	dir := expandPath("~/.emacs.d/notElpaYolo/mor")
+	for i := 0; i < b.N; i++ {
+		cmd := exec.Command("git", "merge", "origin/master") // #nosec G204
+		cmd.Dir = dir
+		stdout, err := cmd.CombinedOutput()
+		if err != nil {
+			b.Fatalf("merged errored out! %v", err)
+		}
+		output := string(stdout)
+		hasLatest = output == "Already up to date.\n"
+	}
+	fmt.Printf("merge hasLatest: %v\n", hasLatest)
+	b.ReportAllocs() // include alloc info in report
+}
+
+func BenchmarkCheckAlreadyLatest(b *testing.B) {
+	var hasLatest bool
+	dir := expandPath("~/.emacs.d/notElpaYolo/mor")
+	for i := 0; i < b.N; i++ {
+		// git rev-parse HEAD
+		hashLocal, err := GetHash(dir, "HEAD")
+		if err != nil {
+			b.Fatalf("GetHash errored out! %v", err)
+		}
+		hashRemote, err := GetHash(dir, "origin/master")
+		if err != nil {
+			b.Fatalf("GetHash errored out! %v", err)
+		}
+		hasLatest = hashLocal == hashRemote
+	}
+	fmt.Printf("check hasLatest: %v\n", hasLatest)
+	b.ReportAllocs() // include alloc info in report
 }

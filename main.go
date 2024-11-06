@@ -374,11 +374,10 @@ func merge(i int, remoteMine *Remote, reportMerged *[]string, reportFail *[]stri
 		mutFail.Unlock()
 		return
 	}
-	// TODO: compare hashes to see if a merge is needed first. measure performance to
-	// see if that helps. This would also avoids an output msg comparison which will
-	// break if the msg changes in the future.
+	// Merge and checking output is faster than checking hashes of master, origin/master in benchmarks.
+	// At least with slow shelling out commands.
 	output := string(stdout)
-	if output == "Already up to date.\n" {
+	if output == "Already up to date.\n" { // NOTE: this logic will break if msg changes in future
 		return // nothing to merge, don't add to success report
 	}
 	lines := strings.Split(output, newLine)
