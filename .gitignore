@@ -2,5 +2,6 @@ gitHelper
 gitFetchHelper
 a.out
 *.exe
+.ctags.d/
 tags
 TAGS
