@@ -22,7 +22,7 @@ ideally use make
 make
 ```
 
-OR if you are on windwos with now make command
+or if you are on windows with no make command just use the Go tooling directly
 ```bash
 go build
 ```
