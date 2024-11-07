@@ -134,7 +134,9 @@ func printCommands() {
 	fetchDefault
 	fetchMine
 	mergeMine
-	diff  (listReposWithUpstreamCodeToMerge)
+	diffUpstream
+	diffDefault
+	diffMine
 	init  (setUpstreamRemotesIfMissing)
 	init2 (switchToBranches)
 	init3 (cloneYoloRepos)
@@ -162,8 +164,12 @@ func main() {
 		fetchRemotes(RemoteMine)
 	case "mergeMine":
 		mergeMineRemotes()
-	case "diff":
-		listReposWithUpstreamCodeToMerge()
+	case "diffUpstream": // original diff
+		listReposWithRemoteCodeToMerge(RemoteUpstream)
+	case "diffDefault":
+		listReposWithRemoteCodeToMerge(RemoteDefault)
+	case "diffMine":
+		listReposWithRemoteCodeToMerge(RemoteDefault)
 	case "init":
 		setUpstreamRemotesIfMissing()
 	case "init2":
@@ -519,7 +525,7 @@ CREATE_UPSTREAM:
 	mutRemoteCreated.Unlock()
 }
 
-func listReposWithUpstreamCodeToMerge() { //nolint:dupl
+func listReposWithRemoteCodeToMerge(remoteType RemoteType) { //nolint:dupl
 	start := time.Now() // stop watch start
 
 	reportDiff := make([]string, 0, len(DB)) // alloc 100%. no realloc on happy path.
@@ -530,7 +536,7 @@ func listReposWithUpstreamCodeToMerge() { //nolint:dupl
 	mutFail := sync.Mutex{}
 	for i := 0; i < len(DB); i++ { // check each repo for new upstream code
 		wg.Add(1)
-		go diff(i, &reportDiff, &reportFail, &wg, &mutDiff, &mutFail)
+		go diff(i, remoteType, &reportDiff, &reportFail, &wg, &mutDiff, &mutFail)
 	}
 	wg.Wait()
 
@@ -551,7 +557,7 @@ func listReposWithUpstreamCodeToMerge() { //nolint:dupl
 	}
 }
 
-func diff(i int, reportDiff *[]string, reportFail *[]string,
+func diff(i int, remoteType RemoteType, reportDiff *[]string, reportFail *[]string,
 	wg *sync.WaitGroup, mutDiff *sync.Mutex, mutFail *sync.Mutex,
 ) {
 	defer wg.Done()
@@ -560,27 +566,29 @@ func diff(i int, reportDiff *[]string, reportFail *[]string,
 
 	// get current checked out branch name.
 	// It may be the configured repo.MainBranch, or custom "mine", or empty "" (detached head)
-	branchName, err := getCurrBranch(&repo)
-	if err != nil {
+	// branchName, err := getCurrBranch(&repo)
+	// if err != nil {
+	// 	mutFail.Lock()
+	// 	*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %s\n", i, repo.Folder, "problem getting current branch name: "+err.Error()))
+	// 	mutFail.Unlock()
+	// 	return
+	// }
+
+	// get remote info
+	var err error
+	var remote Remote
+	if remoteType == RemoteUpstream {
+		remote, err = repo.RemoteUpstream()
+	} else if remoteType == RemoteDefault {
+		remote, err = repo.RemoteDefault()
+	} else if remoteType == RemoteMine {
+		remote, err = repo.RemoteMine()
+	} else {
 		mutFail.Lock()
-		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %s\n", i, repo.Folder, "problem getting current branch name: "+err.Error()))
+		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s unknown repo type: %v\n", i, repo.Folder, remoteType))
 		mutFail.Unlock()
 		return
 	}
-
-	// when comparing our current to upstream, we don't care about any custom changes in "mine" as those are expected difference from upstream.
-	// instead compare repo.BranchMain if possible
-	// or use HEAD if we are in a detached head state.
-	if branchName == "" {
-		// detached head.
-		branchName = "HEAD"
-	} else if branchName != repo.BranchMain {
-		// on my custom branch. Don't' compare that.
-		branchName = repo.BranchMain
-	}
-
-	// get configured upstream remote info
-	upstream, err := repo.RemoteUpstream()
 	if err != nil {
 		mutFail.Lock()
 		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %s\n", i, repo.Folder, err.Error()))
@@ -588,12 +596,47 @@ func diff(i int, reportDiff *[]string, reportFail *[]string,
 		return
 	}
 
+	// when comparing our current to upstream, we don't care about any custom changes in "mine" as those are expected difference from upstream.
+	// instead compare repo.BranchMain if possible
+	// or use HEAD if we are in a detached head state.
+	// if we are comparieng against my remote fork or "default" remote then go ahead and use a non BranchMain in the
+	// comparison
+	var branchName string
+	// if branchName == "" {
+	// 	// detached head.
+	// 	branchName = "HEAD"
+	// }
+	if remoteType == RemoteUpstream {
+		// BranchUse is possibly a custom branch. Don't compare that when dealing with upstream as my custom branch won't exist there.
+		branchName = repo.BranchMain
+	} else if remoteType == RemoteMine {
+		// BranchUse should always exist in my forked remote.
+		// in this case we are interested in syncing up with the latest .emacs.d/ and that means BranchUse
+		branchName = repo.BranchUse
+	} else if remoteType == RemoteDefault {
+		// in this case we are interested in syncing up with the latest .emacs.d/
+		// but some of the remotes may use the upstream directly (no personal fork), for those continue to compare against the offical main branch
+		isUpstreamRem := remote.Sym == "upstream"
+		isMineRem := !isUpstreamRem && remote.Sym == "mine"
+		if isUpstreamRem {
+			branchName = repo.BranchMain
+		} else if isMineRem {
+			branchName = repo.BranchUse
+		} else {
+			// ad-hoc remote. not mine, not the official upstream.
+			// maybe an old abondoned upstream remote configured in the json for informational purposes.
+			// this case should rarely occur
+			branchName = repo.BranchMain
+		}
+	}
+
 	// prepare diff command. example: git diff master upstream/master
 	// TODO: maybe compare git diff origin/master upstream/master
 	//       to handle case where i'm on a "mine" branch and "master" only exists as a remote-tracking branch after a clone
 	cmd := exec.Command("git", "diff",
 		branchName,
-		upstream.Alias+"/"+repo.BranchMain) // #nosec G204
+		// remote.Alias+"/"+repo.BranchMain) // #nosec G204
+		remote.Alias+"/"+branchName) // #nosec G204
 	cmd.Dir = expandPath(repo.Folder)
 	// Run git diff!
 	stdout, err := cmd.CombinedOutput()
