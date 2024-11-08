@@ -1179,22 +1179,9 @@ func parentDir(path string) string {
 // remove the "remote" prefix from a remote tracking branch name
 // input:  "origin/km/reshelve-rewrite"
 // output: "km/reshelve-rewrite"
-// TODO: optimize this. maybe a substring after first "/" character?
 func removeRemoteFromBranchName(remoteBranch string) string {
-	parts := strings.Split(remoteBranch, "/")
-
-	// we cannot simply use parts[1] becuase the remainder of the name may have
-	// contained slashes "/".
-	branchName := "" //:= parts[1]
-	// trim off the "origin" prefix, but also add back the "/" in the remainder of the name
-	for i := 1; i < len(parts); i++ {
-		if i == 1 {
-			branchName += parts[i]
-		} else {
-			branchName += "/" + parts[i]
-		}
-	}
-	return branchName
+	i := strings.Index(remoteBranch, "/")
+	return remoteBranch[i+1:]
 }
 
 // true if this program is running on MS Windows.

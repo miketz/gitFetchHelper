@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"strings"
 	"testing"
 )
 
@@ -223,4 +224,43 @@ func BenchmarkCheckAlreadyLatest(b *testing.B) {
 	}
 	fmt.Printf("check hasLatest: %v\n", hasLatest)
 	b.ReportAllocs() // include alloc info in report
+}
+
+func BenchmarkSubstringOld(b *testing.B) {
+	fullBranchName := "origin/km/reshelve-rewrite"
+	for i := 0; i < b.N; i++ {
+		_removeRemoteFromBranchName_OLD(fullBranchName)
+	}
+	b.ReportAllocs() // include alloc info in report
+}
+func BenchmarkSubstringNew(b *testing.B) {
+	fullBranchName := "origin/km/reshelve-rewrite"
+	for i := 0; i < b.N; i++ {
+		_removeRemoteFromBranchName_NEW(fullBranchName)
+	}
+	b.ReportAllocs() // include alloc info in report
+}
+
+// tmp fn to compare substirng techniques
+func _removeRemoteFromBranchName_OLD(remoteBranch string) string {
+	parts := strings.Split(remoteBranch, "/")
+
+	// we cannot simply use parts[1] becuase the remainder of the name may have
+	// contained slashes "/".
+	branchName := "" //:= parts[1]
+	// trim off the "origin" prefix, but also add back the "/" in the remainder of the name
+	for i := 1; i < len(parts); i++ {
+		if i == 1 {
+			branchName += parts[i]
+		} else {
+			branchName += "/" + parts[i]
+		}
+	}
+	return branchName
+}
+
+// tmp fn to compare substirng techniques
+func _removeRemoteFromBranchName_NEW(remoteBranch string) string {
+	i := strings.Index(remoteBranch, "/")
+	return remoteBranch[i+1:]
 }
