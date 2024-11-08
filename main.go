@@ -934,6 +934,7 @@ func switchToBranch(i int, reportBranchChange *[]string, reportFail *[]string,
 }
 
 // for each "yolo" repo, clone it if it does not yet exist
+// NOTE: git submodules dont' need to be cloned, they come with the .emacs.d/ repo.
 func cloneYoloRepos() {
 	start := time.Now() // stop watch start
 
