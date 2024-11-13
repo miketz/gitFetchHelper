@@ -738,29 +738,29 @@ func createLocalBranchesForRepo(i int, reportBranch *[]string, reportFail *[]str
 	collectOutput.Grow(100 * 2) // allocate enough space up front
 
 	// 2. for each remote tracking branch: create local branch if it does not exist
-	// actually don't bother creating all remote tracking branches
+	// actually don't bother creating all remote tracking remoteBranches
 	// only 2: repo.BranchMain, repo.BranchUse. if i need an odd branch I can manullay create as needed.
-	branches := make([]string, 0, 2)
-	branches = append(branches, remoteDefault.Alias+"/"+repo.BranchMain)
+	remoteBranches := make([]string, 0, 2)
+	remoteBranches = append(remoteBranches, remoteDefault.Alias+"/"+repo.BranchMain)
 	// in theory BranchUse should always exist locally. And if BranchMain is the same branch then ditto.
 	// but we will proceed with the checks and creation attempts anyway to fill in any gaps where
 	// a branch doesn't exist for some reason.
 	if repo.BranchMain != repo.BranchUse {
-		branches = append(branches, remoteDefault.Alias+"/"+repo.BranchUse)
+		remoteBranches = append(remoteBranches, remoteDefault.Alias+"/"+repo.BranchUse)
 	}
 	// check for, then create the branches
-	for i := 0; i < len(branches); i++ {
-		// fullBranchName should be something like "origin/master"
-		fullBranchName := branches[i]
+	for i := 0; i < len(remoteBranches); i++ {
+		// remoteBranchName should be something like "origin/master"
+		remoteBranchName := remoteBranches[i]
 		// should be something like "master"
-		branchName := removeRemoteFromBranchName(fullBranchName)
+		branchName := removeRemoteFromBranchName(remoteBranchName)
 		hasBranch, _ := hasLocalBranch(&repo, branchName)
 		if hasBranch {
 			continue // local branch already exists. no need to create it.
 		}
 		// create branch!
 		// git checkout --track origin/featureX
-		cmd := exec.Command("git", "checkout", "--track", fullBranchName) // #nosec G204
+		cmd := exec.Command("git", "checkout", "--track", remoteBranchName) // #nosec G204
 		cmd.Dir = expandPath(repo.Folder)
 		stdout, err := cmd.CombinedOutput()
 		if err != nil {
