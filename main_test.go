@@ -188,6 +188,14 @@ func TestRemoveRemoteFromBranchName(t *testing.T) {
 	if got != want {
 		t.Fatalf("got: %s. wanted %s", got, want)
 	}
+
+	// normal master branch. no remote!
+	fullBranchName3 := "master"
+	got = removeRemoteFromBranchName(fullBranchName3)
+	want = "master"
+	if got != want {
+		t.Fatalf("got: %s. wanted %s", got, want)
+	}
 }
 
 func BenchmarkMergeAlreadyLatest(b *testing.B) {
