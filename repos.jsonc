@@ -1605,6 +1605,26 @@
   "branchUse": "master",
   "isYolo": true
  }
+ {"name": "xterm-color",
+  "folder": "~/.emacs.d/notElpaYolo/xterm-color",
+  "remotes": [{"sym": "upstream",
+               "url": "https://github.com/atomontage/xterm-color",
+               "alias": "origin"}],
+  "remoteDefault": "upstream",
+  "branchMain": "master",
+  "branchUse": "master",
+  "isYolo": true
+ }
+ {"name": "magit-delta",
+  "folder": "~/.emacs.d/notElpaYolo/magit-delta",
+  "remotes": [{"sym": "upstream",
+               "url": "https://github.com/dandavison/magit-delta",
+               "alias": "origin"}],
+  "remoteDefault": "upstream",
+  "branchMain": "master",
+  "branchUse": "master",
+  "isYolo": true
+ }
  {"name": "gitFetchHelper",
   "folder": "~/.emacs.d/notElpaYolo/gitFetchHelper",
   "remotes": [{"sym": "mine",
