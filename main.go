@@ -139,7 +139,8 @@ func printCommands() {
 	diffMine
 	init  (setUpstreamRemotesIfMissing)
 	init2 (switchToBranches)
-	init3 (cloneYoloRepos)
+	init3 (cloneYoloRepos full-not-shallow)
+	init3Shallow (cloneYoloRepos shallow)
 	init4 (createLocalBranches)
 `)
 }
@@ -175,7 +176,9 @@ func main() {
 	case "init2":
 		switchToBranches()
 	case "init3":
-		cloneYoloRepos()
+		cloneYoloRepos(false)
+	case "init3Shallow":
+		cloneYoloRepos(true)
 	case "init4":
 		createLocalBranches()
 	default:
@@ -935,7 +938,7 @@ func switchToBranch(i int, reportBranchChange *[]string, reportFail *[]string,
 
 // for each "yolo" repo, clone it if it does not yet exist
 // NOTE: git submodules dont' need to be cloned, they come with the .emacs.d/ repo.
-func cloneYoloRepos() {
+func cloneYoloRepos(useShallowClone bool) {
 	start := time.Now() // stop watch start
 
 	reportClone := make([]string, 0, len(DB)) // alloc 100%. no realloc on happy path.
@@ -960,7 +963,7 @@ func cloneYoloRepos() {
 		}
 		yoloCnt++
 		wg.Add(1)
-		go cloneYolo(i, &reportClone, &reportFail, &wg, &mutClone, &mutFail)
+		go cloneYolo(i, &reportClone, &reportFail, &wg, &mutClone, &mutFail, useShallowClone)
 	}
 	wg.Wait()
 
@@ -983,7 +986,7 @@ func cloneYoloRepos() {
 
 // clone the "yolo" repo if it does not exist in target location.
 func cloneYolo(i int, reportClone *[]string, reportFail *[]string,
-	wg *sync.WaitGroup, mutClone *sync.Mutex, mutFail *sync.Mutex,
+	wg *sync.WaitGroup, mutClone *sync.Mutex, mutFail *sync.Mutex, useShallowClone bool,
 ) {
 	defer wg.Done()
 
@@ -1009,19 +1012,22 @@ func cloneYolo(i int, reportClone *[]string, reportFail *[]string,
 		return
 	}
 
-	// git clone --depth 1 --branch master --no-single-branch remoteUrl
-	// using a shallow clone for performance. But still get the tip of each branch
-	// with "--no-single-branch" to avoid a headache later when trying to switch to
-	// other branches. git makes you go through convoluted steps if you don't get
-	// the branches during the clone.
-	// for full history manually run: git fetch --unshallow
-	// cmd := exec.Command("git", "clone", "--depth", "1", "--branch", repo.BranchUse, "--no-single-branch", remote.URL) // #nosec G204
-
-	// for now do not do shallow clone. although it's better for performance it messes up
-	// subsequent merge/rebases (requireing fetch --unshallow).
-	// The clone step in theory only executes 1 time ever on first setup of a new computer,
-	// so it's OK if it's slower.
-	cmd := exec.Command("git", "clone", "--branch", repo.BranchUse, remote.URL) // #nosec G204
+	var cmd *exec.Cmd
+	if useShallowClone {
+		// git clone --depth 1 --branch master --no-single-branch remoteUrl
+		// using a shallow clone for performance. But still get the tip of each branch
+		// with "--no-single-branch" to avoid a headache later when trying to switch to
+		// other branches. git makes you go through convoluted steps if you don't get
+		// the branches during the clone.
+		// for full history manually run: git fetch --unshallow
+		cmd = exec.Command("git", "clone", "--depth", "1", "--branch", repo.BranchUse, "--no-single-branch", remote.URL) // #nosec G204
+	} else {
+		// for now do not do shallow clone. although it's better for performance it messes up
+		// subsequent merge/rebases (requireing fetch --unshallow).
+		// The clone step in theory only executes 1 time ever on first setup of a new computer,
+		// so it's OK if it's slower.
+		cmd = exec.Command("git", "clone", "--branch", repo.BranchUse, remote.URL) // #nosec G204
+	}
 
 	// go to parent folder 1 level up to execute the clone command.
 	// because the target folder does not exist until after clone
