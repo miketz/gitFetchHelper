@@ -195,7 +195,7 @@ func getRepoData() ([]GitRepo, error) {
 	}
 	defer jsonFile.Close()
 
-	repos := make([]GitRepo, 0, 256)
+	repos := make([]GitRepo, 0, 256) // TODO: bump this if my repo count grows over 256
 	// jsonParser := json.NewDecoder(jsonFile)
 	reader := bufio.NewReader(jsonFile)
 	jsonParser, err := jsonc.NewDecoder(reader)
