@@ -1235,7 +1235,7 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "mine",
+  "branchUse": "master", // upstream added .gitignore so no need for "mine" branch anymore
   "isYolo": true
  },
  {"name": "icicles",
