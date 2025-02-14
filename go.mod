@@ -1,6 +1,6 @@
 module gitFetchHelper
 
-go 1.22.6
+go 1.24.0
 
 require (
 	github.com/komkom/jsonc v0.0.0-20211024105009-cf68880f5077 // indirect

@@ -80,7 +80,8 @@ func (r *GitRepo) GetRemoteBySym(sym string) (Remote, error) {
 			return rem, nil
 		}
 	}
-	return Remote{}, fmt.Errorf("no " + sym + " remote configured for " + r.Name + " in repos.jsonc")
+	// return Remote{}, fmt.Errorf("no " + sym + " remote configured for " + r.Name + " in repos.jsonc")
+	return Remote{}, fmt.Errorf("no %s remote configured for %s in repos.jsonc", sym, r.Name)
 }
 
 // get the hash of a branch in this GitRepo.
