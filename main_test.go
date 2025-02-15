@@ -19,7 +19,7 @@ func TestMain(m *testing.M) {
 	os.Exit(exitCode)
 }
 
-// functional test, not unit test
+// functional test, not unit test.
 // may only work on my machine with folders setup
 func TestIsGitRepo(t *testing.T) {
 	// repos, but not submods
@@ -53,10 +53,9 @@ func TestIsGitRepo(t *testing.T) {
 	if got != want {
 		t.Fatalf("got: %t. wanted %t", got, want)
 	}
-
 }
 
-// functional test, not unit test
+// functional test, not unit test.
 // may only work on my machine with folders setup
 func TestIsInGitSubmodule(t *testing.T) {
 	// repos, but not submods
@@ -255,7 +254,7 @@ func _removeRemoteFromBranchName_OLD(remoteBranch string) string {
 
 	// we cannot simply use parts[1] becuase the remainder of the name may have
 	// contained slashes "/".
-	branchName := "" //:= parts[1]
+	branchName := "" // := parts[1]
 	// trim off the "origin" prefix, but also add back the "/" in the remainder of the name
 	for i := 1; i < len(parts); i++ {
 		if i == 1 {
