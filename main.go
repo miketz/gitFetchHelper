@@ -1203,11 +1203,11 @@ func getHomeDir() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	homeDir := usr.HomeDir
+	myHomeDir := usr.HomeDir
 	if isMsWindows() {
 		// NOTE: this is a custom adjustment for my personal emacs config location
 		// on MS Windows.
-		homeDir += "/AppData/Local"
+		myHomeDir += "/AppData/Local"
 	}
-	return homeDir, nil
+	return myHomeDir, nil
 }
