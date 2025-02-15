@@ -20,7 +20,7 @@ func TestMain(m *testing.M) {
 }
 
 // functional test, not unit test.
-// may only work on my machine with folders setup
+// may only work on my machine with folders setup.
 func TestIsGitRepo(t *testing.T) {
 	// repos, but not submods
 	path1 := expandPath("~/.emacs.d")
@@ -56,7 +56,7 @@ func TestIsGitRepo(t *testing.T) {
 }
 
 // functional test, not unit test.
-// may only work on my machine with folders setup
+// may only work on my machine with folders setup.
 func TestIsInGitSubmodule(t *testing.T) {
 	// repos, but not submods
 	path1 := expandPath("~/.emacs.d")
@@ -91,8 +91,8 @@ func TestIsInGitSubmodule(t *testing.T) {
 	}
 }
 
-// functional test, not unit test
-// may only work on my machine with folders setup
+// functional test, not unit test.
+// may only work on my machine with folders setup.
 func TestExists(t *testing.T) {
 	// repos, but not submods
 	path1 := expandPath("~/.emacs.d")
@@ -149,8 +149,8 @@ func TestParentDir(t *testing.T) {
 	}
 }
 
-// functional test, not unit test
-// may only work on my machine with folders and git repos setup
+// functional test, not unit test.
+// may only work on my machine with folders and git repos setup.
 func TestTrackingBranches(t *testing.T) {
 	want := make([]string, 0, 2)
 	want = append(want, "origin/master")
@@ -248,7 +248,7 @@ func BenchmarkSubstringNew(b *testing.B) {
 	b.ReportAllocs() // include alloc info in report
 }
 
-// tmp fn to compare substirng techniques
+// tmp fn to compare substirng techniques.
 func _removeRemoteFromBranchName_OLD(remoteBranch string) string {
 	parts := strings.Split(remoteBranch, "/")
 
@@ -266,7 +266,7 @@ func _removeRemoteFromBranchName_OLD(remoteBranch string) string {
 	return branchName
 }
 
-// tmp fn to compare substirng techniques
+// tmp fn to compare substirng techniques.
 func _removeRemoteFromBranchName_NEW(remoteBranch string) string {
 	i := strings.Index(remoteBranch, "/")
 	return remoteBranch[i+1:]
