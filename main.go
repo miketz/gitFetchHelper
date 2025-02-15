@@ -1163,7 +1163,7 @@ func isInGitSubmodule(path string) bool {
 	return len(stdout) > 0
 }
 
-// returns true if file or directory exists
+// returns true if file or directory exists.
 func exists(path string) (bool, error) {
 	_, err := os.Stat(path)
 	if err == nil {
