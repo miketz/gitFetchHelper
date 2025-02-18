@@ -19,7 +19,7 @@ build: vet
 # run with the diff arg, as it doesn't make network calls
 .PHONY: run
 run:
-	./gitFetchHelper diff
+	./gitFetchHelper diffUpstream
 
 .PHONY: buildandrun
 buildandrun: build run
