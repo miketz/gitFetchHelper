@@ -766,10 +766,10 @@ func createLocalBranchesForRepo(index int, reportBranch *[]string, reportFail *[
 		// git checkout --track origin/featureX
 		cmd := exec.Command("git", "checkout", "--track", remoteBranchName) // #nosec G204
 		cmd.Dir = expandPath(repo.Folder)
-		stdout, err := cmd.CombinedOutput()
-		if err != nil {
+		stdout, errOut := cmd.CombinedOutput()
+		if errOut != nil {
 			mutFail.Lock()
-			*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %v %s\n", i, repo.Folder, cmd.Args, err.Error()))
+			*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %v %s\n", i, repo.Folder, cmd.Args, errOut.Error()))
 			mutFail.Unlock()
 			return
 		}
