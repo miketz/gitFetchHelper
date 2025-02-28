@@ -264,13 +264,14 @@ func fetch(i int, remoteType RemoteType, reportFetched *[]string, reportFail *[]
 	// get remote info
 	var remote Remote
 	var err error
-	if remoteType == RemoteUpstream {
+	switch remoteType {
+	case RemoteUpstream:
 		remote, err = repo.RemoteUpstream()
-	} else if remoteType == RemoteDefault {
+	case RemoteDefault:
 		remote, err = repo.RemoteDefault()
-	} else if remoteType == RemoteMine {
+	case RemoteMine:
 		remote, err = repo.RemoteMine()
-	} else {
+	default:
 		mutFail.Lock()
 		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s unknown repo type: %v\n", i, repo.Folder, remoteType))
 		mutFail.Unlock()
