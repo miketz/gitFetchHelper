@@ -1056,7 +1056,7 @@ func TrackingBranches(repoFolder, remoteAlias string) ([]string, error) {
 		return nil, err
 	}
 	if len(output) == 0 { // no branches at all!
-		return make([]string, 0, 0), nil
+		return make([]string, 0), nil
 	}
 	// output might be something like:
 	//     origin/master
