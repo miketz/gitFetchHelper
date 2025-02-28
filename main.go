@@ -665,7 +665,7 @@ func diff(i int, remoteType RemoteType, reportDiff *[]string, reportFail *[]stri
 // For all remote tracking of the default remote.
 // this is needed for things like listReposWithUpstreamCodeToMerge() to work as it diffs
 // the "local" branch (at least currently), and a differnet branch may be checked out (featureQ).
-func createLocalBranches() {
+func createLocalBranches() { //nolint:dupl
 	start := time.Now() // stop watch start
 
 	reportBranch := make([]string, 0, len(DB)) // alloc 100%. no realloc on happy path.
