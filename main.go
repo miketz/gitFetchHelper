@@ -2,17 +2,17 @@ package main
 
 import (
 	"bufio"
-	"path/filepath"
-	// "encoding/json".
 	"fmt"
 	"os"
 	"os/exec"
 	"os/user"
+	"path/filepath"
 	"runtime"
 	"strings"
 	"sync"
 	"time"
 
+	// "encoding/json".
 	"github.com/komkom/jsonc/jsonc"
 	"golang.org/x/exp/slices"
 )
