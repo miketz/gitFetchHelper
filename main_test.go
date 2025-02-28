@@ -236,20 +236,20 @@ func BenchmarkCheckAlreadyLatest(b *testing.B) {
 func BenchmarkSubstringOld(b *testing.B) {
 	fullBranchName := "origin/km/reshelve-rewrite"
 	for i := 0; i < b.N; i++ {
-		_removeRemoteFromBranchName_OLD(fullBranchName)
+		_removeRemoteFromBranchNameOLD(fullBranchName)
 	}
 	b.ReportAllocs() // include alloc info in report
 }
 func BenchmarkSubstringNew(b *testing.B) {
 	fullBranchName := "origin/km/reshelve-rewrite"
 	for i := 0; i < b.N; i++ {
-		_removeRemoteFromBranchName_NEW(fullBranchName)
+		_removeRemoteFromBranchNameNEW(fullBranchName)
 	}
 	b.ReportAllocs() // include alloc info in report
 }
 
 // tmp fn to compare substirng techniques.
-func _removeRemoteFromBranchName_OLD(remoteBranch string) string {
+func _removeRemoteFromBranchNameOLD(remoteBranch string) string {
 	parts := strings.Split(remoteBranch, "/")
 
 	// we cannot simply use parts[1] becuase the remainder of the name may have
@@ -267,7 +267,7 @@ func _removeRemoteFromBranchName_OLD(remoteBranch string) string {
 }
 
 // tmp fn to compare substirng techniques.
-func _removeRemoteFromBranchName_NEW(remoteBranch string) string {
+func _removeRemoteFromBranchNameNEW(remoteBranch string) string {
 	i := strings.Index(remoteBranch, "/")
 	return remoteBranch[i+1:]
 }
