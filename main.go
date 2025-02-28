@@ -582,13 +582,14 @@ func diff(i int, remoteType RemoteType, reportDiff *[]string, reportFail *[]stri
 	// get remote info
 	var err error
 	var remote Remote
-	if remoteType == RemoteUpstream {
+	switch remoteType {
+	case RemoteUpstream:
 		remote, err = repo.RemoteUpstream()
-	} else if remoteType == RemoteDefault {
+	case RemoteDefault:
 		remote, err = repo.RemoteDefault()
-	} else if remoteType == RemoteMine {
+	case RemoteMine:
 		remote, err = repo.RemoteMine()
-	} else {
+	default:
 		mutFail.Lock()
 		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s unknown repo type: %v\n", i, repo.Folder, remoteType))
 		mutFail.Unlock()
