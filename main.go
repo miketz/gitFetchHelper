@@ -698,12 +698,12 @@ func createLocalBranches() {
 }
 
 // create "local" branches if they do not exist yet.
-func createLocalBranchesForRepo(i int, reportBranch *[]string, reportFail *[]string,
+func createLocalBranchesForRepo(index int, reportBranch *[]string, reportFail *[]string,
 	wg *sync.WaitGroup, mutBranch *sync.Mutex, mutFail *sync.Mutex,
 ) {
 	defer wg.Done()
 
-	repo := DB[i]
+	repo := DB[index]
 
 	// get current checked out branch name.
 	// It may be the configured repo.MainBranch, repo.BranchUse (ie "mine"), or empty "" (detached head)
@@ -711,7 +711,7 @@ func createLocalBranchesForRepo(i int, reportBranch *[]string, reportFail *[]str
 	startingBranch, err := getCurrBranch(&repo)
 	if err != nil {
 		mutFail.Lock()
-		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %s\n", i, repo.Folder, "problem getting current branch name: "+err.Error()))
+		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %s\n", index, repo.Folder, "problem getting current branch name: "+err.Error()))
 		mutFail.Unlock()
 		return
 	}
@@ -720,7 +720,7 @@ func createLocalBranchesForRepo(i int, reportBranch *[]string, reportFail *[]str
 	remoteDefault, err := repo.RemoteDefault()
 	if err != nil {
 		mutFail.Lock()
-		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %s\n", i, repo.Folder, err.Error()))
+		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %s\n", index, repo.Folder, err.Error()))
 		mutFail.Unlock()
 		return
 	}
@@ -801,7 +801,7 @@ func createLocalBranchesForRepo(i int, reportBranch *[]string, reportFail *[]str
 	// fail when going back to starting branch
 	if err != nil {
 		mutFail.Lock()
-		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %v %s\n", i, repo.Folder, cmd.Args, err.Error()))
+		*reportFail = append(*reportFail, fmt.Sprintf("%d: %s %v %s\n", index, repo.Folder, cmd.Args, err.Error()))
 		mutFail.Unlock()
 		return
 	}
