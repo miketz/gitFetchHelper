@@ -1594,7 +1594,7 @@
   "branchMain": "master",
   "branchUse": "master",
   "isYolo": true
- }
+ },
  {"name": "binky",
   "folder": "~/.emacs.d/notElpaYolo/binky.el",
   "remotes": [{"sym": "upstream",
@@ -1604,7 +1604,7 @@
   "branchMain": "master",
   "branchUse": "master",
   "isYolo": true
- }
+ },
  {"name": "typing-game",
   "folder": "~/.emacs.d/notElpaYolo/el-typing-game",
   "remotes": [{"sym": "upstream",
@@ -1614,7 +1614,7 @@
   "branchMain": "master",
   "branchUse": "master",
   "isYolo": true
- }
+ },
  {"name": "2048-game",
   "folder": "~/.emacs.d/notElpaYolo/2048-game",
   "remotes": [{"sym": "upstream", // actually a mirror of the real upstream
@@ -1624,7 +1624,7 @@
   "branchMain": "master",
   "branchUse": "master",
   "isYolo": true
- }
+ },
  {"name": "embark",
   "folder": "~/.emacs.d/notElpaYolo/embark",
   "remotes": [{"sym": "upstream",
@@ -1634,7 +1634,7 @@
   "branchMain": "master",
   "branchUse": "master",
   "isYolo": true
- }
+ },
  {"name": "color-identifiers-mode",
   "folder": "~/.emacs.d/notElpaYolo/color-identifiers-mode",
   "remotes": [{"sym": "upstream",
@@ -1644,7 +1644,7 @@
   "branchMain": "master",
   "branchUse": "master",
   "isYolo": true
- }
+ },
  {"name": "xterm-color",
   "folder": "~/.emacs.d/notElpaYolo/xterm-color",
   "remotes": [{"sym": "upstream",
@@ -1654,7 +1654,7 @@
   "branchMain": "master",
   "branchUse": "master",
   "isYolo": true
- }
+ },
  {"name": "magit-delta",
   "folder": "~/.emacs.d/notElpaYolo/magit-delta",
   "remotes": [{"sym": "upstream",
@@ -1664,7 +1664,7 @@
   "branchMain": "master",
   "branchUse": "master",
   "isYolo": true
- }
+ },
  {"name": "gitFetchHelper",
   "folder": "~/.emacs.d/notElpaYolo/gitFetchHelper",
   "remotes": [{"sym": "mine",
@@ -1678,5 +1678,5 @@
   "branchMain": "master",
   "branchUse": "master",
   "isYolo": true
- }
+ },
 ]
