@@ -1679,4 +1679,18 @@
   "branchUse": "master",
   "isYolo": true
  },
+ {"name": "dbQueryHelper",
+  "folder": "~/.emacs.d/notElpaYolo/dbQueryHelper",
+  "remotes": [{"sym": "mine",
+               "url": "https://github.com/miketz/dbQueryHelper",
+               "alias": "origin"},
+              // my own project, so no 3rd party upstream
+              {"sym": "upstream",
+               "url": "https://github.com/miketz/dbQueryHelper",
+               "alias": "origin"}],
+  "remoteDefault": "upstream",
+  "branchMain": "master",
+  "branchUse": "master",
+  "isYolo": true
+ },
 ]
