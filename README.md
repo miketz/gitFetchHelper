@@ -5,7 +5,7 @@ Asynchronously fetching all of them at once. This is much faster than fetching 1
 
 In my emacs config I moved away from git submodules (slow on windows).
 Now I just use normal clones into an ignored (by git) directory "notElpaYolo/".
-All functions in this proejct are still relevant and work the same.
+All functions in this project are still relevant and work the same.
 But several extra helper functions have been added to support this style of package mangement as
 the usual way of getting latest on .emacs.d/
 ```bash
