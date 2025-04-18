@@ -909,7 +909,7 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "mine",
+  "branchUse": "master",
   "isYolo": true
  },
  {"name": "flycheck",
