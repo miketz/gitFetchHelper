@@ -1439,7 +1439,7 @@
   "isYolo": true
  },
  {"name": "sql-indent",
-  "folder": "~/.emacs.d/notElpaYolo/sql-indent",
+  "folder": "~/.emacs.d/notElpaYolo/emacs-sql-indent",
   "remotes": [{"sym": "mine",
                "url": "https://github.com/miketz/emacs-sql-indent",
                "alias": "origin"},
