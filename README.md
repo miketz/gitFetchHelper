@@ -29,5 +29,10 @@ go build
 
 or use -ldflags to omit symbol table, debug info, and dwarf symbol table. (smaller binary).
 ```bash
-go build -o gitFetchHelper -ldflags="-s -w"
+go build -ldflags="-s -w"
+```
+
+or disable bounds checks too
+```bash
+go build -gcflags=-B -ldflags="-s -w"
 ```

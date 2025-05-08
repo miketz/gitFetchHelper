@@ -13,9 +13,10 @@ vet: fmt
 	go vet ./...
 
 # use -ldflags to omit symbol table, debug info, and dwarf symbol table. (smaller binary).
+# use -gcflags=-B to eliminate bounds checks
 .PHONY: build
 build: vet
-	go build -o gitFetchHelper -ldflags="-s -w"
+	go build -o gitFetchHelper -gcflags=-B -ldflags="-s -w"
 
 # run with the diff arg, as it doesn't make network calls
 .PHONY: run
