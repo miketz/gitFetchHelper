@@ -12,9 +12,10 @@ lint: fmt
 vet: fmt
 	go vet ./...
 
+# use -ldflags to omit symbol table, debug info, and dwarf symbol table. (smaller binary).
 .PHONY: build
 build: vet
-	go build -o gitFetchHelper
+	go build -o gitFetchHelper -ldflags="-s -w"
 
 # run with the diff arg, as it doesn't make network calls
 .PHONY: run

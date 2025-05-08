@@ -26,3 +26,8 @@ or if you are on windows with no make command just use the Go tooling directly
 ```bash
 go build
 ```
+
+or use -ldflags to omit symbol table, debug info, and dwarf symbol table. (smaller binary).
+```bash
+go build -o gitFetchHelper -ldflags="-s -w"
+```
