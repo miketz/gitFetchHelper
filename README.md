@@ -19,7 +19,7 @@ no longer gets any of the repos in the ignored folder notElpaYolo/.
 
 ideally use make
 ```bash
-make
+make -k
 ```
 
 or if you are on windows with no make command just use the Go tooling directly
