@@ -1026,7 +1026,7 @@
                "alias": "upstream"}],
   "remoteDefault": "mine",
   "branchMain": "master",
-  "branchUse": "mine",
+  "branchUse": "master",
   "isYolo": true
  },
  {// see web page https://depp.brause.cc/nov.el/
