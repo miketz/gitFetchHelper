@@ -1618,6 +1618,16 @@
   "branchUse": "master",
   "isYolo": true
  },
+ {"name": "kaesar",
+  "folder": "~/.emacs.d/notElpaYolo/Emacs-kaesar",
+  "remotes": [{"sym": "upstream",
+               "url": "https://github.com/mhayashi1120/Emacs-kaesar",
+               "alias": "origin"}],
+  "remoteDefault": "upstream",
+  "branchMain": "master",
+  "branchUse": "master",
+  "isYolo": true
+ },
  {"name": "typing-game",
   "folder": "~/.emacs.d/notElpaYolo/el-typing-game",
   "remotes": [{"sym": "upstream",
