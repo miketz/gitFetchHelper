@@ -1631,6 +1631,16 @@
   "branchUse": "master",
   "isYolo": true
  },
+ {"name": "dumb-jump",
+  "folder": "~/.emacs.d/notElpaYolo/dumb-jump",
+  "remotes": [{"sym": "upstream",
+               "url": "https://github.com/jacktasia/dumb-jump",
+               "alias": "origin"}],
+  "remoteDefault": "upstream",
+  "branchMain": "master",
+  "branchUse": "master",
+  "isYolo": true
+ },
  {"name": "kaesar",
   "folder": "~/.emacs.d/notElpaYolo/Emacs-kaesar",
   "remotes": [{"sym": "upstream",
