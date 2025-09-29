@@ -1644,6 +1644,16 @@
   "branchUse": "master",
   "isYolo": true
  },
+ {"name": "htmlize",
+  "folder": "~/.emacs.d/notElpaYolo/htmlize",
+  "remotes": [{"sym": "upstream",
+               "url": "https://github.com/emacsorphanage/htmlize",
+               "alias": "origin"}],
+  "remoteDefault": "upstream",
+  "branchMain": "master",
+  "branchUse": "master",
+  "isYolo": true
+ },
  {"name": "popup",
   "folder": "~/.emacs.d/notElpaYolo/popup-el",
   "remotes": [{"sym": "upstream",
