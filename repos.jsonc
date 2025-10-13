@@ -1654,6 +1654,16 @@
   "branchUse": "master",
   "isYolo": true
  },
+ {"name": "simpc-mode",
+  "folder": "~/.emacs.d/notElpaYolo/simpc-mode",
+  "remotes": [{"sym": "upstream",
+               "url": "https://github.com/rexim/simpc-mode",
+               "alias": "origin"}],
+  "remoteDefault": "upstream",
+  "branchMain": "master",
+  "branchUse": "master",
+  "isYolo": true
+ },
  {"name": "popup",
   "folder": "~/.emacs.d/notElpaYolo/popup-el",
   "remotes": [{"sym": "upstream",
