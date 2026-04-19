@@ -298,19 +298,20 @@
   "branchUse": "main",
   "isYolo": true
  },
- {"name": "libgit",
-  "folder": "~/.emacs.d/notElpaYolo/libegit2",
-  "remotes": [{"sym": "mine",
-               "url": "https://github.com/miketz/libegit2",
-               "alias": "origin"},
-              {"sym": "upstream",
-               "url": "https://github.com/magit/libegit2",
-               "alias": "upstream"}],
-  "remoteDefault": "mine",
-  "branchMain": "main",
-  "branchUse": "mine" // ignore .elc files,
-  "isYolo": true
- },
+ // NOTE: magit has abandoned libgit2 integration. Just leave it out for now.
+ // {"name": "libgit",
+ //  "folder": "~/.emacs.d/notElpaYolo/libegit2",
+ //  "remotes": [{"sym": "mine",
+ //               "url": "https://github.com/miketz/libegit2",
+ //               "alias": "origin"},
+ //              {"sym": "upstream",
+ //               "url": "https://github.com/magit/libegit2",
+ //               "alias": "upstream"}],
+ //  "remoteDefault": "mine",
+ //  "branchMain": "main",
+ //  "branchUse": "mine" // ignore .elc files,
+ //  "isYolo": true
+ // },
  {// NOTE: as of 11-19-2022 this is moved into emacs core. But keep this
   // submodule to support older Emacs versions.
   "name": "csharp-mode",
